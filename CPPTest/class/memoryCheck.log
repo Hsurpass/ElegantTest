@@ -1,0 +1,13 @@
+= Start
+@ /lib/x86_64-linux-gnu/libstdc++.so.6:(_Znwm+0x19)[0x7f1d47e98c29] + 0x558f4d216410 0x4
+@ /lib/x86_64-linux-gnu/libc.so.6:(_IO_file_doallocate+0x94)[0x7f1d47c65e84] + 0x558f4d216430 0x400
+@ /lib/x86_64-linux-gnu/libstdc++.so.6:(_Znwm+0x19)[0x7f1d47e98c29] + 0x558f4d216840 0x4
+@ /lib/x86_64-linux-gnu/libstdc++.so.6:(_Znwm+0x19)[0x7f1d47e98c29] + 0x558f4d216860 0x4
+@ /lib/x86_64-linux-gnu/libstdc++.so.6:(__cxa_allocate_exception+0x14)[0x7f1d47e972e4] + 0x558f4d216880 0x84
+@ ./case1:[0x558f4b49e45f] - 0x558f4d216840
+@ ./case1:[0x558f4b49e45f] - 0x558f4d216410
+@ ./case1:[0x558f4b49e334] - 0x558f4d216880
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f1d47d7c83d] - 0x558f4d215eb0
+@ /lib/x86_64-linux-gnu/libc.so.6:(tdestroy+0x36)[0x7f1d47cfe996] - 0x558f4d215fd0
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f1d47d7c826] - 0x558f4d216000
+@ /lib/x86_64-linux-gnu/libc.so.6:[0x7f1d47d7c96c] - 0x558f4d216430
