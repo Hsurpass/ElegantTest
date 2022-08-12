@@ -41,3 +41,6 @@ info vtbl xxx
     $\color{red}{要想调试过程中切换进程id,也必须先设置一下 `set detach-on-on-fork`}$
 
 ### 调试多线程
+  - 查看线程
+    - `info threads`
+  - ` set`
