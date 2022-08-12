@@ -55,6 +55,15 @@ public:
     int m_a;
 };
 
+void test_plusplus_map_value()
+{
+    std::map<int, int> map;
+    map[0] = 1;
+    cout << map[0] << endl;
+    ++map[0];
+    cout << map[0] << endl;
+}
+
 // map使用operator[]插入的value元素如果是类，则需要有default constructor
 void test_map_key_class()
 {
@@ -151,7 +160,8 @@ int main()
     // test_map_key_class();
     // test_map_iteratorTraverse_and_operatorTraverse();
     // test_map_lower_bound_and_upper_bound();
-    testMapSharedPtr();
+    // testMapSharedPtr();
+    test_plusplus_map_value();
 
     return 0;
 }
