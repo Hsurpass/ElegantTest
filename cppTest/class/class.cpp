@@ -2,9 +2,12 @@
 
 using namespace std;
 
-class A{
-
+class A
+{
 public:
+    A() { cout << "A()" << endl; }
+    ~A() { cout << "~A()" << endl; }
+
     void func() const
     {
         cout << "A::func()" << endl;
@@ -51,11 +54,17 @@ void test02()
 
 }
 
+void test_temporary_obj_destroy()
+{
+    A().func();
+}
+
 int main()
 {
     // test01();
-    test02();
-
+    // test02();
+    test_temporary_obj_destroy();
+    
     return 0;
 
 }

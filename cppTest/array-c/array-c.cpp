@@ -99,7 +99,7 @@ string sa[10];
 int ia[10];
 
 // 多维数组
-int main()
+int main04()
 {
     int ia[3][4] = {{0}, {4}, {8}};
     printTwoDimensionArray<int, 4>(ia, 3);
@@ -192,6 +192,22 @@ int main01()
     printOneDimensionArray(ia, 10);
     printOneDimensionArray(a6, 10);
     printOneDimensionArray(a7, 10);
+
+    return 0;
+}
+
+void test_array_init_value()
+{
+    // int arr[10] = { 1, 2, 3, 4, 5};  // 其他值初始化为0
+    // int arr[10];    // 随机值
+    // int arr[10] = {10}; // 其他值初始化为0
+    int arr[10] = {};   // 全部初始化为0
+    printOneDimensionArray(arr, 10);
+}
+
+int main()
+{
+    test_array_init_value();
 
     return 0;
 }

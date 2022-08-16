@@ -40,6 +40,20 @@ void test_anonymousShm02()
         printf("child process, pid:%d, ppid:%d, boolValue:%d\n", getpid(), getppid(), *(bool*)ptr);
         *(bool*)ptr = true;
         printf("child process, pid:%d, ppid:%d, boolValue:%d\n", getpid(), getppid(), *(bool*)ptr);
+
+        pid_t grandpid = fork();
+        if(grandpid==0)
+        {
+            printf("grandchild process, pid:%d, ppid:%d, boolValue:%d\n", getpid(), getppid(), *(bool*)ptr);
+            *(bool*)ptr = false;
+            printf("child process, pid:%d, ppid:%d, boolValue:%d\n", getpid(), getppid(), *(bool*)ptr); 
+        }
+        else if(grandpid > 0)
+        {
+            sleep(2);
+            printf("grandchild process, pid:%d, ppid:%d, boolValue:%d\n", getpid(), getppid(), *(bool*)ptr);
+        }
+        
     }
     else
     {
@@ -48,10 +62,33 @@ void test_anonymousShm02()
     }
 }
 
+// void test_anonymousShm03()
+// {
+// 	void* sharedMemory = NULL;
+//     // void* ptr = mmap(0, sizeof(bool), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+//     if ((sharedMemory = mmap(0, sizeof(bool), PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0)) == MAP_FAILED)
+// 			return ;
+//     bool& flag = *(bool*)sharedMemory;
+
+//     pid_t pid = fork();
+//     if(pid == 0)
+//     {
+//         printf("child process, pid:%d, ppid:%d, boolValue:%d\n", getpid(), getppid(), flag);
+//         flag = true;
+//         printf("child process, pid:%d, ppid:%d, boolValue:%d\n", getpid(), getppid(), flag);
+//     }
+//     else
+//     {
+//         sleep(1);
+//         printf("parent process, pid:%d, childpid:%d, boolValue:%d\n", getpid(), pid, flag);
+//     }
+// }
+
 int main()
 {
     // test_anonymousShm01();
     test_anonymousShm02();
+    // test_anonymousShm03();
 
     return 0;
 }
