@@ -7,12 +7,12 @@
 
 int test02()
 {
-    printf("pid = %d\n",getpid());
-    printf("ppid = %d\n",getppid() );
-    printf("uid = %d\n",getuid());
-    printf("euid = %d\n",geteuid());
-    printf("gid = %d\n",getgid());
-    printf("egid = %d\n",getegid());
+    printf("pid = %d\n", getpid());
+    printf("ppid = %d\n", getppid());
+    printf("uid = %d\n", getuid());
+    printf("euid = %d\n", geteuid());
+    printf("gid = %d\n", getgid());
+    printf("egid = %d\n", getegid());
     return 0;
 }
 
@@ -23,32 +23,32 @@ int test01()
     {
         pid_t childpid;
         int status;
-        while(1)
+        while (1)
         {
             childpid = waitpid(-1, &status, WNOHANG | WUNTRACED | WCONTINUED);
             if (childpid == 0)
             {
-                printf("parent process, parent pid = %d, reutrnChildId = %d, status = %d\n", getpid(), childpid, status);
+                printf("parent process, parent pid = %d, child pid = %d, reutrnChildId = %d, status = %d\n", getpid(), pid, childpid, status);
                 sleep(1);
             }
-            #if 0
+#if 0
             else 
             {
                 break;
             }
-            #endif
+#endif
 
-            #if 1
+#if 1
             else
             {
-                if(WIFEXITED(status))
+                if (WIFEXITED(status))
                 {
                     printf("parent process, parent pid = %d, child pid =%d,exit code = %d\n", getpid(), childpid, WEXITSTATUS(status));
                     break;
                 }
-                else if(WIFSIGNALED(status))
-                {   
-                    printf("parent process, parent pid = %d, child process [%d] killed by signal %d\n", getpid(), childpid, WTERMSIG(status) );
+                else if (WIFSIGNALED(status))
+                {
+                    printf("parent process, parent pid = %d, child process [%d] killed by signal %d\n", getpid(), childpid, WTERMSIG(status));
                     break;
                 }
                 else if (WIFSTOPPED(status))
@@ -57,18 +57,17 @@ int test01()
                 }
                 else if (WIFCONTINUED(status))
                 {
-                    printf("parent process, parent pid = %d, child process [%d] continued by signal 18 \n", getpid(), childpid);
+                    printf("parent process, parent pid = %d, child process [%d] continued by signal 18 %d, %d, %d\n", getpid(), childpid, WEXITSTATUS(status), WTERMSIG(status), WSTOPSIG(status));
                 }
                 else
                 {
                     printf("other\n");
-                    
                 }
             }
-            #endif  
+#endif
         }
 
-        #if 0
+#if 0
         {
             if(WIFEXITED(status))
             {
@@ -92,15 +91,16 @@ int test01()
                 
             }
         }
-        #endif
+#endif
 
         exit(0);
     }
-    else if(pid == 0)
+    else if (pid == 0)
     {
+        printf("child process, ppid = %d,childid = %d\n", getppid(), getpid());
         for (size_t i = 0; i < 10; i++)
         {
-            printf("child process, ppid = %d,childid = %d\n",getppid(),getpid());
+            // printf("child process, ppid = %d,childid = %d\n", getppid(), getpid());
             sleep(1);
         }
 
@@ -110,7 +110,6 @@ int test01()
     {
         perror("fork");
     }
-    
 
     return 0;
 }
