@@ -155,13 +155,31 @@ void testMapSharedPtr()
     cout << itr1->first << ", " << mssp.size() << endl;
 }
 
+void test_map_erase()
+{
+    std::map<int, int> mii;
+    for (size_t i = 0; i < 10; i++)
+    {
+        mii.insert(make_pair<int, int>(i, i));
+    }
+
+    int n = mii.erase(3);
+    cout << "n:" << n << endl;
+
+    for(auto &i : mii)
+    {
+        cout << i.first << ", " << i.second << endl;
+    }
+}
+
 int main()
 {
     // test_map_key_class();
     // test_map_iteratorTraverse_and_operatorTraverse();
     // test_map_lower_bound_and_upper_bound();
     // testMapSharedPtr();
-    test_plusplus_map_value();
+    // test_plusplus_map_value();
+    test_map_erase();
 
     return 0;
 }
