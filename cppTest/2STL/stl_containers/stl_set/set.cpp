@@ -175,12 +175,44 @@ void test_set_insert_pair()
     
 }
 
+void test_set_insert_pair_lowerBound()
+{
+    typedef std::pair<int, string> PAIRIS;  // pair中定义了 operator<
+
+    std::set<PAIRIS> s;
+    s.insert(PAIRIS(3, "bb"));
+    s.insert(PAIRIS(2, "cc"));
+    s.insert(PAIRIS(1, "dd"));
+    s.insert(PAIRIS(4, "aa"));
+
+    for (auto &x:s)
+    {
+        cout << "x:" << x.first << ", " << x.second << endl;
+    }
+
+    PAIRIS p1(3, "ee");
+    auto itr = s.lower_bound(p1);
+    cout << itr->first << ", " << itr->second << endl;  // 4,aa
+
+    PAIRIS p2(4, "ee");
+    itr = s.lower_bound(p2);
+    if (itr == s.end())
+    {
+        cout << "itr == s.end()" << endl;
+    }
+    else
+    {
+        cout << itr->first << ", " << itr->second << endl;  // 4,aa
+    }
+}
+
 int main()
 {
     // test_sizeof_set();
     // test_set_iteratorTraverse();
     // test_set_find_and_stdfind();
-    test_set_insert_pair();
+    // test_set_insert_pair();
+    test_set_insert_pair_lowerBound();
 
     return 0;
 }
