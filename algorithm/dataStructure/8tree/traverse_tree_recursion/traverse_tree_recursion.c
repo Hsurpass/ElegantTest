@@ -9,7 +9,7 @@ typedef struct _TreeNode
 
 void preordertraverse(TreeNode *root)
 {
-    if(root != NULL)
+    if(root != NULL)    // 递归结束条件
     {
         printf("%d ",root->_data);
         preordertraverse(root->_left);
@@ -19,7 +19,7 @@ void preordertraverse(TreeNode *root)
 
 void inordertraverse(TreeNode *root)
 {
-    if(root != NULL)
+    if(root != NULL)    // 递归结束条件
     {
         inordertraverse(root->_left);
         printf("%d ",root->_data);
@@ -28,7 +28,7 @@ void inordertraverse(TreeNode *root)
 }
 void postordertraverse(TreeNode *root)
 {
-    if(root != NULL)
+    if(root != NULL)    // 递归结束条件
     {
         postordertraverse(root->_left);
 
@@ -36,6 +36,14 @@ void postordertraverse(TreeNode *root)
         printf("%d ",root->_data);
     }
 }
+
+/*
+           1a
+          /   \
+        2b      3c
+        / \       \
+       4d 5e      6f
+*/
 int main()
 {
     TreeNode a,b,c,d,e,f;
@@ -57,5 +65,7 @@ int main()
     inordertraverse(root);//4 2 5 1 3 6
     putchar(10);
     postordertraverse(root);//4 5 2 6 3 1
+    putchar(10);
+
     return 0;
 }
