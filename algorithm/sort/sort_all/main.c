@@ -16,7 +16,7 @@ int compare(const void *pa, const void *pb)
     return *(int *)pa - *(int *)pb;
 }
 
-int main03()
+void test_qsort_and_binary_search()
 {
     int arr[] = {50, 13, 27, 45, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 100, 200};
     int n = sizeof(arr) / sizeof(*arr);
@@ -26,38 +26,50 @@ int main03()
     printArr(arr, n);
 
     int find = 7;
-    //    int index = binarysearch_iteration(arr,0,n-1,find);
+    // int index = binarysearch_iteration(arr,0,n-1,find);
     int index = binarySearch_recursive(arr, 0, n - 1, find);
     printf("%d index is %d\n", find, index);
-
-    return 0;
 }
 
-int main02()
+void test_mergeTwoOrderedArray()
 {
-    //    int a[5] = {1,3,5,7,9};
-    //    int b[7] = {2,4,6,8,10,100,200};
-    //    int c[10];
-    //    mergetwoorderedarray(a,5,b,5,c,10);
-    //printArr(c,10);
-    //    int arr[] = {1,3,5,7,9,2,4,6,8,10,100,200};
+    int a[5] = {1, 3, 5, 7, 9};
+    int b[7] = {2, 4, 6, 8, 10, 100, 200};
+    int c[10];
+    mergetwoorderedarray(a, 5, b, 5, c, 10);
+    printArr(c, 10);
+}
+
+void test_merge_twoOrderedPart_in_array()
+{
+    int arr[] = {1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 100, 200};
+    int n = sizeof(arr) / sizeof(*arr);
+    int tmp[48] = {0};
+
+    merge_twoorderedpart_in_array(arr, tmp, 0, 4, 11);
+    printArr(arr, n);
+}
+
+int test_mergeSort()
+{
     int arr[] = {50, 13, 27, 45, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 100, 200};
     int n = sizeof(arr) / sizeof(*arr);
     int tmp[48] = {0};
-    //merge_twoorderedpart_in_array(arr,tmp,0,4,11);
-    //    printArr(arr,n);
+
     printArr(arr, n);
     mergeSort(arr, tmp, 0, n - 1);
     printArr(arr, n);
 }
 
 /*
+    二叉堆
                         1
                     /       \
                   3          5
               7      9     2   4
             6   8  10
 */
+
 int main()
 {
     //           0  1  2  3  4  5  6  7  8  9
@@ -77,11 +89,11 @@ int main()
     // selectsort(arr, n);
     // printArr(arr, n);
 
-    // quicksort(arr, 0, 9);
-    // printArr(arr, n);
-
-    heapSort(arr, n);
+    quickSort(arr, 0, 9);
     printArr(arr, n);
+
+    // heapSort(arr, n);
+    // printArr(arr, n);
 
     return 0;
 }

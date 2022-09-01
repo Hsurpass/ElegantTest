@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 /*
     最好时间复杂度：O(n), 最坏、平均时间复杂度:O(n2). 稳定性:不稳定。
     逻辑：
@@ -16,7 +15,7 @@ void bubbleSort(int *arr, int n)
     int flag = 1;
     for (int i = 0; i < n - 1; i++)
     {
-        flag = 1;   //冒泡的改进，若在一趟中没有发生逆序，则该序列已有序
+        flag = 1; //冒泡的改进，若在一趟中没有发生逆序，则该序列已有序
         for (int j = 0; j < n - 1 - i; j++)
         {
             if (arr[j] > arr[j + 1])
@@ -45,8 +44,8 @@ void insertSort(int *arr, int n)
     int i, j, t;
     for (i = 1; i < n; i++)
     {
-        t = arr[i]; // 要插入的元素
-        for (j = i; j - 1 >= 0 && arr[j - 1] > t; j--)  // 如果前一个元素比要插入元素大，则往后移
+        t = arr[i];                                    // 要插入的元素
+        for (j = i; j - 1 >= 0 && arr[j - 1] > t; j--) // 如果前一个元素比要插入元素大，则往后移
         {
             //            if(t < arr[j-1])
             //            {
@@ -61,15 +60,16 @@ void insertSort(int *arr, int n)
 }
 
 /*
-    最好、最坏、平均时间复杂度:O(logn). O(n1.3) 稳定性:不稳定。
+    最好、最坏、平均时间复杂度:O(logn). O(n1.3).O(n1.5) 稳定性:不稳定。
     希尔排序的基本思想是：先将整个待排序的记录序列分割成为若干子序列分别进行直接插入排序，
                         待整个序列中的记录"基本有序"时，再对全体记录进行依次直接插入排序。
-    
+    希尔排序是插入排序的一种优化。
+    先分组再进行插入排序，不断减小gap值(除以2)直至gap为1。为1的时候就是直接插入排序了。
 */
 void shellSort(int *arr, int n)
 {
     int i, j, t;
-    int gap = n / 2;    // 分组
+    int gap = n / 2; // 分组
     while (gap >= 1)
     {
         // 把距离为gap的编为一个组，扫描所有组
@@ -98,7 +98,7 @@ void selectSort(int *arr, int n)
 {
     for (int i = 0; i < n - 1; i++)
     {
-        int k = i;  // 初始值
+        int k = i;                      // 初始值
         for (int j = i + 1; j < n; j++) // 查找最小值
         {
             if (arr[j] < arr[k])
@@ -118,27 +118,60 @@ void selectSort(int *arr, int n)
 
 /*
     最好、平均时间复杂度都为O(logn), 最坏为O(n2). 稳定性:不稳定
-
+    最差情况是：每次选基准值都是最小值或者最大值。
+    实现逻辑:
+        1.先在数组中选中一个基准值。
+        2.分组，把小于等于基准值的都放到左边，把大于基准值的都放到右边。
+        3.再对每个子组重复进行1,2步操作。
 */
+
+int partitionIndex(int *arr, int low, int high)
+{
+    int pivot = arr[low], l = low, h = high;
+    while (l < h) // 相等的时候把pivot赋值
+    {
+        // 一定要有l<h这个条件，否则相遇之后还会h--，l++而造成交换元素
+        while (/**/ l < h && /**/ arr[h] >= pivot) //大而移动，小而赋值
+        {
+            h--;
+        }
+        arr[l] = arr[h];
+        while (/**/ l < h && /**/ arr[l] <= pivot) //小而移动，大而赋值
+        {
+            l++;
+        }
+        arr[h] = arr[l];
+    }
+    arr[h] = pivot;
+
+    return l;
+}
+
 void quickSort(int *arr, int low, int high)
 {
     if (low < high)
     {
+        #if 0
         int pivot = arr[low], l = low, h = high;
-        while (l < h)
+        while (l < h) // 相等的时候把pivot赋值
         {
-            while (l < h && arr[h] >= pivot) //大而移动，小而赋值
+            // 一定要有l<h这个条件，否则相遇之后还会h--，l++而造成交换元素
+            while (/**/ l < h && /**/ arr[h] >= pivot) //大而移动，小而赋值
             {
                 h--;
             }
             arr[l] = arr[h];
-            while (l < h && arr[l] <= pivot) //小而移动，大而赋值
+            while (/**/ l < h && /**/ arr[l] <= pivot) //小而移动，大而赋值
             {
                 l++;
             }
             arr[h] = arr[l];
         }
         arr[h] = pivot;
+        #endif
+        #if 1
+        int h = partitionIndex(arr, low, high);
+        #endif
         quickSort(arr, low, h - 1);
         quickSort(arr, h + 1, high);
     }
@@ -158,21 +191,23 @@ void mergeTwoOrderedArray(int *a, int an, int *b, int bn, int *c, int cn)
             c[k++] = b[j++];
         }
     }
-    if (i == an)
+
+    if (i == an)    
     {
-        while (j != bn)
+        while (j != bn) // 如果b数组里有元素，放到数组末尾
         {
             c[k++] = b[j++];
         }
     }
     else
     {
-        while (i != an)
+        while (i != an) // 如果a数组里有元素，放到数组末尾
         {
             c[k++] = a[i++];
         }
     }
 }
+
 void merge_twoOrderedPart_in_array(int *arr, int *tmp, int start, int mid, int end)
 {
     int i = start, j = mid + 1, k = start;
@@ -188,6 +223,7 @@ void merge_twoOrderedPart_in_array(int *arr, int *tmp, int start, int mid, int e
             tmp[k++] = arr[j++];
         }
     }
+    
     if (i == mid + 1)
     {
         while (j != end + 1)
@@ -210,6 +246,10 @@ void merge_twoOrderedPart_in_array(int *arr, int *tmp, int start, int mid, int e
     }
 }
 
+/*
+    最好、最坏、平均时间复杂度都为O(logn). 稳定性:稳定
+
+*/
 void mergeSort(int *arr, int *tmp, int start, int end)
 {
     if (start < end)
