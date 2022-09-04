@@ -35,18 +35,23 @@ void test_mergeTwoOrderedArray()
 {
     int a[5] = {1, 3, 5, 7, 9};
     int b[7] = {2, 4, 6, 8, 10, 100, 200};
-    int c[10];
-    mergetwoorderedarray(a, 5, b, 5, c, 10);
-    printArr(c, 10);
+    
+    // int c[10];
+    // mergeTwoOrderedArray(a, 4, b, 4, c, 10);
+    int an=sizeof(a)/sizeof(a[0]), bn = sizeof(b)/sizeof(b[0]);
+    const int cn = an + bn;
+    int c[12];
+    mergeTwoOrderedArray(a, an, b, bn, c, cn);
+    printArr(c, cn);
 }
 
 void test_merge_twoOrderedPart_in_array()
 {
-    int arr[] = {1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 100, 200};
+    int arr[] = {1, 3, 5, 7, 9, 300, 2, 4, 6, 8, 10, 100, 200};
     int n = sizeof(arr) / sizeof(*arr);
     int tmp[48] = {0};
 
-    merge_twoorderedpart_in_array(arr, tmp, 0, 4, 11);
+    merge_twoOrderedPart_in_array(arr, tmp, 0, 5, n-1);
     printArr(arr, n);
 }
 
@@ -89,11 +94,17 @@ int main()
     // selectsort(arr, n);
     // printArr(arr, n);
 
-    quickSort(arr, 0, 9);
-    printArr(arr, n);
+    // quickSort(arr, 0, 9);
+    // printArr(arr, n);
 
     // heapSort(arr, n);
     // printArr(arr, n);
+
+    // test_mergeTwoOrderedArray();
+    // test_merge_twoOrderedPart_in_array();
+    // test_mergeSort();
+
+    test_qsort_and_binary_search();
 
     return 0;
 }

@@ -11,68 +11,97 @@ using namespace std;
 //    struct _TreeNode *_right;
 //}TreeNode;
 
-void preOrderIteratorWithStack(TreeNode* root)
+void preOrderIteratorNew(TreeNode *root)
 {
-    if(root == NULL)
-        return ;
-    
-    std::stack<TreeNode*> st;
+    if (!root)
+        return;
+
+    std::stack<TreeNode *> st;
+    st.push(root);
+
+    while (!st.empty())
+    {
+        TreeNode *node = st.top();
+        printf("%d ", node->_data);
+        st.pop();
+
+        //  先压right, 后压left
+        if (node->_right)
+        {
+            st.push(node->_right);
+        }
+        if (node->_left)
+        {
+            st.push(node->_left);
+        }
+    }
+    putchar(10);
+}
+
+void preOrderIteratorWithStack(TreeNode *root)
+{
+    if (root == NULL)
+        return;
+
+    std::stack<TreeNode *> st;
     // st.push(root);   // 不能先push
 
     while (root || !st.empty())
     {
-        while (root)
+        while (root)    // 左孩子一直入栈
         {
-            printf("data:%d ", root->_data);
+            printf("data:%d ", root->_data);    // 在入栈之前访问元素，正好是先访问根节点
             st.push(root);
             root = root->_left;
         }
-        
-        TreeNode* top = st.top();
+
+        TreeNode *top = st.top();
         root = top->_right;
         st.pop();
     }
     putchar(10);
-    
 }
 
-void inOrderIteratorWithStack(TreeNode* root)
+void inOrderIteratorWithStack(TreeNode *root)
 {
-    if(root == NULL)
-        return ;
-    
-    std::stack<TreeNode*> st;
+    if (root == NULL)
+        return;
+
+    std::stack<TreeNode *> st;
     // st.push(root);
 
     while (root || !st.empty())
     {
-        while (root)
+        while (root)    // 左孩子一直入栈
         {
             st.push(root);
             root = root->_left;
         }
-        
-        TreeNode* top = st.top();
-        printf("data:%d ", top->_data);
-        root = top->_right;
-        st.pop();
+
+        if (!st.empty()) // 需要判空，如果是单边树访问数据会崩
+        {
+            TreeNode *top = st.top();
+            printf("data:%d ", top->_data); // 左孩子出栈的时候访问
+            root = top->_right;
+            st.pop();
+        }
     }
     putchar(10);
 }
 
-void postOrderIteratorWithStack(TreeNode* root)
+void postOrderIteratorWithStack(TreeNode *root)
 {
-    if(root == NULL)
-        return ;
-    
-    std::stack<TreeNode*> st;
+    if (root == NULL)
+        return;
+
+    std::stack<TreeNode *> st;
     st.push(root);
-    TreeNode* pre = NULL;
+    TreeNode *pre = NULL;
 
     while (!st.empty())
     {
-        TreeNode* cur = st.top();
-        if ( (cur->_left == NULL && cur->_right == NULL) || ((pre != NULL) && (pre == cur->_left || pre == cur->_right)) )
+        TreeNode *cur = st.top();
+        if ((cur->_left == NULL && cur->_right == NULL) || ((pre != NULL) && (pre == cur->_left || pre == cur->_right)))
         {
             printf("data:%d ", cur->_data);
             st.pop();
@@ -84,12 +113,11 @@ void postOrderIteratorWithStack(TreeNode* root)
             {
                 st.push(cur->_right);
             }
-            if(cur->_left)
+            if (cur->_left)
             {
                 st.push(cur->_left);
             }
         }
-
     }
     putchar(10);
 }
@@ -111,6 +139,7 @@ void preorderiteration(TreeNode *r)
             r = pop(&sl);
             r = r->_right;
         }
+        putchar(10);
     }
 }
 
@@ -127,17 +156,22 @@ void inorderiteration(TreeNode *r)
                 push(&sl, r);
                 r = r->_left;
             }
-            r = pop(&sl);
-            printf("%d ", r->_data); //4 2 5 1 3 6
-            r = r->_right;
+
+            if (!isempty(&sl)) // 需要判空，如果是单边树访问数据会崩
+            {
+                r = pop(&sl);
+                printf("%d ", r->_data); //4 2 5 1 3 6
+                r = r->_right;
+            }
         }
+        putchar(10);
     }
 }
 
 int gethightoftree(TreeNode *root)
 {
     int lh, rh, maxh;
-    if (root)
+    if (root) // 递归结束条件
     {
         lh = gethightoftree(root->_left);
         rh = gethightoftree(root->_right);
@@ -168,20 +202,24 @@ int main()
     e._data = 5;
     f._data = 6;
 
-    a._left = &b; a._right = &c;
-    b._left = &d; b._right = &e;
-    c._left = NULL; c._right = &f;
+    a._left = &b;
+    a._right = &c;
+    b._left = &d;
+    b._right = &e;
+    c._left = NULL;
+    c._right = &f;
     d._left = d._right = NULL;
     e._left = e._right = NULL;
     f._left = f._right = NULL;
 
-    // preorderiteration(root); //1 2 4 5 3 6
-    // putchar(10);
-    // inorderiteration(root);
-    // putchar(10);
+    // preorderiteration(root); // 1 2 4 5 3 6
+    // inorderiteration(root);  // 4 2 5 1 3 6
+
     // preOrderIteratorWithStack(root);
     // inOrderIteratorWithStack(root);
-    postOrderIteratorWithStack(root);
+    // postOrderIteratorWithStack(root);    // 4 5 2 6 3 1
+
+    preOrderIteratorNew(root);
 
     // printf("hight of tree = %d\n", gethightoftree(root));
     return 0;
