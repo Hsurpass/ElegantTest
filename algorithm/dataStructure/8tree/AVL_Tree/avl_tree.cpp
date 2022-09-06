@@ -15,7 +15,7 @@ AvlTreeNode* createNewNode(int data)
     newNode->data = data;
     newNode->left = NULL;
     newNode->right = NULL;
-    newNode->height = 0;
+    newNode->height = 1;
 
     return newNode;
 }
@@ -33,6 +33,9 @@ int avlTreeHeight(AvlTreeNode* root)
 
 int getBalanceFactor(AvlTreeNode* root)
 {
+    if (root == NULL)
+        return 0;
+
     int leftH = avlTreeHeight(root->left);
     int rightH = avlTreeHeight(root->right);
 
@@ -232,9 +235,47 @@ void postOrderTraverseAvl(AvlTreeNode *root)
     }
 }
 
+/*
+    1.root就是最小不平衡子树的根节点  2.注意是右子树不是右节点
+    LL(右旋): 在root的左子树的根节点的 [左子树] 插入节点而破坏平衡.
+    RR(左旋): 在root的右子树的根节点的 [右子树] 插入节点而破坏平衡.
+    LR(左右旋): 在root的左子树的根节点的 [右子树] 插入节点而破坏平衡.
+    RL(右左旋): 在root的右子树的根节点的 [左子树] 插入节点而破坏平衡.
+       10                    20                     20                        20           10                       10                                  10                10           
+          \      RR 左旋    /   \      LL 右旋      /  \    LR 左右旋         /   \        /  \                     /   \            RL 右左旋          /    \           /     \             
+           20   ------->   10   30    -------->   8    30    --------->    10     30     8   20     --------->    8      30         -------->        8      30         8      40  
+            \             /                      / \                      /             / \    \                 / \    /  \                       /  \    /  \       / \    /  \
+             30          8                      6  10                    8             6   9    30              6   9  20   50                     6   9  20  40     6   9  30   50
+                        /                          /                    / \                                                /  \                              /  \           / \   \
+                       6                          9                    6   9                                              40   60                           35   50        20 35   60
+                                                                                                                         /                                        \       
+                                                                                                                        35                                        60        
+*/
 int main()
 {
+    AvlTreeNode* root = NULL;
+    root = insertAvlTreeNode_recursive(root, 10);
+    root = insertAvlTreeNode_recursive(root, 20);
+    printf("root->left height:%d\n", avlTreeHeight(root->left));
+    printf("root->right height:%d\n", avlTreeHeight(root->right));
+    root = insertAvlTreeNode_recursive(root, 30);
+    root = insertAvlTreeNode_recursive(root, 8);
+    root = insertAvlTreeNode_recursive(root, 6);
+    root = insertAvlTreeNode_recursive(root, 9);
+    root = insertAvlTreeNode_recursive(root, 50);
+    root = insertAvlTreeNode_recursive(root, 60);
+    root = insertAvlTreeNode_recursive(root, 40);
+    root = insertAvlTreeNode_recursive(root, 35);
 
+    preOrderTraverseAvl(root);  // 10 8 6 9 40 30 20 35 50 60
+    putchar(10);
+
+    inOrderTraverseAvl(root);   // 6 8 9 10 20 30 35 40 50 60
+    putchar(10);
+
+    postOrderTraverseAvl(root); // 6 9 8 20 35 30 60 50 40 10
+    putchar(10);
+    
     return 0;
 }
 
