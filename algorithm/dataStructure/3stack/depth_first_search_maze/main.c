@@ -2,6 +2,7 @@
 #include "stack_list_c.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define MAXROW 10
 #define MAXLINE 10
@@ -118,6 +119,11 @@ int main()
         dismaze();
         sleep(1);
         //上 下 左 右
+        //右
+        if (t._y + 1 <= 9 && maze[t._x][t._y + 1] != 1 && maze[t._x][t._y + 1] != 2)
+        {
+            visitpushstack(&sl, t._x, t._y + 1, t);
+        }
         //上
         if (t._x - 1 >= 0 && maze[t._x - 1][t._y] != 1 && maze[t._x - 1][t._y] != 2)
         {
@@ -133,11 +139,11 @@ int main()
         {
             visitpushstack(&sl, t._x, t._y - 1, t);
         }
-        //右
-        if (t._y + 1 <= 9 && maze[t._x][t._y + 1] != 1 && maze[t._x][t._y + 1] != 2)
-        {
-            visitpushstack(&sl, t._x, t._y + 1, t);
-        }
+        // //右
+        // if (t._y + 1 <= 9 && maze[t._x][t._y + 1] != 1 && maze[t._x][t._y + 1] != 2)
+        // {
+        //     visitpushstack(&sl, t._x, t._y + 1, t);
+        // }
 
         if (t._x == ep._x && t._y == ep._y)
         {
@@ -163,6 +169,7 @@ int main()
         printf("(%2d,%2d)", tmp._x, tmp._y);
         tmp = coordinate[tmp._x][tmp._y];
     }
+    putchar(10);
 #endif
 
     return 0;
