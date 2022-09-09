@@ -4,7 +4,13 @@ https://www.cnblogs.com/iwiniwin/p/10793654.html
 
 https://blog.csdn.net/hitwhylz/article/details/23089415
 
+https://blog.csdn.net/cqs123111/article/details/115303885
 
+https://www.jianshu.com/p/65282bd32391
+
+https://zhuanlan.zhihu.com/p/225466669
+
+https://blog.csdn.net/hitwhylz/article/details/23089415
 
 A星寻路过程中使用二叉堆：
 
