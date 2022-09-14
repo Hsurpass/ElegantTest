@@ -50,6 +50,7 @@ public:
     uint32_t cost;
     std::string name;
     int index;
+    bool visited;
 };
 
 class dijkstra
@@ -108,6 +109,7 @@ void dijkstra::dijkstraAlgo(const vector<vector<uint32_t>> &graph, std::vector<N
     while (!openSet.empty())
     {
         Node minNode(openSet.top());
+        nodes[minNode.index].visited = true;
         closeSet[minNode.name] = &nodes[minNode.index];
         cout << "minNode.index:" << minNode.index << endl;
         openSet.pop();
@@ -128,7 +130,7 @@ void dijkstra::dijkstraAlgo(const vector<vector<uint32_t>> &graph, std::vector<N
                 // sleep(1);
             }
 
-            if ((minNode.cost + graph[minNode.index][i]) < nodes[i].cost)
+            if (!nodes[i].visited && (minNode.cost + graph[minNode.index][i]) < nodes[i].cost)
             {
                 nodes[i].cost = minNode.cost + graph[minNode.index][i];
                 nodes[i].parent = &nodes[minNode.index];
@@ -173,6 +175,7 @@ void initNode(std::vector<Node> &nodes)
         Node &node = nodes[i];
         node.name = 'A' + i;
         node.index = i;
+        node.visited = false;
     }
 }
 
@@ -191,12 +194,12 @@ void test_dijkstra()
     dij.setOrigin("A", nodes);
     dij.dijkstraAlgo(graph, nodes);
     
-    // dij.printPath("F");
-    // dij.printPath("E");
-    // dij.printPath("D");
-    // dij.printPath("C");
-    // dij.printPath("B");
-    dij.printPath("A");
+    // dij.printPath("F");  // A->B->D->C->E->F
+    dij.printPath("E");  // A->B->D->C->E
+    // dij.printPath("D");  // A->B->D
+    // dij.printPath("C");  // A->B->D->C
+    // dij.printPath("B");  // A->B
+    // dij.printPath("A"); // A->NULL
 
 }
 
