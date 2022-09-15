@@ -8,6 +8,7 @@
 #include <sys/timerfd.h>
 #include <sys/time.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 /*
 reference:
@@ -16,38 +17,126 @@ reference:
 
 */
 
-void test_timerfd()
+#define handle_error(msg)   \
+    do                      \
+    {                       \
+        perror(msg);        \
+        exit(EXIT_FAILURE); \
+    } while (0)
+
+static void print_elapsed_time(void)
 {
-    struct timeval now; 
-    gettimeofday(&now, NULL);
-     // 第一次超时时间
-     struct itimerspec new_value;
-    new_value.it_value.tv_sec = now.tv_sec + 5;
-    // new_value.it_value.tv_nsec = now.tv_usec * 1000000;
-    // 设置超时间隔
-    new_value.it_interval.tv_sec = 3;
-    new_value.it_interval.tv_nsec = 0;
-    // 创建 timerfd
-    int fd = timerfd_create(CLOCK_REALTIME, 0);
-    // 设置第一次超时时间和超时间隔
-    if (timerfd_settime(fd, TFD_TIMER_ABSTIME, &new_value, NULL) == -1){}
-    // 定时器循环
-    int s;
-    uint64_t exp;
-    for (int tot_exp = 0; tot_exp < 10; tot_exp++) 
+    static struct timespec start;
+    struct timespec curr;
+    static int first_call = 1;
+    int secs, nsecs;
+
+    if (first_call)
     {
-        // read timerfd，获取到超时次数
-        s = read(fd, &exp, sizeof(uint64_t));
-        // 累计总超时次数
-        tot_exp += exp;
-        // 打印超时次数的信息
-        printf("read: %llu; total=%llu\n", (unsigned long long) exp, (unsigned long long) tot_exp);
+        first_call = 0;
+        if (clock_gettime(CLOCK_MONOTONIC, &start) == -1)
+            handle_error("clock_gettime");
     }
+
+    if (clock_gettime(CLOCK_MONOTONIC, &curr) == -1)
+        handle_error("clock_gettime");
+
+    secs  = curr.tv_sec - start.tv_sec;
+    nsecs = curr.tv_nsec - start.tv_nsec;
+    if (nsecs < 0)
+    {
+        secs--;
+        nsecs += 1000000000;
+    }
+    printf("%d.%03d: ", secs, (nsecs + 500000) / 1000000);
 }
 
-int main()
+int test_timerfd_CLOCK_REALTIME(struct itimerspec* new_value, int arriveTime)
 {
-    test_timerfd();
+    struct timespec now;
+    if (clock_gettime(CLOCK_REALTIME, &now) == -1)
+        handle_error("clock_gettime");
 
-    return 0;
+    /* Create a CLOCK_REALTIME absolute timer with initial
+       expiration and interval as specified in command line. */
+
+    new_value->it_value.tv_sec  = now.tv_sec + arriveTime;
+    new_value->it_value.tv_nsec = now.tv_nsec;
+
+    int fd = timerfd_create(CLOCK_REALTIME, 0);
+    if (fd == -1)
+        handle_error("timerfd_create");
+
+    if (timerfd_settime(fd, TFD_TIMER_ABSTIME, new_value, NULL) == -1)
+        handle_error("timerfd_settime");
+    
+    return fd;
 }
+
+int test_timerfd_CLOCK_MONOTONIC(struct itimerspec* new_value, int arriveTime)
+{
+
+    /* Create a CLOCK_MONOTONIC relative timer with initial
+       expiration and interval as specified in command line. */
+
+    new_value->it_value.tv_sec  = arriveTime;
+    new_value->it_value.tv_nsec = 0;
+
+    int fd = timerfd_create(CLOCK_MONOTONIC, 0);
+    if (fd == -1)
+        handle_error("timerfd_create");
+
+    if (timerfd_settime(fd, 0, new_value, NULL) == -1)
+        handle_error("timerfd_settime");
+    
+    return fd;
+}
+
+int main(int argc, char* argv[])
+{
+    struct itimerspec new_value;
+    int max_exp, fd;
+    uint64_t exp, tot_exp;
+    ssize_t s;
+
+    if ((argc != 2) && (argc != 4))
+    {
+        fprintf(stderr, "%s init-secs [interval-secs max-exp]\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    if (argc == 2)
+    {
+        new_value.it_interval.tv_sec = 0;
+        max_exp                      = 1;
+    }
+    else
+    {
+        new_value.it_interval.tv_sec = atoi(argv[2]);
+        max_exp                      = atoi(argv[3]);
+    }
+    new_value.it_interval.tv_nsec = 0;
+
+#if 0
+    fd = test_timerfd_CLOCK_REALTIME(&new_value, atoi(argv[1]));
+#endif
+#if 1
+    fd = test_timerfd_CLOCK_MONOTONIC(&new_value, atoi(argv[1]));
+#endif
+    print_elapsed_time();
+    printf("timer started\n");
+
+    for (tot_exp = 0; tot_exp < max_exp;)
+    {
+        s = read(fd, &exp, sizeof(uint64_t));
+        if (s != sizeof(uint64_t))
+            handle_error("read");
+
+        tot_exp += exp;
+        print_elapsed_time();
+        printf("read: %" PRIu64 "; total=%" PRIu64 "\n", exp, tot_exp);
+    }
+
+    exit(EXIT_SUCCESS);
+}
+

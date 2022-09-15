@@ -94,7 +94,7 @@ void test_eventfd3()
     close(efd);
 }
 
-void test_fork_eventfd()
+void test_fork_eventfd_fullDuplex()
 {
     int efd = eventfd(0, 0);
     pid_t pid = fork();  
@@ -108,6 +108,11 @@ void test_fork_eventfd()
         write(efd, &buf1, sizeof(buf1));
         write(efd, &buf2, sizeof(buf2));
 
+        sleep(2);
+        uint64_t count;
+        int ret = read(efd, &count, sizeof(count));
+        printf("child read, ret:%d, count:%ld\n", ret, count);
+        exit(0);
     }  
     else if (pid > 0)
     {
@@ -115,6 +120,14 @@ void test_fork_eventfd()
         uint64_t count;
         int ret = read(efd, &count, sizeof(count));
         printf("parent read ret:%d, count:%ld\n", ret, count);
+
+        uint64_t buf = 7;   // 计数器值为2
+        uint64_t buf1 = 8;  // 计数器值为3
+        uint64_t buf2 = 9;  // 计数器值为4
+        write(efd, &buf, sizeof(buf));
+        write(efd, &buf1, sizeof(buf1));
+        write(efd, &buf2, sizeof(buf2));
+
     }
     else
     {
@@ -128,7 +141,7 @@ int main()
     // test_eventfd1();
     // test_eventfd2();
     // test_eventfd3();
-    test_fork_eventfd();
+    test_fork_eventfd_fullDuplex();
 
     return 0;
 }
