@@ -112,6 +112,8 @@ void test_fork_eventfd_fullDuplex()
         uint64_t count;
         int ret = read(efd, &count, sizeof(count));
         printf("child read, ret:%d, count:%ld\n", ret, count);
+
+        close(efd);
         exit(0);
     }  
     else if (pid > 0)
@@ -128,6 +130,7 @@ void test_fork_eventfd_fullDuplex()
         write(efd, &buf1, sizeof(buf1));
         write(efd, &buf2, sizeof(buf2));
 
+        close(efd);
     }
     else
     {
