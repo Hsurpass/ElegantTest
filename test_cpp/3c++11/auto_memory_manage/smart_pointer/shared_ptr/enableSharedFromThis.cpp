@@ -159,11 +159,33 @@ void test_no_enable_shared_from_this_sharedPtr_redestructor()
     }                                   // ~Copy()0x7fffe9477e70 ~Copy()0x7fffe9477e70 ----> core dumped
 }
 
+// 
+void enable_shared_from_this_why01()
+{
+    std::shared_ptr<CopyEnableShared> ptr = make_shared<CopyEnableShared>(111);
+    cout << ptr.use_count() << endl; // 1
+    shared_ptr<CopyEnableShared> ptr1 = ptr->shared_from_this();
+    cout << ptr.use_count() << endl;  // 2
+    cout << ptr1.use_count() << endl; // 2
+
+    // 用裸指针构造，引用计数并不会加1，这也是要用shared_from_this的一个原因
+    std::shared_ptr<CopyEnableShared> ptr2(ptr.get());  
+    cout << ptr2.use_count() << endl;  // 1
+        
+    cout << ptr.use_count() << endl;  // 2
+    cout << ptr1.use_count() << endl; // 2
+}
+
 void enable_shared_from_this_test01()
 {
     std::shared_ptr<CopyEnableShared> ptr = make_shared<CopyEnableShared>(111);
 
     cout << ptr.use_count() << endl; // 1
+    cout << ptr->shared_from_this().use_count() << endl; // 2
+    cout << ptr.use_count() << endl; // 1
+
+    weak_ptr<CopyEnableShared> wkPtr = ptr->shared_from_this();
+    cout << wkPtr.use_count() << endl;  // 1
 
     shared_ptr<CopyEnableShared> ptr1 = ptr->shared_from_this();
     cout << ptr.use_count() << endl;  // 2
@@ -178,11 +200,12 @@ void enable_shared_from_this_test01()
 int main()
 {
     // enable_shared_from_this_test01();
+    enable_shared_from_this_why01();
     // test_no_enable_shared_from_this_sharedPtr_redestructor();
     // test_no_enable_shared_from_this_with_bind_crash();
     // test_no_enable_shared_from_this_with_bind_placeholders_crash();
     // test_enable_shared_from_this_with_bind();
-    test_enable_shared_from_this_with_bind_placeholders();
+    // test_enable_shared_from_this_with_bind_placeholders();
     // test_enable_shared_from_this_in_constructor();
 
     return 0;
