@@ -1,0 +1,18 @@
+#! /usr/bin/python2
+# coding=utf-8
+
+tuple = ('hello', 786, 2.23, 'john', 70.2)
+tinytuple = (123, 'world')
+
+print tuple      #['hello', 786, 2.23, 'john', 70.2]
+print tuple[0]   #['hello']
+print tuple[1:3] #[786, 2.23]
+print tuple[2:]  #[2.23, 'john', 70.2]
+print tinytuple * 2;  #[123, 'world', 123, 'world']
+print tuple + tinytuple   #['hello', 786, 2.23, 'john', 70.2, 123, 'world']
+print tuple[0:-1] #['hello', 786, 2.23, 'john']
+print tuple[2:-1] #[2.23, 'john']
+print tuple[-1] #[70.2]
+
+# tuple[1] = 789  #TypeError: 'tuple' object does not support item assignment
+# print tuple
