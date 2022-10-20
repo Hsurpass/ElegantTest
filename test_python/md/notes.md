@@ -91,6 +91,26 @@ invalid continuation byte
 
 ![img](image/python_list_slice_2.png)
 
+4. Python中的字符串不能改变。
+
+   **word[0] = 'm'** 会导致错误。
+   
+5. 如果第三个参数为负数表示逆向读取，可以用于翻转
+
+   ```
+   #翻转列表
+   l = ["abc", 10, 20.5]
+   print(l[-1::-1])    #[20.5, 10, "abc"]
+   #翻转字符串
+   str = "abcdefg"
+   print(str[-1::-1])  #gfedcba
+   #翻转元组
+   tuple = ["ab", 100, 10.5]
+   print(tuple[-1::-1]) #[10.5, 100, "ab"]
+   ```
+
+   
+
 #### List
 
 列表可以完成大多数集合类的数据结构实现。它支持字符，数字，字符串甚至可以包含列表（即嵌套）。
@@ -105,9 +125,54 @@ invalid continuation byte
 
 #### Tuple
 
-元组是另一个数据类型，类似于 List（列表）。
+- 元组是另一个数据类型，类似于 List（列表）。
 
-元组用 **()** 标识。内部元素用逗号隔开。$\color{red} {但是元组不能二次赋值，相当于只读列表。}$元组不允许更新，而列表是允许更新的
+- 元组用 **()** 标识。内部元素用逗号隔开。$\color{red} {但是元组不能二次赋值，相当于只读列表。}$元组不允许更新，而列表是允许更新的。$\color{red} {其实，可以把字符串看作一种特殊的元组。}$
+
+  
+
+#### Set
+
+集合（set）是由一个或数个形态各异的大小整体组成的，构成集合的事物或对象称作元素或是成员。
+
+基本功能是进行成员关系测试和删除重复元素。
+
+可以使用大括号 **{ }** 或者 **set()** 函数创建集合。$\color{red} {注意：}$创建一个空集合必须用 **set()** 而不是 **{ }**，因为 **{ }** 是用来创建一个空字典。
+
+创建格式：
+
+```
+parame = {value01,value02,...}
+或者
+set(value)
+```
+
+```
+#!/usr/bin/python3
+
+sites = {'Google', 'Taobao', 'Runoob', 'Facebook', 'Baidu', 'Zhihu', 'Baidu'}
+print(sites)    #{'Taobao', 'Runoob', 'Zhihu', 'Facebook', 'Baidu', 'Google'}
+
+if 'Runoob' in sites :
+    print('Runoob in sites')
+else :
+    print('Runoob not in sites')
+
+#类似于std::unordered_set 元素不重复且无序
+print(set())    #set()
+a = set('abracadabra')
+b = set('alacazam')
+print(a)    # a b r c d     #{'c', 'd', 'b', 'r', 'a'}
+print(b)    # a l c z m     #{'c', 'm', 'l', 'z', 'a'}
+
+print(a - b)    # a相对于b的差集 b r d  #{'b', 'r', 'd'}
+print(b - a)    # b相对于a的差集 l z m  #{'m', 'l', 'z'}
+print(a | b)    # a与b的并集 a b c d l r z m  #{'z', 'c', 'd', 'b', 'l', 'r', 'm', 'a'}
+print(a & b)    # a与b的交集 a c    #{'c', 'a'}
+print(a ^ b)    # a与b中不同时存在的元素 b d l r z m    #{'d', 'm', 'l', 'r', 'b', 'z'}
+```
+
+
 
 #### Dictionary
 
@@ -116,6 +181,21 @@ invalid continuation byte
 **两者之间的区别在于：字典当中的元素是通过键来存取的，而不是通过偏移存取。**
 
 字典用"{ }"标识。字典由索引(key)和它对应的值value组成。
+
+键(key)必须使用不可变类型。
+
+在同一个字典中，键(key)必须是唯一的。
+
+#### type()和isinstance()
+
+type() 函数可以用来查询变量所指的对象类型。
+
+isinstance 和 type 的区别在于：
+
+- type()不会认为子类是一种父类类型。
+- isinstance()会认为子类是一种父类类型。
+
+
 
 ### python运算符
 

@@ -21,3 +21,5 @@ print(str[1:5:2])   #24
 print('----------------')
 print('hello\npython2') # 使用反斜杠(\)+n转义特殊字符
 print(r"hello\nrawpython2") # 在字符串前面添加一个 r，表示原始字符串，不会发生转义
+
+# str[0] = 'm' #python中的字符串不可改变
