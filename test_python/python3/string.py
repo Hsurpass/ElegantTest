@@ -22,3 +22,18 @@ print('hello\npython2') # 使用反斜杠(\)+n转义特殊字符
 print(r"hello\nrawpython2") # 在字符串前面添加一个 r，表示原始字符串，不会发生转义
 
 # str[0] = 'm' #python中的字符串不可改变
+
+print("hello, %s, 今年%d岁" %("小明", 10))
+
+#python3.6
+name = "xiaoming"
+print(f'hello, {name}')
+print(f'{1+2}')
+w = {'name': 'Runoob', 'url': 'www.runoob.com'}
+print(f'{w["name"]}:{w["url"]}')
+
+#python3.8
+x = 1
+print(f'{x+1}')
+print(f'{x+2=}')
+

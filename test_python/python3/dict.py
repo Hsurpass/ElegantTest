@@ -29,3 +29,15 @@ dicc = dict({x:x**3 for x in (2, 4, 6) })
 print(dicc)
 dicc = dict(Runoob=1, Google=2, Taobao=3)
 print(dicc)
+dicc = dict([['a',1],['b',2],['c',3]])
+print(dicc)
+
+print("-----------------------")
+for c in dicc:
+    print(c)
+    print(c, dicc[c])
+
+for k, v in dicc.items():
+    print(k, ":", v)
+
+

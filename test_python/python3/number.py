@@ -30,3 +30,24 @@ print(b)    # 2
 
 print(2 * 5)    #10
 print(2 ** 5)   #32 2的5次方
+
+# a = 0
+# a = 0.0
+# a = 0L
+# a = 0 + 0j
+# a = 0.0 + 0.0j
+# a = ''
+# a = ""
+# a = ''''''
+# a = ()
+# a = []
+# a = {}
+# a = None
+# a = False
+# a = set()   # False
+# a = dict()  # False
+# a = tuple() # False  
+if a:
+    print("a is True", type(a))
+else:
+    print("a is false", type(a))
