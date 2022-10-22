@@ -22,12 +22,17 @@ print("###########################")
 #翻转列表
 l = ["abc", 10, 20.5]
 print(l[-1::-1])    #[20.5, 10, "abc"]
+print(l[::-1])    #[20.5, 10, "abc"]
+
 #翻转字符串
 str = "abcdefg"
 print(str[-1::-1])  #gfedcba
+print(str[::-1])  #gfedcba
+
 #翻转元组
 tuple = ["ab", 100, 10.5]
 print(tuple[-1::-1]) #[10.5, 100, "ab"]
+print(tuple[::-1]) #[10.5, 100, "ab"]
 
 def reverseWorlds(input):
 

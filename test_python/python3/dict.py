@@ -1,6 +1,8 @@
 #! /usr/bin/python2
 # coding=utf-8
 
+
+
 dic = {}
 dict1 = dict()
 print(dic, type(dic))
@@ -12,6 +14,8 @@ dic[1] = 10
 dic[100] = 100
 dic["two"] = ["abc", 200, [11, 12] ]
 # print dict
+print(type(dic.keys()))     #<type 'list'>
+print(type(dic.values()))   #<type 'list'>
 print(dic.keys())
 print(dic.values())
 
@@ -39,5 +43,8 @@ for c in dicc:
 
 for k, v in dicc.items():
     print(k, ":", v)
+
+del dicc["a"]
+print(dicc)
 
 

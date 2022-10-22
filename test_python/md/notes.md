@@ -20,7 +20,7 @@
 python script.py 
 ```
 
-\#!/usr/bin/python 被忽略，等同于注释
+#!/usr/bin/python 被忽略，等同于注释
 
 （2）如果调用python脚本时，使用:
 
@@ -224,7 +224,30 @@ print(a & b)    # a与b的交集 a c    #{'c', 'a'}
 print(a ^ b)    # a与b中不同时存在的元素 b d l r z m    #{'d', 'm', 'l', 'r', 'b', 'z'}
 ```
 
+**s.update( "字符串" ) 与 s.update( {"字符串"} ) 含义不同:**
 
+-  **s.update( {"字符串"} )** 将字符串添加到集合中，有重复的会忽略。
+
+-  **s.update( "字符串" )** 将字符串拆分单个字符后，然后再一个个添加到集合中，有重复的会忽略。
+
+**创建一个元素**
+
+```
+d = set(('apple',))
+d = set({'apple'})
+d = set({'apple',})
+```
+
+如无必要，不要写成如下形式
+
+```
+>>> my_set = set('apple')
+>>> my_set
+{'l', 'e', 'p', 'a'}
+>>> my_set1 = set(('apple'))
+>>> my_set1
+{'l', 'e', 'p', 'a'}
+```
 
 #### Dictionary
 
@@ -238,6 +261,47 @@ print(a ^ b)    # a与b中不同时存在的元素 b d l r z m    #{'d', 'm', 'l
 
 在同一个字典中，键(key)必须是唯一的。
 
+###### 字典键的特性
+
+字典值可以是任何的 python 对象，既可以是标准的对象，也可以是用户定义的，但键不行。
+
+两个重要的点需要记住：
+
+1）不允许同一个键出现两次。创建时如果同一个键被赋值两次，后一个值会被记住，如下实例：
+
+**实例**
+
+```
+#!/usr/bin/python3  
+tinydict = {'Name': 'Runoob', 'Age': 7, 'Name': '小菜鸟'}  
+print ("tinydict['Name']: ", tinydict['Name'])
+```
+
+以上实例输出结果：
+
+```
+tinydict['Name']:  小菜鸟
+```
+
+2）$\color{red} {键必须不可变}$，所以可以用数字，字符串或元组充当，而用列表就不行，如下实例：
+
+**实例**
+
+```
+#!/usr/bin/python3  
+tinydict = {['Name']: 'Runoob', 'Age': 7}  
+print ("tinydict['Name']: ", tinydict['Name'])
+```
+
+以上实例输出结果：
+
+```
+Traceback (most recent call last):
+  File "test.py", line 3, in <module>
+    tinydict = {['Name']: 'Runoob', 'Age': 7}
+TypeError: unhashable type: 'list'
+```
+
 #### type()和isinstance()
 
 type() 函数可以用来查询变量所指的对象类型。
@@ -246,8 +310,6 @@ isinstance 和 type 的区别在于：
 
 - type()不会认为子类是一种父类类型。
 - isinstance()会认为子类是一种父类类型。
-
-
 
 ### python运算符
 

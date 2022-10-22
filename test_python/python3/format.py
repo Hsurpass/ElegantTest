@@ -1,5 +1,4 @@
-#!/usr/bin/python2
-# coding=utf-8
+#!/usr/bin/python3
 
 # import math
 
@@ -13,7 +12,7 @@ else:
 num = 10
 print("八进制: %o" %num)        #八进制: 12
 print("十六进制: %x" %num)      #十六进制: a
-print('二进制: ', bin(num) )    #('\xe4\xba\x8c\xe8\xbf\x9b\xe5\x88\xb6: ', '0b1010')
-print("八进制: %#o" %num)       #八进制: 012
+print('二进制: ', bin(num) )    #二进制:  0b1010
+print("八进制: %#o" %num)       #八进制: 0o12
 print("十六进制: %#x" %num)     #十六进制: 0xa
 

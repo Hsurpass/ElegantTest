@@ -12,6 +12,8 @@ dic[1] = 10
 dic[100] = 100
 dic["two"] = ["abc", 200, [11, 12] ]
 # print dict
+print(type(dic.keys()))     #<type 'list'>
+print(type(dic.values()))   #<type 'list'>
 print(dic.keys())
 print(dic.values())
 
