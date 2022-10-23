@@ -1,7 +1,4 @@
-#! /usr/bin/python2
-# coding=utf-8
-
-
+#! /usr/bin/python3
 
 dic = {}
 dict1 = dict()

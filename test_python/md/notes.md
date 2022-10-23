@@ -492,7 +492,7 @@ True
 
 例如，我们可以使用下面的代码生成一个包含数字 1~9 的元组：
 
-## 实例
+**实例**
 
 ```
 >>> a = (x **for** x **in** range(1,10))
@@ -505,11 +505,52 @@ True
 
 
 
+### python模块
 
+- 1、import sys 引入 python 标准库中的 sys.py 模块；这是引入某一模块的方法。
 
+- 2、sys.argv 是一个包含命令行参数的列表。
 
+  ```
+  >>>python3 module.py 1 1.0 "ab" [1,2,3] {}
+  module.py
+  1
+  1.0
+  ab
+  [1,2,3]
+  {}
+  
+  >>>./module.py 1 1.0 "ab" [1,2,3] {}
+  ./module.py
+  1
+  1.0
+  ab
+  [1,2,3]
+  {}
+  ```
 
-### import 与 from...import
+- 3、sys.path 包含了一个 Python 解释器自动查找所需模块的路径的列表。
+
+一个模块只会被导入一次，不管你执行了多少次 **import**。这样可以防止导入模块被一遍又一遍地执行。
+
+当我们使用 import 语句的时候，Python 解释器是怎样找到对应的文件的呢？
+
+$\color{red} {这就涉及到 Python 的搜索路径，搜索路径是由一系列目录名组成的，Python 解释器就依次从这些目录中去寻找所引入的模块。}$
+
+这看起来很像环境变量，事实上，也可以通过定义环境变量的方式来确定搜索路径。
+
+搜索路径是在 Python 编译或安装的时候确定的，安装新的库应该也会修改。搜索路径被存储在 sys 模块中的 path 变量，做一个简单的实验，在交互式解释器中，输入以下代码：
+
+```
+>>> import sys
+>>> sys.path
+['', '/usr/lib/python3.4', '/usr/lib/python3.4/plat-x86_64-linux-gnu', '/usr/lib/python3.4/lib-dynload', '/usr/local/lib/python3.4/dist-packages', '/usr/lib/python3/dist-packages']
+>>> 
+```
+
+$\color{red} {sys.path 输出是一个列表，其中第一项是空串''，代表当前目录}$   (若是从一个脚本中打印出来的话，可以更清楚地看出是哪个目录），亦即我们执行python解释器的目录（对于脚本的话就是运行的脚本所在的目录）。
+
+#### import 与 from...import
 
 在 python 用 **import** 或者 **from...import** 来导入相应的模块。
 
@@ -520,3 +561,185 @@ True
 从某个模块中导入多个函数,格式为： **from somemodule import firstfunc, secondfunc, thirdfunc**
 
 将某个模块中的全部函数导入，格式为： **from somemodule import \***
+
+<u>**from module import ***</u> 
+
+可以一次性的把模块中的所有==（函数，变量）==名称都导入到当前模块的字符表
+
+这将把所有的名字都导入进来，$\color{red} {但是那些由单一下划线（_）开头的名字不在此例。}$大多数情况， Python程序员不使用这种方法，因为引入的其它来源的命名，很可能覆盖了已有的定义。
+
+#### __ __name__ __属性
+
+$\color{red} {一个模块被另一个程序第一次引入时，其主程序将运行。}$如果我们想在模块被引入时，模块中的某一程序块不执行，我们可以用__ name __ 属性来使该程序块仅在该模块自身运行时执行。
+
+```
+#!/usr/bin/python3
+# Filename: using_name.py
+
+if __name__ == '__main__':
+   print('程序自身在运行')
+else:
+   print('我来自另一模块')
+```
+
+运行输出如下：
+
+```
+$ python using_name.py
+程序自身在运行
+$ python
+>>> import using_name
+我来自另一模块
+>>>
+```
+
+**说明：** 每个模块都有一个__name__属性，当其值是'__main__'时，表明该模块自身在运行，否则是被引入。
+
+说明：**__name__** 与 **__main__** 底下是双下划线， **_ _** 是这样去掉中间的那个空格。
+
+#### dir函数
+
+内置的函数 dir() 可以找到模块内定义的所有名称。以一个字符串列表的形式返回。
+
+```
+>>>import sys
+>>>dir(sys)
+```
+
+如果没有给定参数，那么 dir() 函数会罗列出当前定义的所有名称。
+
+#### 包
+
+包是一种管理 Python 模块命名空间的形式，采用"点模块名称"。
+
+比如一个模块的名称是 A.B， 那么他表示一个包 A中的子模块 B 。
+
+就好像使用模块的时候，你不用担心不同模块之间的全局变量相互影响一样，采用点模块名称这种形式也不用担心不同库之间的模块重名的情况。
+
+这里给出了一种可能的包结构（在分层的文件系统中）:
+
+```
+sound/                          顶层包
+      __init__.py               初始化 sound 包
+      formats/                  文件格式转换子包
+              __init__.py
+              wavread.py
+              wavwrite.py
+              aiffread.py
+              aiffwrite.py
+              auread.py
+              auwrite.py
+              ...
+      effects/                  声音效果子包
+              __init__.py
+              echo.py
+              surround.py
+              reverse.py
+              ...
+      filters/                  filters 子包
+              __init__.py
+              equalizer.py
+              vocoder.py
+              karaoke.py
+              ...
+```
+
+在导入一个包的时候，Python 会根据 sys.path 中的目录来寻找这个包中包含的子目录。
+
+目录只有包含一个叫做 `__init__.py` 的文件$\color{red} {才会被认作是一个包}$，主要是为了避免一些滥俗的名字（比如叫做 string）不小心的影响搜索路径中的有效模块。
+
+**最简单的情况，放一个空的 `:file:__init__.py`就可以了。**当然这个文件中也可以包含一些初始化代码或者为（将在后面介绍的） `__all__`变量赋值。
+
+用户可以每次只导入一个包里面的特定模块，比如:
+
+```
+import sound.effects.echo
+```
+
+这将会导入子模块:sound.effects.echo。 他必须使用全名去访问:
+
+```
+sound.effects.echo.echofilter(input, output, delay=0.7, atten=4)
+```
+
+还有一种导入子模块的方法是:
+
+```
+from sound.effects import echo
+```
+
+这同样会导入子模块: echo，并且他不需要那些冗长的前缀，所以他可以这样使用:
+
+```
+echo.echofilter(input, output, delay=0.7, atten=4)
+```
+
+还有一种变化就是直接导入一个函数或者变量:
+
+```
+from sound.effects.echo import echofilter
+```
+
+同样的，这种方法会导入子模块: echo，并且可以直接使用他的 echofilter() 函数:
+
+```
+echofilter(input, output, delay=0.7, atten=4)
+```
+
+注意当使用 **from package import item** 这种形式的时候，$\color{red} {对应的 item 既可以是包里面的子模块（子包），或者包里面定义的其他名称，比如函数，类或者变量。}$
+
+import 语法会首先把 item 当作一个包定义的名称，如果没找到，再试图按照一个模块去导入。如果还没找到，抛出一个 **:exc:ImportError** 异常。
+
+反之，如果使用形如 **import item.subitem.subsubitem** 这种导入形式，*除了最后一项，都必须是包*，<u>而最后一项则可以是模块或者是包</u>，$\color{red} {但是不可以是类，函数或者变量的名字。}$
+
+#### 从一个包中导入*
+
+如果我们使用 **from sound.effects import \*** 会发生什么呢？
+
+Python 会进入文件系统，找到这个包里面所有的子模块，然后一个一个的把它们都导入进来。
+
+但这个方法在 Windows 平台上工作的就不是非常好，因为 Windows 是一个不区分大小写的系统。
+
+在 Windows 平台上，我们无法确定一个叫做 ECHO.py 的文件导入为模块是 echo 还是 Echo，或者是 ECHO。
+
+为了解决这个问题，我们只需要提供一个精确包的索引。
+
+$\color{red} {导入语句遵循如下规则}$：如果包定义文件 **__init__.py** 存在一个叫做 **__all__** 的列表变量，那么在使用 **from package import \*** 的时候就把这个列表中的所有名字作为包内容导入。
+
+作为包的作者，可别忘了在更新包之后保证 **__all__** 也更新了啊。
+
+以下实例在 file:sounds/effects/__init__.py 中包含如下代码:
+
+```
+__all__ = ["echo", "surround", "reverse"]
+```
+
+这表示当你使用`from sound.effects import *`这种用法时，$\color{red} {你只会导入包里面这三个子模块。}$
+
+如果 `__all__` 真的没有定义，那么使用**from sound.effects import \***这种语法的时候，<u>就不会导入包 sound.effects 里的任何子模块</u>。**他只是把包sound.effects和它里面定义的所有内容导入进来**（可能运行`__init__.py`里定义的初始化代码）。
+
+这会把 __init__.py 里面定义的所有名字导入进来。并且他不会破坏掉我们在这句话之前导入的所有明确指定的模块。看下这部分代码:
+
+```
+import sound.effects.echo
+import sound.effects.surround
+from sound.effects import *
+```
+
+这个例子中，在执行 from...import 前，包 sound.effects 中的 echo 和 surround 模块都被导入到当前的命名空间中了。（当然如果定义了` __all__` 就更没问题了）
+
+通常我们并不主张使用 ***** 这种方法来导入模块，因为这种方法经常会导致代码的可读性降低。不过这样倒的确是可以省去不少敲键的功夫，而且一些模块都设计成了只能通过特定的方法导入。
+
+记住，使用 **from Package import specific_submodule** 这种方法永远不会有错。事实上，这也是推荐的方法。除非是你要导入的子模块有可能和其他包的子模块重名。
+
+如果在结构中包是一个子包（比如这个例子中对于包sound来说），而你又想导入兄弟包（同级别的包）你就得使用导入绝对的路径来导入。比如，如果模块sound.filters.vocoder 要使用包 sound.effects 中的模块 echo，你就要写成 **from sound.effects import echo**。
+
+```
+from . import echo
+from .. import formats
+from ..filters import equalizer
+```
+
+无论是隐式的还是显式的相对导入都是从当前模块开始的。主模块的名字永远是"`__main__`"，$\color{red} {一个Python应用程序的主模块，应当总是使用绝对路径引用。}$
+
+包还提供一个额外的属性`__path__`。这是一个目录列表，里面每一个包含的目录都有为这个包服务的`__init__`.py，你得在其他`__init__`.py被执行前定义哦。可以修改这个变量，用来影响包含在包里面的模块和子包。这个功能并不常用，一般用来扩展包里面的模块。
