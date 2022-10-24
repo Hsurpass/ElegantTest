@@ -1,5 +1,7 @@
 #! /usr/bin/python3
 
+from datetime import datetime
+
 str = '123456789'
 print(str)          #123456789
 print (str[2])    #3
@@ -36,4 +38,11 @@ print(f'{w["name"]}:{w["url"]}')
 x = 1
 print(f'{x+1}')
 print(f'{x+2=}')
+
+
+now = datetime.now()
+print(type(now))
+print(now)
+# print(str(now))
+print(repr(now))
 
