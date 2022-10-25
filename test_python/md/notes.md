@@ -743,3 +743,220 @@ from ..filters import equalizer
 无论是隐式的还是显式的相对导入都是从当前模块开始的。主模块的名字永远是"`__main__`"，$\color{red} {一个Python应用程序的主模块，应当总是使用绝对路径引用。}$
 
 包还提供一个额外的属性`__path__`。这是一个目录列表，里面每一个包含的目录都有为这个包服务的`__init__`.py，你得在其他`__init__`.py被执行前定义哦。可以修改这个变量，用来影响包含在包里面的模块和子包。这个功能并不常用，一般用来扩展包里面的模块。
+
+### python面向对象
+
+**Python3 类方法总结**
+
+-  普通方法：对象访问
+-  私有方法：两个下划线开头，只能在类内部访问
+-  静态方法：类和对象访问，不能和其他方法重名，不然会相互覆盖，后面定义的会覆盖前面的
+-  类方法：类和对象访问，不能和其他方法重名，不然会相互覆盖，后面定义的会覆盖前面的
+-  多继承情况下：从左到右查找方法，找到为止，不然就抛出异常
+
+**__str__函数**
+
+**__str__** 是一个类的方法，在打印类对象，获取其属性信息时调用。打印一个实例化对象时，默认打印的其实时一个对象的地址，但是我们可以对其进行重载，打印我们想要的信息。例如上面的例子中进行的重载。
+
+#### 多继承
+
+Python同样有限的支持多继承形式。多继承的类定义形如下例:
+
+```
+class DerivedClassName(Base1, Base2, Base3):<statement-1> ...<statement-N>
+```
+
+需要注意圆括号中父类的顺序，若是父类中有相同的方法名，而在子类使用时未指定，python从左至右搜索 即方法在子类中未找到时，从左到右查找父类中是否包含方法。
+
+### python命名空间
+
+一般有三种命名空间：
+
+- **内置名称（built-in names**）， Python 语言内置的名称，比如函数名 abs、char 和异常名称 BaseException、Exception 等等。
+- **全局名称（global names）**，模块中定义的名称，记录了模块的变量，包括函数、类、其它导入的模块、模块级的变量和常量。
+- **局部名称（local names）**，函数中定义的名称，记录了函数的变量，包括函数的参数和局部定义的变量。（类中定义的也是）
+
+![img](image/types_namespace-1.png)
+
+#### 命名空间查找顺序:
+
+假设我们要使用变量 runoob，则 Python 的查找顺序为：**局部的命名空间去 -> 全局命名空间 -> 内置命名空间**。
+
+如果找不到变量 runoob，它将放弃查找并引发一个 NameError 异常:
+
+```
+NameError: name 'runoob' is not defined。
+```
+
+#### 命名空间的生命周期：
+
+命名空间的生命周期取决于对象的作用域，如果对象执行完成，则该命名空间的生命周期就结束。
+
+因此，我们无法从外部命名空间访问内部命名空间的对象。
+
+**实例**
+
+```
+# var1 是全局名称
+var1 = 5
+def some_func():
+
+	# var2 是局部名称
+	var2 = 6
+	
+	def some_inner_func():
+		# var3 是内嵌的局部名称
+		var3 = 7
+```
+
+
+
+### python 命名空间
+
+有四种作用域：
+
+- **L（Local）**：最内层，包含局部变量，比如一个函数/方法内部。
+- **E（Enclosing）**：包含了非局部(non-local)也非全局(non-global)的变量。比如两个嵌套函数，一个函数（或类） A 里面又包含了一个函数 B ，那么对于 B 中的名称来说 A 中的作用域就为 nonlocal。
+- **G（Global）**：当前脚本的最外层，比如当前模块的全局变量。
+- **B（Built-in）**： 包含了内建的变量/关键字等，最后被搜索。
+
+规则顺序： **L –> E –> G –> B**。
+
+在局部找不到，便会去局部外的局部找（例如闭包），再找不到就会去全局找，再者去内置中找。
+
+![img](image/1418490-20180906153626089-1835444372.png)
+
+```
+g_count = 0  # 全局作用域
+def outer():
+    o_count = 1  # 闭包函数外的函数中
+    def inner():
+        i_count = 2  # 局部作用域
+```
+
+内置作用域是通过一个名为 builtin 的标准模块来实现的，但是这个变量名自身并没有放入内置作用域内，所以必须导入这个文件才能够使用它。在Python3.0中，可以使用以下的代码来查看到底预定义了哪些变量:
+
+```
+>>> import builtins
+>>> dir(builtins)
+```
+
+**Python 中只有模块（module），类（class）以及函数（def、lambda）才会引入新的作用域，** $\color{red} {其它的代码块（如 if/elif/else/、try/except、for/while等）是不会引入新的作用域的，也就是说这些语句内定义的变量，外部也可以访问，}$如下代码：
+
+```
+>>> if True:
+...  msg = 'I am from Runoob'
+... 
+>>> msg
+'I am from Runoob'
+>>> 
+```
+
+实例中 msg 变量定义在 if 语句块中，但外部还是可以访问的。
+
+如果将 msg 定义在函数中，则它就是局部变量，外部不能访问：
+
+```
+>>> def test():
+...     msg_inner = 'I am from Runoob'
+... 
+>>> msg_inner
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'msg_inner' is not defined
+>>> 
+```
+
+从报错的信息上看，说明了 msg_inner 未定义，无法使用，因为它是局部变量，只有在函数内可以使用。
+
+#### global 和 nonlocal关键字
+
+当内部作用域想修改外部作用域的变量时，就要用到 global 和 nonlocal 关键字了。
+
+以下实例修改全局变量 num：
+
+````
+#!/usr/bin/python3
+ 
+num = 1
+def fun1():
+    global num  # 需要使用 global 关键字声明
+    print(num) 
+    num = 123
+    print(num)
+fun1()
+print(num)
+````
+
+以上实例输出结果：
+
+```
+1
+123
+123
+```
+
+如果要修改嵌套作用域（enclosing 作用域，外层非全局作用域）中的变量则需要 nonlocal 关键字了，如下实例：
+
+```
+#!/usr/bin/python3
+ 
+def outer():
+    num = 10
+    def inner():
+        nonlocal num   # nonlocal关键字声明
+        num = 100
+        print(num)
+    inner()
+    print(num)
+outer()
+```
+
+以上实例输出结果：
+
+```
+100
+100
+```
+
+另外有一种特殊情况，假设下面这段代码被运行：
+
+```
+#!/usr/bin/python3
+ 
+a = 10
+def test():
+    a = a + 1
+    print(a)
+test()
+```
+
+以上程序执行，报错信息如下：
+
+```
+Traceback (most recent call last):
+  File "test.py", line 7, in <module>
+    test()
+  File "test.py", line 5, in test
+    a = a + 1
+UnboundLocalError: local variable 'a' referenced before assignment
+```
+
+错误信息为局部作用域引用错误，因为 test 函数中的 a 使用的是局部，未定义，无法修改。
+
+修改 a 为全局变量：
+
+**实例**
+
+```
+#!/usr/bin/python3  
+a = 10 
+def test():    
+	global a    
+	a = a + 1    
+	print(a) 
+test()
+
+执行输出结果为：
+11
+```
