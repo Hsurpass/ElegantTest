@@ -33,3 +33,33 @@ def test():
     print(a)    #11
 test()
 print(a)    #11
+
+int = 0
+def fun1():
+    int = 1
+    def fun2():
+        int = 2
+        print(int)
+    fun2()
+fun1()  # 输出 2
+
+int = 0
+def fun1():
+    int = 1
+    def fun2():
+        print(int)
+    fun2()
+fun1()  # 输出 1
+
+int = 0
+def fun1():
+    def fun2():
+        print(int)
+    fun2()
+fun1() # 输出 0
+
+def fun1():
+    def fun2():
+        print(float)
+    fun2()
+fun1() # 输出 0
