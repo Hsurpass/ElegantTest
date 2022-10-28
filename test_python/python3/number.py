@@ -51,3 +51,14 @@ if a:
     print("a is True", type(a))
 else:
     print("a is false", type(a))
+
+for i in range(0, 10):
+    print(i, end=" ")
+
+print()
+
+for i in range(0, 10):
+    for j in range(0, 10):
+        print('[{0}, {1}]'.format(i, j), end=" ")
+    print()
+print()
