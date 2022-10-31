@@ -12,16 +12,22 @@
 #         print('hello world')
 
 class MyClass:
+    "my class"  # __doc__
     i = 10
     def __init__(self, ii, *args):
         print("MyClass ii:", ii)
-        print(self)
-        print(self.__class__)
+        print("self:", self)
+        print("self.__class__:", self.__class__)
+        print("self.__class__.__name__:", self.__class__.__name__)
         print("MyClass constructor, id(self):", id(self))
         self.i = ii
         self.data = args
+    
+    def __del__(self):
+        print("__del__", self.__class__.__name__, "destructor")
 
     __name = "xiaoming" #私有成员类外无法直接访问
+    _grade = 1234234
     def getName(self):
         print("from myClass.getName")
         return self.__name
@@ -36,6 +42,17 @@ x.f()
 print(type(x.data), x.data)
 print(x.getName())
 
+print("MyClass.__doc__:", MyClass.__doc__)
+print("MyClass.__name__:", MyClass.__name__)
+print("MyClass.__module__:", MyClass.__module__)
+print("MyClass.__bases__:", MyClass.__bases__)
+print("MyClass.__dict__:", MyClass.__dict__)
+x1 = x
+x2 = x1
+del x
+del x1
+del x2
+
 print("----------------------------------")
 class myDerivedClass(MyClass):
     def __init__(self, i_, *args):
@@ -46,7 +63,23 @@ class myDerivedClass(MyClass):
     age = 15
     def getName(self):
         print("from myDerivedClass.getName")
+        # print(self.__name)
+        print(self._grade)
         return super().getName()
+
+    #私有方法
+    def __privateFunc(self):
+        print("myDerivedClass private func()")
+
+    #protect方法
+    def _protectFunc(self):
+        print("myDerivedClass protect func()")
+
+    #protect方法
+    def publicFunc(self):
+        print("myDerivedClass public func()")
+        self._protectFunc()
+        self.__privateFunc()
 
     @staticmethod
     def getAge():
@@ -57,7 +90,10 @@ class myDerivedClass(MyClass):
     # def getName(self):
         # print("myDerivedClass classmethod")
 
+print(issubclass(myDerivedClass, MyClass))
+
 d = myDerivedClass(111, 'a', [3,4,5])
+print(isinstance(d, MyClass))
 print(d.age)    #15
 print(d.i)      #111
 print(id(d.i))  #9788384
@@ -81,6 +117,10 @@ print(d.getAge())
 
 print(d.__str__())
 # print(dir(myDerivedClass))
+#Python不允许实例化的类访问私有数据，
+#但你可以使用 object._className__attrName（ 对象名._类名__私有属性名 ）访问属性
 print(d._MyClass__name)
 
-
+# d.__privateFunc()
+# d._protectFunc()
+d.publicFunc()

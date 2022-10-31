@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+#https://www.runoob.com/python/python-built-in-functions.html
+
 for i in range(1,5):   #左闭右开 
     print(i, end=" ")  
 print()
