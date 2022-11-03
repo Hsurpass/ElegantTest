@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from pydoc import cli
+
 import socket
 
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
