@@ -1017,6 +1017,25 @@ test()
 
 
 
+### pip
+
+```
+pip -V                  查看pip版本
+pip list                查看所有已安装的包
+pip freeze              查看所有已安装的包（处了自带的pip，setuptools等）
+pip show package        显示包详情
+pip install package     安装包（默认从国外的网站下载安装）
+       pip install package -i 国内源
+              清华源：https://pypi.tuna.tsinghua.edu.cn/simple
+              阿里源：http://mirrors.aliyun.com/pypi/simple/
+              豆瓣源：https://pypi.douban.com/simple/
+                     pip install -i https://pypi.douban.com/simple/ numpy
+                     pip install -i https://pypi.douban.com/simple/--trusted-host pypi.douban.com  #此参数“--trusted-host”表示信任，如果上一个提示不受信任，就使用这个
+pip uninstall package    卸载包
+```
+
+
+
 ### python 内置模块
 
 #### time模块

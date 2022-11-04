@@ -1,14 +1,15 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
+# coding=utf-8
 
-import _thread, threading
+import thread, threading
 import time
 
 def printFunc(threadName, id):
     time.sleep(2)
     print(threadName, id)
-    _thread.exit()
+    thread.exit()
 try:
-    _thread.start_new_thread(printFunc, ("thread1", 1))
+    thread.start_new_thread(printFunc, ("thread1", 1))
 except SystemExit as err:
     print(err, "thread exit")
 except:

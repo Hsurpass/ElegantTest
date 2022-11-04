@@ -1,6 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
+# coding=utf-8
 
-import queue
+import Queue
 import threading
 import time
 
@@ -32,7 +33,7 @@ def process_data(threadName, q):
 threadList = ["Thread-1", "Thread-2", "Thread-3"]
 dataList = ["One", "Two", "Three", "Four", "Five"]
 queueLock = threading.Lock()
-workQueue = queue.Queue(10)
+workQueue = Queue.Queue(10)
 threads = []
 threadID = 1
 
