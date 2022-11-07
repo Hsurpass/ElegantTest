@@ -17,6 +17,19 @@ list[1] = 789
 print(list)      #['hello', 789, 2.23, 'john', 70.2]
 print(list[:])   #['hello', 789, 2.23, 'john', 70.2]
 
+
+
+print("$$$$$$$$$$$$$$$$$$$$$$$$$$")
+for i, value in enumerate(list):
+    print(i, value)
+
+for x, y in [(1, 1), (2, 4), (3, 9)]:
+    print(x, y)
+
+for i, val in enumerate([(1, 1), (2, 4), (3, 9)]):
+    print(i, val)
+
+
 print("###########################")
 #如果第三个参数为负数表示逆向读取，可以用于翻转：
 #翻转列表
