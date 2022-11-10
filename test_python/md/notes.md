@@ -770,6 +770,42 @@ from ..filters import equalizer
 
 包还提供一个额外的属性`__path__`。这是一个目录列表，里面每一个包含的目录都有为这个包服务的`__init__`.py，你得在其他`__init__`.py被执行前定义哦。可以修改这个变量，用来影响包含在包里面的模块和子包。这个功能并不常用，一般用来扩展包里面的模块。
 
+#### 例
+
+举个例子，一个`abc.py`的文件就是一个名字叫`abc`的模块，一个`xyz.py`的文件就是一个名字叫`xyz`的模块。
+
+现在，假设我们的`abc`和`xyz`这两个模块名字与其他模块冲突了，于是我们可以通过包来组织模块，避免冲突。方法是选择一个顶层包名，比如`mycompany`，按照如下目录存放：
+
+```ascii
+mycompany
+├─ __init__.py
+├─ abc.py
+└─ xyz.py
+```
+
+引入了包以后，只要顶层的包名不与别人冲突，那所有模块都不会与别人冲突。现在，`abc.py`模块的名字就变成了`mycompany.abc`，类似的，`xyz.py`的模块名变成了`mycompany.xyz`。
+
+请注意，每一个包目录下面都会有一个`__init__.py`的文件，这个文件是必须存在的，否则，Python就把这个目录当成普通目录，而不是一个包。`__init__.py`可以是空文件，也可以有Python代码，因为`__init__.py`本身就是一个模块，而它的模块名就是`mycompany`。
+
+类似的，可以有多级目录，组成多级层次的包结构。比如如下的目录结构：
+
+```ascii
+mycompany
+ ├─ web
+ │  ├─ __init__.py
+ │  ├─ utils.py
+ │  └─ www.py
+ ├─ __init__.py
+ ├─ abc.py
+ └─ utils.py
+```
+
+文件`www.py`的模块名就是`mycompany.web.www`，两个文件`utils.py`的模块名分别是`mycompany.utils`和`mycompany.web.utils`。
+
+ **自己创建模块时要注意命名，不能和Python自带的模块名称冲突。例如，系统自带了sys模块，自己的模块就不可命名为sys.py，否则将无法导入系统自带的sys模块。**
+
+
+
 ### python面向对象
 
 - private属性: __attr
@@ -1030,7 +1066,7 @@ pip install package     安装包（默认从国外的网站下载安装）
               阿里源：http://mirrors.aliyun.com/pypi/simple/
               豆瓣源：https://pypi.douban.com/simple/
                      pip install -i https://pypi.douban.com/simple/ numpy
-                     pip install -i https://pypi.douban.com/simple/--trusted-host pypi.douban.com  #此参数“--trusted-host”表示信任，如果上一个提示不受信任，就使用这个
+                     pip install -i https://pypi.douban.com/simple/ --trusted-host pypi.douban.com  #此参数“--trusted-host”表示信任，如果上一个提示不受信任，就使用这个
 pip uninstall package    卸载包
 ```
 
