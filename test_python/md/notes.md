@@ -808,6 +808,48 @@ mycompany
 
 ### python面向对象
 
+```
+class Student(object):
+
+    def __init__(self, name, score):
+        self.__name = name
+        self.__score = score
+
+    def print_score(self):
+        print('%s: %s' % (self.__name, self.__score))
+```
+
+双下划线开头的实例变量是不是一定不能从外部访问呢？其实也不是。不能直接访问`__name`是因为Python解释器对外把`__name`变量改成了`_Student__name`，所以，仍然可以通过`_Student__name`来访问`__name`变量：
+
+```
+>>> bart._Student__name
+'Bart Simpson'
+```
+
+但是强烈建议你不要这么干，因为不同版本的Python解释器可能会把`__name`改成不同的变量名。
+
+总的来说就是，Python本身没有任何机制阻止你干坏事，一切全靠自觉。
+
+最后注意下面的这种*错误写法*：
+
+```
+>>> bart = Student('Bart Simpson', 59)
+>>> bart.get_name()
+'Bart Simpson'
+>>> bart.__name = 'New Name' # 设置__name变量！
+>>> bart.__name
+'New Name'
+```
+
+表面上看，外部代码“成功”地设置了`__name`变量，但实际上这个`__name`变量和class内部的`__name`变量*不是*一个变量！内部的`__name`变量已经被Python解释器自动改成了`_Student__name`，而外部代码给`bart`新增了一个`__name`变量。不信试试：
+
+```
+>>> bart.get_name() # get_name()内部返回self.__name
+'Bart Simpson'
+```
+
+
+
 - private属性: __attr
 - protect属性: _attr
 

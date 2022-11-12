@@ -37,15 +37,15 @@ class MyClass:
 
 x = MyClass(1, 'a', [1,2,3], 20.22)
 print("id(x)", id(x))
-print("x.i:", x.i)
-x.f()
-print(type(x.data), x.data)
-print(x.getName())
+print("x.i:", x.i)  #1
+x.f()               #'hello world'
+print(type(x.data), x.data) #('a', [1,2,3], 20.22)
+print(x.getName())  #from myClass.getName  xiaoming
 
-print("MyClass.__doc__:", MyClass.__doc__)
-print("MyClass.__name__:", MyClass.__name__)
-print("MyClass.__module__:", MyClass.__module__)
-print("MyClass.__bases__:", MyClass.__bases__)
+print("MyClass.__doc__:", MyClass.__doc__)          #"my class"
+print("MyClass.__name__:", MyClass.__name__)        #MyClass
+print("MyClass.__module__:", MyClass.__module__)    #__main__
+print("MyClass.__bases__:", MyClass.__bases__)      #(<class 'object'>,)
 print("MyClass.__dict__:", MyClass.__dict__)
 x1 = x
 x2 = x1
@@ -93,13 +93,13 @@ class myDerivedClass(MyClass):
 print(issubclass(myDerivedClass, MyClass))
 
 d = myDerivedClass(111, 'a', [3,4,5])
-print(isinstance(d, MyClass))
+print(isinstance(d, MyClass))   #True
 print(d.age)    #15
 print(d.i)      #111
 print(id(d.i))  #9788384
 print(d.data)   #('a', [3, 4, 5])
 # print(d.__name)   #私有成员不可访问
-print(super(myDerivedClass, d).i)  #10
+print(super(myDerivedClass, d).i)  #10  类的属性
 print(id(super(myDerivedClass, d).i))   #9785152
 
 #重写方法

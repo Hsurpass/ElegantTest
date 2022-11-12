@@ -205,6 +205,6 @@ https://cloud.tencent.com/developer/article/1994189
 强制卸载安装pip
 
 ```
-python -m pip install --upgrade pip --force-reinstall --no-warn-script-location
+python3 -m pip install --upgrade pip --force-reinstall --no-warn-script-location
 ```
 
