@@ -40,15 +40,15 @@ bjam stage --toolset=msvc-14.0 --without-python --stagedir="E:\Learning\Boost" l
 
 ## bjam编译参数说明
 
-**stage/install**:stage表示只生成库，install还会生成包含头文件的include目录，但编译时间较长；默认是stage。
+**stage/install**: stage表示只生成库，install还会生成包含头文件的include目录，但编译时间较长；默认是stage。
 
-**--stagedir/prefix**：stage时使用stagedir，**install时使用prefix**，表示编译生成文件的路径。
+**--stagedir/--prefix**：stage时使用--stagedir，**install时使用--prefix**，表示编译生成文件的路径。
 
 ```swift
 bjam install --toolset=msvc-14.0 --without-python --prefix="E:\Learning\Boost" link=static runtime-link=shared threading=multi address-model=64
 ```
 
-**--build-type:**complete 编译所有boost库；默认complete。
+**--build-type**: complete 编译所有boost库；默认complete。
 
 ```tsx
 bjam stage --toolset=msvc-14.0 --build-type=complete --stagedir="E:\Learning\Boost" link=static runtime-link=shared threading=multi address-model=64
@@ -80,9 +80,9 @@ bjam stage --toolset=msvc-14.0 --build-type=complete --stagedir="E:\Learning\Boo
 
 **threading**：单/多线程编译。现在基本都是multi方式了。
 
-**address-model**：64位平台还是32位平台，不填就两种平台的库都会编译。
+**address-model**：64位平台还是32位平台，**不填就两种平台的库都会编译**。
 
-**debug/release**：debug版本，release版本，不填就两种版本的库都会编译。
+**debug/release**：debug版本，release版本，**不填就两种版本的库都会编译**。
 
 ```dart
 bjam stage --toolset=msvc-14.0  --with-atomic --stagedir="E:\Learning\Boost" link=static threading=multi address-model=64 debug
@@ -110,7 +110,7 @@ boost_atomic-vc140-mt-x64-1_69.lib
 
 **库名称**：其后的是boost库名称（比如date_time库）。
 
-**编译器的版本：**与库名称之间以"-"而不是下划线"_"分隔（比如 -vc140）。
+**编译器的版本**：与库名称之间以"-"而不是下划线"_"分隔（比如 -vc140）。
 
 **[多线程]**：有“mt”的为“threading=multi”版本，没有该项则是“threading=single”版本。
 
@@ -131,7 +131,7 @@ boost_atomic-vc140-mt-x64-1_69.lib
 | shared | shared       | boost_atomic-vc140-mt-gd-x64-1_69.dll  boost_atomic-vc140-mt-gd-x64-1_69.lib  boost_atomic-vc140-mt-x64-1_69.dll  boost_atomic-vc140-mt-x64-1_69.lib |              |
 | shared | static       | 没有这种组合                                                 |              |
 
-### # VS工程的使用配置
+## VS工程的使用配置
 
 - VS建立win32的console工程
 - 工程设置-Properties（当前solution）
@@ -189,8 +189,41 @@ int main()
 ![img](image/4163397-c95c538b0f33a65f.png)
 
 
+可选参数:
+```bash
+b2.exe stage --stagedir="..\winBoost176" --build-dir="..\winBoost176Build" --toolset=msvc-14.2 --without-python --no-cmake-config link=static runtime-link=shared threading=multi address-model=64 release >..\winBoost176\winbuild.log 2>&1
+```
+
+```bash
+b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --toolset=msvc-14.2 --without-python --no-cmake-config link=static runtime-link=shared threading=multi address-model=64 release >..\winBoost176\winbuild.log 2>&1
+```
+
+
+
+default:
+
+```bash
+// 测试用
+b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --with-atomic --no-cmake-config release
+```
+```bash
+// 测试用
+b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --with-atomic --cmakedir="..\winBoost176Build\cmake"
+```
+
+```bash
+#默认使用:
+1. 打开'Developer Command Prompt for VS 2019', 进入boost源码目录
+2. b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --without-python --no-cmake-config
+```
+
+
 
 reference:
 
-​	https://www.jianshu.com/p/908c962aaf80
+https://www.boost.org/doc/libs/1_80_0/more/getting_started/windows.html
+
+https://www.boost.org/doc/libs/1_80_0/tools/build/doc/html/index.html#bbv2.reference.tools
+
+https://www.jianshu.com/p/908c962aaf80
 
