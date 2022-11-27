@@ -1,6 +1,12 @@
 #### references:
 
-https://cmake.org/cmake/help/v3.20/manual/cmake-generators.7.html#visual-studio-generators
+https://chunleili.github.io/cmake/understanding-INTERFACE
+
+https://www.pudn.com/news/62ae93a7dfc5ee1968803a47.html
+
+https://www.bookstack.cn/read/CMake-Cookbook/README.md
+
+https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html#visual-studio-generators
 
 https://cmake.org/cmake/help/git-stage/index.html#
 
@@ -14,6 +20,18 @@ https://www.hahack.com/codes/cmake/
 
 
 
+```
+mkdir build && cd build && cmake ..
+
+or
+
+cmake -B build
+```
+
+cmake -G
+
+
+
 ### 1.1 语法特性介绍
 
 - **基本语法格式：指令(参数 1 参数 2…)**
@@ -24,9 +42,9 @@ https://www.hahack.com/codes/cmake/
 - **指令是大小写无关的，参数和变量是大小写相关的**
 
   ```
-  1set(HELLO hello.cpp)
-  2add_executable(hello main.cpp hello.cpp)
-  3ADD_EXECUTABLE(hello main.cpp ${HELLO})
+  set(HELLO hello.cpp)
+  add_executable(hello main.cpp hello.cpp)
+  ADD_EXECUTABLE(hello main.cpp ${HELLO})
   ```
 
 - **变量使用${}方式取值，但是在 IF 控制语句中是直接使用变量名**
