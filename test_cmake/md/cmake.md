@@ -1,5 +1,7 @@
 #### references:
 
+https://zhuanlan.zhihu.com/p/534439206
+
 https://chunleili.github.io/cmake/understanding-INTERFACE
 
 https://www.pudn.com/news/62ae93a7dfc5ee1968803a47.html
