@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+#https://www.bilibili.com/video/BV1Vv411x7hj/?p=1
+
 from functools import wraps
 
 def log1(*text):
