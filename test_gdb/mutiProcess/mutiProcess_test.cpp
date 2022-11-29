@@ -29,7 +29,7 @@ void testMutiProcess()
         
     }
 
-    waitpid();
+    wait(NULL);
 }
 
 int main()
