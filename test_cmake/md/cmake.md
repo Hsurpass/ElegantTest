@@ -1,5 +1,7 @@
 #### references:
 
+https://cloud.tencent.com/developer/article/1561162
+
 https://zhuanlan.zhihu.com/p/534439206
 
 https://chunleili.github.io/cmake/understanding-INTERFACE
@@ -36,7 +38,7 @@ cmake -G
 
 ### 1.1 语法特性介绍
 
-- **基本语法格式：指令(参数 1 参数 2…)**
+- **基本语法格式：指令(参数1 参数2…)**
 
 - - 参数使用**括弧**括起
   - 参数之间使用**空格**或**分号**分开
@@ -53,31 +55,33 @@ cmake -G
 
 ### 2.1 重要指令和CMake常用变量
 
+https://cmake.org/cmake/help/latest/      -----> search
+
 #### 2.1.1 重要指令
 
 - **cmake_minimum_required** **- 指定CMake的最小版本要求**
+  - 语法：**cmake_minimum_required(VERSION versionNumber [FATAL_ERROR])**
 
   ```
-  1# CMake最小版本要求为2.8.3
-  2cmake_minimum_required(VERSION 2.8.3)
+  # CMake最小版本要求为2.8.3
+  cmake_minimum_required(VERSION 2.8.3)
   ```
 
-- - 语法：**cmake_minimum_required(VERSION versionNumber [FATAL_ERROR])**
 
 - **project** **- 定义工程名称，并可指定工程支持的语言** 
 
-  ```
-  1# 指定工程名为HELLOWORLD
-  2project(HELLOWORLD)
-  ```
+  - 语法：**project(projectname [CXX] [C] [Java])**
 
-- - 语法：**project(projectname [CXX] [C] [Java])**
+  ```
+  # 指定工程名为HELLOWORLD
+  project(HELLOWORLD)
+  ```
 
 - **set** **- 显式的定义变量** 
 
   ```
-  1# 定义SRC变量，其值为main.cpp hello.cpp
-  2set(SRC sayhello.cpp hello.cpp)
+  # 定义SRC变量，其值为main.cpp hello.cpp
+  set(SRC sayhello.cpp hello.cpp)
   ```
 
 - - 语法：**set(VAR [VALUE] [CACHE TYPE DOCSTRING [FORCE]])**

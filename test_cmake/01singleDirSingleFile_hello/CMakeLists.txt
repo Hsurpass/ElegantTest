@@ -6,7 +6,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 # 工程名
-project(SingleDirSingleFile_Hello)
+project(01singleDirSingleFile_hello)
 
 # 指定生成目标
 add_executable(singleDirSingleFile_hello main.cpp)
