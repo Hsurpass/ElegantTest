@@ -5,6 +5,10 @@
 #include <thread>
 #include <vector>
 
+// std::condition_variable之所以使用unique_lock，是因为 cv.wait内部要进行lock/unlock的操作
+// lock_guard只有简单地构造析构接口，unique_lock是lock_guard的超集
+
+
 using namespace std;
 std::mutex mutex1;
 std::condition_variable cv;

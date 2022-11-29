@@ -64,6 +64,32 @@ void test_weak_ptr_reset_lock_expired()
     cout << wp.use_count() << wp.expired() << sp1.use_count() << sp1.unique() << sp1->m_i << endl; // 1 0 1 true 222
 }
 
+void test_weak_ptr_lock_nullptr()
+{
+    std::shared_ptr<A> sp1;
+    std::weak_ptr<A> wp;
+    cout << boolalpha;
+
+    sp1 = std::make_shared<A>(111);
+    cout << sp1.use_count() << sp1.unique() << endl; // 1 true
+
+    wp = sp1;
+    cout << sp1.use_count() << sp1.unique() << wp.expired() << endl; // 1 true false
+
+    {
+        shared_ptr<A> sp2 = wp.lock();                                                 // operator()=
+        cout << sp1.use_count() << sp1.unique() << wp.expired() << endl; // 2 false false
+        cout << sp2.use_count() << sp2.unique() << wp.expired() << endl; // 2 false false
+    }
+
+    cout << sp1.use_count() << sp1.unique() << wp.expired() << endl; // 1 true false
+
+    cout << "--------------------------------" << endl;
+    sp1 = nullptr;
+    cout << sp1.use_count() << sp1.unique() << wp.expired() << endl; // 0 false true
+
+}
+
 void test_weak_ptr_lock()
 {
     std::shared_ptr<A> sp1, sp2;
@@ -150,9 +176,10 @@ int main()
     // test_circular_reference();
     // test_weak_ptr_constructor();
     // test_weak_ptr_swap();
-    test_weak_ptr_reset();
+    // test_weak_ptr_reset();
     // test_weak_ptr_lock();
     // test_weak_ptr_reset_lock_expired();
+    test_weak_ptr_lock_nullptr();
 
     return 0;
 }
