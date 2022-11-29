@@ -7,7 +7,7 @@ class Cpu
 public:
     virtual void work() = 0;
 };
-class SingleCoreA:public Cpu
+class SingleCoreA : public Cpu
 {
 public:
     void work()
@@ -15,7 +15,7 @@ public:
         cout << "SingleCoreA working" << endl;
     }
 };
-class SingleCoreB:public Cpu
+class SingleCoreB : public Cpu
 {
 public:
     void work()
@@ -23,29 +23,32 @@ public:
         cout << "SingleCoreB working" << endl;
     }
 };
-class AbstractFactory   //
+
+class AbstractFactory //
 {
 public:
-    virtual Cpu* createSingleCore() = 0;
+    virtual Cpu *createSingleCore() = 0;
 };
-class factoryA:public AbstractFactory
+
+class factoryA : public AbstractFactory
 {
 public:
     factoryA() {}
-    Cpu* createSingleCore()
+    Cpu *createSingleCore()
     {
         return new SingleCoreA;
     }
 };
-class FactoryB:public AbstractFactory
+class FactoryB : public AbstractFactory
 {
 public:
     FactoryB() {}
-    Cpu* createSingleCore()
+    Cpu *createSingleCore()
     {
         return new SingleCoreB;
     }
 };
+
 int main()
 {
     AbstractFactory *abfac = new factoryA;

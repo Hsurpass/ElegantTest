@@ -2,8 +2,10 @@
 
 using namespace std;
 
-enum coretype{
-    coreA,coreB
+enum coretype
+{
+    coreA,
+    coreB
 };
 
 class Cpu
@@ -11,7 +13,7 @@ class Cpu
 public:
     virtual void work() = 0;
 };
-class SingleCoreA:public Cpu
+class SingleCoreA : public Cpu
 {
 public:
     void work()
@@ -19,7 +21,7 @@ public:
         cout << "SingleCoreA working" << endl;
     }
 };
-class SingleCoreB:public Cpu
+class SingleCoreB : public Cpu
 {
 public:
     void work()
@@ -27,26 +29,28 @@ public:
         cout << "SingleCoreB working" << endl;
     }
 };
+
 class simplefactory
 {
 public:
     simplefactory() {}
-    Cpu* createSingleCore(enum coretype type)
+    Cpu *createSingleCore(enum coretype type)
     {
-        if(type == coreA)
+        if (type == coreA)
         {
             return new SingleCoreA;
         }
-        if(type == coreB)
+        if (type == coreB)
         {
             return new SingleCoreB;
         }
     }
 };
+
 int main()
 {
     simplefactory sf;
-    Cpu* cpu = sf.createSingleCore(coreA);
+    Cpu *cpu = sf.createSingleCore(coreA);
     cpu->work();
 
     cpu = sf.createSingleCore(coreB);
