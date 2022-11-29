@@ -52,8 +52,8 @@ void pthread_condtion_if()
         condition++;
         printf("main thread id[%lx] add condtion:%d\n", pthread_self(), condition);
         pthread_mutex_unlock(&mutex);
-        // pthread_cond_signal(&cond);
-        pthread_cond_broadcast(&cond);
+        pthread_cond_signal(&cond);
+        // pthread_cond_broadcast(&cond);
         // pthread_mutex_unlock(&mutex);    // 如果在通知唤醒函数之后解锁，会先解锁后，pthread_cond_wait才会处理唤醒信号， 如果不解锁的话就会一直阻塞下去
         printf("main thread id[%lx] unlock\n", pthread_self());
 

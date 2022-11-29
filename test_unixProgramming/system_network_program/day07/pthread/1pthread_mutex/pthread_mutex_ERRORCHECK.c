@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-// 当前线程重复调用 pthread_mutex_lock 会直接返回 EDEADLOCK.
+// 检错锁: 当前线程重复调用 pthread_mutex_lock 会直接返回 EDEADLOCK.
 void test_mutex_ERRORCHECK_retrylock()
 {
     pthread_mutex_t mymutex;
@@ -26,24 +26,25 @@ void test_mutex_ERRORCHECK_retrylock()
     pthread_mutexattr_destroy(&mutex_attr);
 }
 
-// 当前线程重复调用 pthread_mutex_lock 会直接返回 EDEADLOCK，
-// 其他线程如果对这个互斥体再次调用 pthread_mutex_lock 会阻塞在该函数的调用处。
+// 对于检错锁: 
+// 1.当前线程重复调用 pthread_mutex_lock 会直接返回 EDEADLOCK，
+// 2.其他线程如果对这个互斥体再次调用 pthread_mutex_lock 会阻塞在该函数的调用处。
 static pthread_mutex_t mymutex;
 void *worker_thread(void *param)
 {
     pthread_t threadID = pthread_self();
 
-    printf("thread start, ThreadID: %d\n", threadID);
+    printf("thread start, ThreadID: %ld\n", threadID);
 
-    while (1)
+    // while (1)
     {
         int ret = pthread_mutex_lock(&mymutex);
         if (ret == EDEADLK)
         {
-            printf("EDEADLK, ThreadID: %d\n", threadID);
+            printf("EDEADLK, ThreadID: %ld\n", threadID);
         }
         else
-            printf("ret = %d, ThreadID: %d\n", ret, threadID);
+            printf("ret = %d, ThreadID: %ld\n", ret, threadID);
 
         //休眠1秒
         sleep(1);
@@ -59,8 +60,8 @@ void test_mutilthread_mutex_ERRORCHECK()
     pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_ERRORCHECK);
     pthread_mutex_init(&mymutex, &mutex_attr);
 
-    int ret = pthread_mutex_lock(&mymutex);
-    printf("ret = %d\n", ret);
+    // int ret = pthread_mutex_lock(&mymutex);
+    // printf("ret = %d\n", ret);
 
     //创建5个工作线程
     pthread_t threadID[5];

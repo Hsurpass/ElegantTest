@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 
+// 其值将在线程开始时被初始化，而在线程结束时，该值也将不再有效。
 __thread int var = 2;   //可以修饰全局变量
 // __thread std::string s = "";   // error 只能修饰POD类型 error: non-local variable ‘s’ declared ‘__thread’ needs dynamic initialization
 // __thread std::string s1("abc");   // error 只能修饰POD类型

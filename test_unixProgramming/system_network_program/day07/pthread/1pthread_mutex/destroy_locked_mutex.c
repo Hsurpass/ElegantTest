@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <errno.h>
 
-int main()
+// 销毁一个已被锁定或正被条件变量使用的mutex对象，会返回EBUSY错误
+void test_destroy_locked_mutex()
 {
     pthread_mutex_t mymutex;
     pthread_mutex_init(&mymutex, NULL);
@@ -23,6 +24,11 @@ int main()
     ret = pthread_mutex_destroy(&mymutex);
     if (ret == 0)
         printf("Succeeded to destroy mutex.\n");
+}
+
+int main()
+{
+    test_destroy_locked_mutex();
 
     return 0;
 }

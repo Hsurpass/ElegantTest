@@ -6,6 +6,9 @@
 #include <errno.h>
 #include <signal.h>
 
+// 信号中断导致的问题。（Linux2.6以后已解决）。
+// https://zhuanlan.zhihu.com/p/430142057
+
 static int condition = 0;
 pthread_mutex_t mutex;
 pthread_cond_t cond;
@@ -18,10 +21,16 @@ void* mythread(void* arg)
         pthread_mutex_lock(&mutex);
         printf("pthread id %lx [%ld] get lock\n", pthread_self(), (long)arg);
         
-        if (condition <= 0) // 使用if会导致一个线程虚假唤醒
+        int ret = 0;
+        // if (condition <= 0) // 使用if会导致一个线程虚假唤醒
+        while (condition <= 0)
         {
             printf("thid %lx [%ld] wait condition... \n", pthread_self(), (long)arg);
-            pthread_cond_wait(&cond, &mutex);
+            
+            ret = pthread_cond_wait(&cond, &mutex);
+            printf("ret:%d, errno:%d, strerror:%s\n", ret, errno, strerror(errno));
+            perror("pthread_cond_wait");
+            
             printf("thid %lx [%ld] be awakened, condition:%d \n", pthread_self(), (long)arg, condition);
         }
         
@@ -63,15 +72,15 @@ void pthread_condtion_if_kill_2()
     }
 #endif
 
-    while (1)
+    // while (1)
     {
         printf("main thread id[%lx] add condtion:%d\n", pthread_self(), condition);
+        // sleep(5);
 
-        sleep(5);
+        // printf("main thread send SIGINT to thid_a\n");
+        // pthread_kill(thid_a, SIGINT);
 
-        pthread_kill(thid_a, SIGINT);
-
-        sleep(100);
+        // sleep(100);
     }
     
 

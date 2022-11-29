@@ -46,7 +46,7 @@ void* thread_producer(void* arg)
     pthread_exit((void*)0);
 }
 
-void test_producer_consumer()
+void test_producer_consumer_use_semaphore()
 {
     sem_init(&sem_repository, 0, 5);
     sem_init(&sem_product, 0, 0);
@@ -65,7 +65,7 @@ void test_producer_consumer()
 
 int main()
 {
-    test_producer_consumer();
+    test_producer_consumer_use_semaphore();
 
     return 0;
 }

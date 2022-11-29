@@ -74,7 +74,7 @@ void *producer_thread(void *param)
     return NULL;
 }
 
-int main()
+void test_producer_consumer_by_sem()
 {
     pthread_mutex_init(&mymutex, NULL);
     //初始信号量资源计数为0
@@ -100,6 +100,11 @@ int main()
 
     sem_destroy(&mysemaphore);
     pthread_mutex_destroy(&mymutex);
+}
+
+int main()
+{
+    test_producer_consumer_by_sem();
 
     return 0;
 }
