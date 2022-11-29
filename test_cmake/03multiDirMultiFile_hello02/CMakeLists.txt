@@ -10,10 +10,11 @@ MESSAGE(STATUS "project binary dir: " ${PROJECT_BINARY_DIR})
 MESSAGE(STATUS "cmake source dir: " ${CMAKE_SOURCE_DIR})
 MESSAGE(STATUS "hello source dir: " ${Hello_SOURCE_DIR})
 MESSAGE(STATUS "project source dir: " ${PROJECT_SOURCE_DIR})
+MESSAGE(STATUS "CMAKE_CURRENT_LIST_DIR: " ${CMAKE_CURRENT_LIST_DIR})
 
 MESSAGE(STATUS "--------------------------------------")
 # 设置项目名称
-project (Hello)
+project (multiDirMultiFile_hello02)
 
 MESSAGE(STATUS "cmake BINARY dir: " ${CMAKE_BINARY_DIR})
 MESSAGE(STATUS "hello BINARY dir: " ${Hello_BINARY_DIR})
@@ -21,6 +22,7 @@ MESSAGE(STATUS "project binary dir: " ${PROJECT_BINARY_DIR})
 MESSAGE(STATUS "cmake source dir: " ${CMAKE_SOURCE_DIR})
 MESSAGE(STATUS "hello source dir: " ${Hello_SOURCE_DIR})
 MESSAGE(STATUS "project source dir: " ${PROJECT_SOURCE_DIR})
+MESSAGE(STATUS "CMAKE_CURRENT_LIST_DIR: " ${CMAKE_CURRENT_LIST_DIR})
 
 
 INCLUDE_DIRECTORIES(include)

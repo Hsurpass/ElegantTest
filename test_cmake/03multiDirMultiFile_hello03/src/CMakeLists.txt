@@ -8,3 +8,5 @@ message(STATUS "subList: ${subList}")
 
 list(APPEND srcList ${CMAKE_CURRENT_SOURCE_DIR}/hello.cpp)
 MESSAGE(STATUS "srcList: ${srcList}")
+
+MESSAGE(STATUS "CMAKE_CURRENT_LIST_DIR: " ${CMAKE_CURRENT_LIST_DIR})
