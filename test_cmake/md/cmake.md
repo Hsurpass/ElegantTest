@@ -34,7 +34,7 @@ cmake -G
 
 cmake -DCMAKE_BUILD_TYPE=Debug
 
-cmake --build build --config=Release
+cmake --build build --config Release
 
 注意：假如你在Windows下使用VS，那么**--config=Release是必要的**。因为默认会进行Debug模式的构建。 **而且实际上VS会把所有的四种变体都生成，因此你在配置步骤指定CMAKE_BUILD_TYPE是没有用的！**
 
