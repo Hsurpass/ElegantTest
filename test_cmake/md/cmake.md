@@ -22,21 +22,196 @@ https://www.hahack.com/codes/cmake/
 
 
 
+## 构建
+
+### 内部构建
+
 ```
-mkdir build && cd build && cmake ..
+cmake .
+make
+```
+
+### 外部构建
+
+linux:
+
+```
+mkdir build && cd build && cmake .. && make (同cmake --build . )
 
 or
 
 cmake -B build
+cmake --build build --config Release  #生成可执行文件
 ```
 
-cmake -G
+windows:
 
+```
+cmake -B build -G "Visual Studio 16 2019" 
+cmake --build build --config Release  #生成可执行文件
+```
+
+注意：假如你在Windows下使用VS，那么**--config Release是必要的**。因为默认会进行Debug模式的构建。 **而且实际上VS会把所有的四种变体都生成，因此你在配置步骤指定CMAKE_BUILD_TYPE是没有用的！**
+
+
+
+### 构建时传递参数
+
+```
 cmake -DCMAKE_BUILD_TYPE=Debug
+```
 
-cmake --build build --config Release
 
-注意：假如你在Windows下使用VS，那么**--config=Release是必要的**。因为默认会进行Debug模式的构建。 **而且实际上VS会把所有的四种变体都生成，因此你在配置步骤指定CMAKE_BUILD_TYPE是没有用的！**
+
+## 设置编译选项
+
+```
+set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+```
+
+
+
+## 自定义编译选项(就是添加配置)
+
+
+
+## 环境检查
+
+
+
+## 生成动态库
+
+
+
+## 生成静态库
+
+
+
+## 生成可执行程序
+
+
+
+## 安装
+
+#### INSTALL
+
+##### TARGETS
+
+执行INSTALL命令时需要注意**CMAKE_INSTALL_PREFIX**参数的值。INSTALL命令形式如下：
+
+```
+INSTALL(TARGETS targets...
+		[[ARCHIVE|LIBRARY|RUNTIME]
+		 [DESTINATION <dir>]
+		 [PERMISSIONS permissions...]
+		 [CONFIGURATIONS [Debug|Release|...]]
+		 [COMPONENT <component>]
+		 [OPTIONAL]
+		] [...]
+		)
+```
+
+**参数TARGETS后跟目标是通过ADD_EXECUTABLE或者ADD_LIBRARY定义的目标文件，可能是可执行二进制、动态库、静态库。**
+
+**DESTINATION**定义安装的路径，==如果路径以/开头，那么是绝对路径，此时CMAKE_INSTALL_PREFIX将
+无效。== 如果希望使用**CMAKE_INSTALL_PREFIX**来定义安装路径，需要写成相对路径，即不要以/开头，安
+装路径就是 **${CMAKE_INSTALL_PREFIX}/destination** 定义的路径
+		**TARGETS**指定的目标文件不需要指定路径，只需要写上TARGETS名称就行。 
+
+##### FILES|PROGRAMS
+
+非目标文件的可执行程序安装(如**脚本**):
+
+```
+INSTALL(<FILES|PROGRAMS> files... 
+		TYPE <type> | DESTINATION <dir>
+		[PERMISSIONS permissions...]
+		[CONFIGURATIONS [Debug|Release|...]]
+		[COMPONENT <component>]
+		[RENAME <name>] [OPTIONAL] [EXCLUDE_FROM_ALL])
+```
+
+**安装后权限为755。**  
+
+#### CMAKE_INSTALL_PREFIX
+
+==/usr/local （默认安装路径）==
+
+```
+# 设置安装路径
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/bin)
+```
+
+也可以通过-D CMAKE_INSTALL_PREFIX=xxx来从外部命令行传递。
+
+## 测试
+
+##### enable_testing()
+
+```
+enable_testing()	#默认 测试是不开启的，需要调用开启
+```
+
+Enables testing for this directory and below.
+
+This command should be in the source directory root because ctest expects to find a test file in the build directory root.
+
+This command is automatically invoked when the [`CTest`](https://cmake.org/cmake/help/latest/module/CTest.html#module:CTest) module is included, except if the **`BUILD_TESTING`** option is ==turned off.==
+
+See also the [`add_test()`](https://cmake.org/cmake/help/latest/command/add_test.html#command:add_test) command.
+
+##### add_test
+
+Add a test to the project to be run by [`ctest(1)`](https://cmake.org/cmake/help/latest/manual/ctest.1.html#manual:ctest(1)).
+
+```
+add_test(NAME <name> COMMAND <command> [<arg>...]
+         [CONFIGURATIONS <config>...]
+         [WORKING_DIRECTORY <dir>]
+         [COMMAND_EXPAND_LISTS])
+```
+
+NAME:测试的名称
+
+COMMAND: 指定测试要运行的命令及参数
+
+​		<command>:测试要运行的命令
+
+​		<arg>: 测试运行命令要用到的参数
+
+CONFIGURATIONS：限制测试只对给定的配置执行
+
+WORKING_DIRECTORY：执行测试的工作目录
+
+COMMAND_EXPAND_LISTS：是否展开命令的参数
+
+##### set_tests_properties
+
+```
+set_tests_properties(test1 [test2...] PROPERTIES prop1 value1 prop2 value2)
+```
+
+设置测试的属性。如果测试没发现，cmake将会报错。
+
+```
+#测试5的平方
+add_test(NAME test_5_2 COMMAND demo5 5 2)
+set_tests_properties(test_5_2 PROPERTIES PASS_REGULAR_EXPRESSION "is 25")
+```
+
+其中 **`PASS_REGULAR_EXPRESSION`** 用来测试输出是否包含后面跟着的字符串。
+
+
+
+## 添加版本号
+
+
+
+## 生成安装包
+
+
 
 ### 1.1 语法特性介绍
 
@@ -62,8 +237,9 @@ https://cmake.org/cmake/help/latest/      -----> search
 #### 2.1.1 重要指令
 
 - **cmake_minimum_required** **- 指定CMake的最小版本要求**
-  - 语法：**cmake_minimum_required(VERSION versionNumber [FATAL_ERROR])**
-
+  
+- 语法：**cmake_minimum_required(VERSION versionNumber [FATAL_ERROR])**
+  
   ```
   # CMake最小版本要求为2.8.3
   cmake_minimum_required(VERSION 2.8.3)
@@ -268,7 +444,9 @@ set(CMAKE_CXX_EXTENSIONS OFF
 
 ##### CMAKE_C_COMPILER
 
-指定C编译器
+```
+-DCMAKE_C_COMPILER #指定C语言编译器如交叉编译器未加入到环境变量，需要使用绝对路径
+```
 
 ##### CMAKE_CXX_COMPILER
 
@@ -314,6 +492,17 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
 
 
+##### macro
+
+```
+macro(<name> [arg1 [arg2 [arg3 ...]]])
+		COMMAND1(ARGS ...)
+		COMMAND2(ARGS ...)
+endmacro(<name>)
+```
+
+
+
 
 
 ## CMake Generators
@@ -322,22 +511,26 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
 #### Visual Studio Generators
 
-- Visual Studio 11 2012
-  - `cmake -G "Visual Studio 10 2010" -A Win32`
-  - `cmake -G "Visual Studio 10 2010" -A x64`
-  - `cmake -G "Visual Studio 10 2010" -A Itanium`
-  - `cmake -G "Visual Studio 10 2010 Win64 `
-  -  `cmake -G Visual Studio 10 2010 IA64`
+##### Visual Studio 11 2012
 
-- Visual Studio 12 2013
-  - `cmake -G "Visual Studio 12 2013" -A Win32`
-  - `cmake -G "Visual Studio 12 2013" -A x64`
-  - `cmake -G "Visual Studio 12 2013" -A ARM`
-  - `cmake -G "Visual Studio 12 2013 Win64"`
-  - `cmake -G "Visual Studio 12 2013 ARM"`
+- `cmake -G "Visual Studio 10 2010" -A Win32`
+- `cmake -G "Visual Studio 10 2010" -A x64`
+- `cmake -G "Visual Studio 10 2010" -A Itanium`
+- `cmake -G "Visual Studio 10 2010 Win64 `
+-  `cmake -G Visual Studio 10 2010 IA64`
 
-- Visual Studio 16 2019
-  - `cmake -G "Visual Studio 16 2019" -A Win32`
-  - `cmake -G "Visual Studio 16 2019" -A x64`
-  - `cmake -G "Visual Studio 16 2019" -A ARM`
-  - `cmake -G "Visual Studio 16 2019" -A ARM64`
+##### Visual Studio 12 2013
+
+- `cmake -G "Visual Studio 12 2013" -A Win32`
+- `cmake -G "Visual Studio 12 2013" -A x64`
+- `cmake -G "Visual Studio 12 2013" -A ARM`
+- `cmake -G "Visual Studio 12 2013 Win64"`
+- `cmake -G "Visual Studio 12 2013 ARM"`
+
+##### Visual Studio 16 2019
+
+- `cmake -G "Visual Studio 16 2019" -A Win32`
+- `cmake -G "Visual Studio 16 2019" -A x64`
+- `cmake -G "Visual Studio 16 2019" -A ARM`
+- `cmake -G "Visual Studio 16 2019" -A ARM64`
+
