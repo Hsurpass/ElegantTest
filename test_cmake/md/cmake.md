@@ -81,15 +81,29 @@ set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 
 
-## 生成动态库
+## 生成库
+
+设置库文件输出目录：
+
+```
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib) 
+```
+
+### 生成静态库
 
 
 
-## 生成静态库
+### 生成动态库
 
 
 
 ## 生成可执行程序
+
+设置可执行文件输出目录： 
+
+```
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+```
 
 
 
@@ -501,7 +515,15 @@ macro(<name> [arg1 [arg2 [arg3 ...]]])
 endmacro(<name>)
 ```
 
+##### CMAKE_INCLUDE_CURRENT_DIR 
 
+自动将当前源代码和构建目录添加到include路径。默认是OFF
+
+如果启用此变量，CMake会自动将**CMAKE_CURRENT_SOURCE_DIR**和CMAKE_CURRENT_BINARY_DIR添加到每个目录的包含路径中。这些附加包含目录不会向下传播到子目录。这主要对外部构建有用，生成到构建树(build目录)中的文件包含在源树(main目录)中的文件中。
+
+```
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+```
 
 
 
