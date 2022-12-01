@@ -2,14 +2,17 @@
 cmake_minimum_required (VERSION 2.8)
 
 # 项目信息
-project (Demo4)
+project (Demo7)
+
+#分别指定当前的项目的主版本号和副版本号。
+set(Demo7_VERSION_MAJOR 1)
+set(Demo7_VERSION_MINOR 0)
 
 # set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # 检查系统是否支持 pow 函数
 include(${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 check_function_exists(pow HAVE_POW)
-message(STATUS "HAVE_POW: ${HAVE_POW}")
 
 # 加入一个配置头文件，用于处理 CMake 对源码的设置
 configure_file(
@@ -29,38 +32,42 @@ endif()
 aux_source_directory(. DIR_SRCS)
 
 # 指定生成目标
-add_executable(demo6 ${DIR_SRCS})
+add_executable(demo7 ${DIR_SRCS})
 
 # 添加链接库
-target_link_libraries(demo6 ${EXTRA_LIBS})
+target_link_libraries(demo7 ${EXTRA_LIBS})
+
+
 
 # 指定可执行程序和config.h安装路径
-install(TARGETS demo6 DESTINATION ${PROJECT_SOURCE_DIR}/install/bin)
-install(FILES config.h DESTINATION ${PROJECT_SOURCE_DIR}/install/include)
+install(TARGETS demo7 DESTINATION ${PROJECT_SOURCE_DIR}/install/bin)
+install(FILES ${PROJECT_BINARY_DIR}/config.h DESTINATION ${PROJECT_SOURCE_DIR}/install/include)
+
+
 
 
 #启用测试
 enable_testing()
 
 #测试程序是否成功运行
-add_test(test_run demo6 5 2)
+add_test(test_run demo7 5 2)
 
 # 测试帮助信息是否可以正常提示
-add_test(test_usage demo6)
+add_test(test_usage demo7)
 set_tests_properties(test_usage PROPERTIES PASS_REGULAR_EXPRESSION "Usage: .* base exponent")
 
 #测试5的平方
-add_test(NAME test_5_2 COMMAND demo6 5 2)
+add_test(NAME test_5_2 COMMAND demo7 5 2)
 set_tests_properties(test_5_2 PROPERTIES PASS_REGULAR_EXPRESSION "is 25")
 
 # 测试 2 的 10 次方
-add_test (test_2_10 demo6 2 10)
+add_test (test_2_10 demo7 2 10)
 set_tests_properties(test_2_10 PROPERTIES PASS_REGULAR_EXPRESSION "is 1024")
 
 
 # 定义一个宏，用来简化测试工作
 macro(do_test arg1 arg2 result)
-    add_test(test_${arg1}_${arg2} demo6 ${arg1} ${arg2})
+    add_test(test_${arg1}_${arg2} demo7 ${arg1} ${arg2})
     set_tests_properties(test_${arg1}_${arg2} PROPERTIES PASS_REGULAR_EXPRESSION ${result})
 endmacro(do_test)
 

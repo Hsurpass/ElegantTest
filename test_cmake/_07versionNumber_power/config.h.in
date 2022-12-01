@@ -1,0 +1,6 @@
+// the configured options and settings for Tutorial
+#define Demo7_VERSION_MAJOR @Demo7_VERSION_MAJOR@
+#define Demo7_VERSION_MINOR @Demo7_VERSION_MINOR@
+
+// does the platform provide pow function?
+#cmakedefine HAVE_POW

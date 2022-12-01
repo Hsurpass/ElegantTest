@@ -10,11 +10,13 @@ https://www.pudn.com/news/62ae93a7dfc5ee1968803a47.html
 
 [CMake菜谱（CMake Cookbook中文版）](https://www.bookstack.cn/books/CMake-Cookbook)
 
-https://cmake.org/cmake/help/git-stage/index.html#
+https://cloud.tencent.com/developer/article/1446788
+
+
+
+全网最细的CMake教程！(强烈建议收藏):
 
 https://mp.weixin.qq.com/s?__biz=MzU5MzcyMjI4MA==&mid=2247494287&idx=1&sn=7f383549a1f2212b1cf33c192a4a1235&chksm=fe0e8448c9790d5ef72b36bb8d116730f29f86a9fe3c2a03ee5cbb0006b0a39e778ce7d81e47&scene=21#wechat_redirect
-
-https://cloud.tencent.com/developer/article/1446788
 
 https://zhuanlan.zhihu.com/p/50829542
 
@@ -83,6 +85,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 ## 生成库
 
+##### LIBRARY_OUTPUT_PATH
+
 设置库文件输出目录：
 
 ```
@@ -91,19 +95,51 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 ### 生成静态库
 
+##### CMAKE_ARCHIVE_OUTPUT_DIRECTORY
 
+```
+# 静态库输出目录
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/lib)
+```
 
 ### 生成动态库
+
+##### CMAKE_LIBRARY_OUTPUT_DIRECTORY
+
+```
+# 动态库输出目录
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
+```
+
+==**cmake在windows平台链接动态库错误, error LNK1181(1104): 无法打开输入文件**==
+
+```
+if(MSVC)
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+  SET(BUILD_SHARED_LIBS TRUE)
+endif()
+```
 
 
 
 ## 生成可执行程序
+
+##### EXECUTABLE_OUTPUT_PATH
 
 设置可执行文件输出目录： 
 
 ```
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 ```
+
+##### CMAKE_RUNTIME_OUTPUT_DIRECTORY
+
+```
+# 可执行文件输出目录
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
+```
+
+
 
 
 
@@ -132,7 +168,7 @@ INSTALL(TARGETS targets...
 **DESTINATION**定义安装的路径，==如果路径以/开头，那么是绝对路径，此时CMAKE_INSTALL_PREFIX将
 无效。== 如果希望使用**CMAKE_INSTALL_PREFIX**来定义安装路径，需要写成相对路径，即不要以/开头，安
 装路径就是 **${CMAKE_INSTALL_PREFIX}/destination** 定义的路径
-		**TARGETS**指定的目标文件不需要指定路径，只需要写上TARGETS名称就行。 
+	==As absolute paths are not supported by [`cpack`](https://cmake.org/cmake/help/latest/manual/cpack.1.html#manual:cpack(1)) installer generators, it is preferable to use relative paths throughout.== In particular, there is no need to make paths absolute by prepending [`CMAKE_INSTALL_PREFIX`](https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html#variable:CMAKE_INSTALL_PREFIX); this prefix is used by default if the DESTINATION is a relative path.
 
 ##### FILES|PROGRAMS
 
@@ -221,9 +257,206 @@ set_tests_properties(test_5_2 PROPERTIES PASS_REGULAR_EXPRESSION "is 25")
 
 ## 添加版本号
 
+### <PROJECT-NAME>_VERSION_MAJOR
+
+First version number component of the [`<PROJECT-NAME>_VERSION`](https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION.html#variable:_VERSION) variable as set by the [`project()`](https://cmake.org/cmake/help/latest/command/project.html#command:project) command.
+
+```
+set (Demo_VERSION_MAJOR 1)	#指定当前的项目的主版本号
+```
+
+### <PROJECT-NAME>_VERSION_MINOR
+
+Second version number component of the [`<PROJECT-NAME>_VERSION`](https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION.html#variable:_VERSION) variable as set by the [`project()`](https://cmake.org/cmake/help/latest/command/project.html#command:project) command.
+
+```
+set (Demo_VERSION_MINOR 0)	# 指定当前的项目的副版本号
+```
+
+### <PROJECT-NAME>_VERSION_PATCH
+
+Third version number component of the [`_VERSION`](https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION.html#variable:_VERSION) variable as set by the [`project()`](https://cmake.org/cmake/help/latest/command/project.html#command:project) command.
+
+```
+set (Demo_VERSION_PATCH 0)	# 指定当前的项目的补丁号
+```
+
+之后，为了在代码中获取版本信息，我们可以修改 config.h.in 文件，添加两个预定义变量：
+
+```
+// the configured options and settings for Tutorial
+#define Demo_VERSION_MAJOR @Demo_VERSION_MAJOR@
+#define Demo_VERSION_MINOR @Demo_VERSION_MINOR@
+```
+
+cmake -B build && cmake --build build 。生成`config.h`
+
+```
+// the configured options and settings for Tutorial
+#define Demo7_VERSION_MAJOR 1
+#define Demo7_VERSION_MINOR 0
+```
+
+这样就可以直接在代码中打印版本信息了：
+
+```
+// print version info
+printf("%s Version %d.%d\n", argv[0], Demo_VERSION_MAJOR, Demo_VERSION_MINOR);
+```
+
 
 
 ## 生成安装包
+
+1. CPack是安装CMake时集成安装的工具。
+
+2. CPack只是个打包工具，你让它把啥打包，它就打包啥，你不告诉它，它就给你打个空包，或者报错。
+
+3. CPack的打包流程是：
+
+先在诸如“cmake-build-debug\_CPack_Packages\Linux\TGZ\Demo8-0.1.1-Linux”的文件夹下面安装一遍程序。
+
+然后再对这个目录进行打包，所以...
+
+​	3.1 **一定要在CMakeLists.txt中==写install==告诉脚本你要安装啥**
+
+​	3.2 **写install的时候一定要写==相对路径==，==不然这个临时目录就是个空==**
+
+```
+# 设置安装根目录
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
+# 指定可执行程序和config.h安装路径
+install(TARGETS demo8 DESTINATION bin)	# 一定要写相对路径，否则打的就是空包
+install(FILES ${PROJECT_BINARY_DIR}/config.h DESTINATION include)
+
+```
+
+
+
+
+
+如何配置生成各种平台上的**安装包，包括二进制安装包和源码安装包。**为了完成这个任务，我们需要用到 **CPack** ，它同样也是由 CMake 提供的一个工具，专门用于打包。
+
+首先在**顶层**的 CMakeLists.txt 文件尾部添加下面几行：
+
+```
+# 构建一个 CPack 安装包
+include (InstallRequiredSystemLibraries)
+set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
+set (CPACK_PACKAGE_VERSION_MAJOR "${Demo_VERSION_MAJOR}")
+set (CPACK_PACKAGE_VERSION_MINOR "${Demo_VERSION_MINOR}")
+include (CPack)
+```
+
+上面的代码做了以下几个工作：
+
+1. 导入 **InstallRequiredSystemLibraries** 模块( 该模块将包括当前平台项目所需的任何运行时库)，以便之后导入 CPack 模块；
+2. 设置一些 CPack 相关变量，包括版权信息和版本信息，其中版本信息用了上一节定义的版本号；
+3. 导入 CPack 模块。
+
+==接下来的工作是像往常一样**构建工程**，**进入构建目录**，并执行 `cpack` 命令。==
+
+- 生成二进制安装包：
+
+```
+cpack -C CPackConfig.cmake
+```
+
+- 生成源码安装包
+
+```
+cpack -C CPackSourceConfig.cmake
+```
+
+我们可以试一下。在生成项目后，执行 `cpack -C CPackConfig.cmake` 命令：
+
+```
+[ehome@xman Demo8]$ cpack -C CPackSourceConfig.cmake
+CPack: Create package using STGZ
+CPack: Install projects
+CPack: - Run preinstall target for: Demo8
+CPack: - Install project: Demo8
+CPack: Create package
+CPack: - package: /home/ehome/Documents/programming/C/power/Demo8/Demo8-1.0.1-Linux.sh generated.
+CPack: Create package using TGZ
+CPack: Install projects
+CPack: - Run preinstall target for: Demo8
+CPack: - Install project: Demo8
+CPack: Create package
+CPack: - package: /home/ehome/Documents/programming/C/power/Demo8/Demo8-1.0.1-Linux.tar.gz generated.
+CPack: Create package using TZ
+CPack: Install projects
+CPack: - Run preinstall target for: Demo8
+CPack: - Install project: Demo8
+CPack: Create package
+CPack: - package: /home/ehome/Documents/programming/C/power/Demo8/Demo8-1.0.1-Linux.tar.Z generated.
+```
+
+此时会在该目录下创建 3 个不同格式的二进制包文件：
+
+```
+[ehome@xman Demo8]$ ls Demo8-*
+Demo8-1.0.1-Linux.sh  Demo8-1.0.1-Linux.tar.gz  Demo8-1.0.1-Linux.tar.Z
+```
+
+这 3 个二进制包文件所包含的内容是完全相同的。我们可以执行其中一个。此时会出现一个由 CPack 自动生成的交互式安装界面：
+
+```
+[ehome@xman Demo8]$ sh Demo8-1.0.1-Linux.sh 
+Demo8 Installer Version: 1.0.1, Copyright (c) Humanity
+This is a self-extracting archive.
+The archive will be extracted to: /home/ehome/Documents/programming/C/power/Demo8
+
+If you want to stop extracting, please press <ctrl-C>.
+The MIT License (MIT)
+
+Copyright (c) 2013 Joseph Pan(http://hahack.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+Do you accept the license? [yN]: 
+y
+By default the Demo8 will be installed in:
+  "/home/ehome/Documents/programming/C/power/Demo8/Demo8-1.0.1-Linux"
+Do you want to include the subdirectory Demo8-1.0.1-Linux?
+Saying no will install in: "/home/ehome/Documents/programming/C/power/Demo8" [Yn]: 
+y
+
+Using target directory: /home/ehome/Documents/programming/C/power/Demo8/Demo8-1.0.1-Linux
+Extracting, please wait...
+
+Unpacking finished successfully
+```
+
+完成后提示安装到了 Demo8-1.0.1-Linux 子目录中，我们可以进去执行该程序：
+
+```
+[ehome@xman Demo8]$ ./Demo8-1.0.1-Linux/bin/Demo 5 2
+Now we use our own Math library. 
+5 ^ 2 is 25
+```
+
+关于 CPack 的更详细的用法可以通过 `man 1 cpack` 参考 CPack 的文档。
+
+
+
+
 
 
 
@@ -465,44 +698,6 @@ set(CMAKE_CXX_EXTENSIONS OFF
 ##### CMAKE_CXX_COMPILER
 
 指定C++编译器
-
-##### EXECUTABLE_OUTPUT_PATH
-
-**可执行文件输出的存放路径**
-
-##### LIBRARY_OUTPUT_PATH
-
-**库文件输出的存放路径**
-
-##### CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-
-```
-# 静态库输出目录
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/lib)
-```
-
-##### CMAKE_LIBRARY_OUTPUT_DIRECTORY
-
-```
-# 动态库输出目录
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
-```
-
-==**cmake在windows平台链接动态库错误, error LNK1181(1104): 无法打开输入文件**==
-
-```
-if(MSVC)
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
-  SET(BUILD_SHARED_LIBS TRUE)
-endif()
-```
-
-##### CMAKE_RUNTIME_OUTPUT_DIRECTORY
-
-```
-# 可执行文件输出目录
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
-```
 
 
 
