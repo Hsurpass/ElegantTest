@@ -4,11 +4,15 @@
 
 
 
+[使用ctest配置googletest](https://chunleili.github.io/cmake/ctest-googletest)
+
 [彻底弄懂cmake中的 INTEFACE 可见性/传递性 问题](https://chunleili.github.io/cmake/understanding-INTERFACE)
 
 [CMake菜谱（CMake Cookbook中文版）](https://www.bookstack.cn/books/CMake-Cookbook)
 
 
+
+[Cmake之深入理解find_package()的用法](https://zhuanlan.zhihu.com/p/97369704)
 
 [深入浅出CMake(三):find_package 添加依赖库](https://cloud.tencent.com/developer/article/1446788)
 
@@ -91,11 +95,39 @@ set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 ##### LIBRARY_OUTPUT_PATH
 
-设置库文件输出目录：
+设置库文件(动态库和静态库)输出目录：
 
 ```
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib) 
 ```
+
+##### add_library
+
+```
+add_library(<name> [STATIC | SHARED | MODULE]
+            [EXCLUDE_FROM_ALL]
+            [<source>...])
+```
+
+类型有三种：
+
+SHARED,动态库
+
+STATIC,静态库
+
+MODULE，在使用dyld的系统有效，如果不支持dyld，则被当做SHARED对待。
+
+EXCLUDE_FROM_ALL参数的意思是这个不会被默认构建，除非有其他的组件依赖或者手工构建。
+
+##### BUILD_SHARED_LIBS
+
+这个开关用来控制默认的库编译方式，如果不进行设置，使用ADD_LIBRARY并没有指定库类型的情况下，默认编译生成的库都是静态库。
+
+```
+SET(BUILD_SHARED_LIBS ON)	# 默认生成的为动态库。
+```
+
+
 
 ### 生成静态库
 
@@ -104,6 +136,11 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 ```
 # 静态库输出目录
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/lib)
+```
+
+```
+# 通过变量 hello.c 生成 libhello.a 静态库 (默认是静态库)
+add_library(hello STATIC hello.c)
 ```
 
 ### 生成动态库
@@ -123,6 +160,83 @@ if(MSVC)
   SET(BUILD_SHARED_LIBS TRUE)
 endif()
 ```
+
+```
+# 通过变量 hello.c 生成 libhello.so 共享库 (默认是静态库)
+add_library(hello SHARED hello.c)
+```
+
+### 同时构建动态库和静态库
+
+```
+// 如果⽤这种⽅式，只会构建⼀个动态库，不会构建出静态库，虽然静态库的后缀是.a
+// 因为使用了这个语句，hello作为target是不能重名的。所以会造成静态库的构建指令无效。
+ADD_LIBRARY(hello SHARED ${LIBHELLO_SRC})
+ADD_LIBRARY(hello STATIC ${LIBHELLO_SRC})
+
+// 修改静态库的名字，这样是可以的，但是我们往往希望他们的名字是相同的，只是后缀不同⽽已
+ADD_LIBRARY(hello SHARED ${LIBHELLO_SRC})
+ADD_LIBRARY(hello_static STATIC ${LIBHELLO_SRC})
+```
+
+所以使用SET_TARGET_PROPERTIES添加一条：
+
+```
+//对hello_static的重名为hello
+SET_TARGET_PROPERTIES(hello_static PROPERTIES OUTPUT_NAME "hello")
+```
+
+可以使用GET_TARGET_PROPERTY获取目标属性：
+
+```
+GET_TARGET_PROPERTY(OUTPUT_VALUE hello_static OUTPUT_NAME)
+MESSAGE(STATUS "This is the hello_static OUTPUT_NAME:"${OUTPUT_VALUE})
+```
+
+如果没有这个属性则会返回**NOTFOUND**.而使用以上的例子会出现一个问题，那就是会发现libhello.a存在，但是libhello.so会消失，因为cmake在构建一个新的target时，会尝试清理掉其他使用这个名字的库。解决方案如下：
+
+向CMakeLists.txt中添加：
+
+```
+SET_TARGET_PROPERTIES(hello PROPERTIES CLEAN_DIRECT_PUTPUT 1)
+SET_TARGET_PROPERTIES(hello_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+```
+
+最终方案：
+
+```
+SET(LIBHELLO_SRC hello.cpp)
+ADD_LIBRARY(hello_static STATIC ${LIBHELLO_SRC})
+//对hello_static的重名为hello
+SET_TARGET_PROPERTIES(hello_static PROPERTIES OUTPUT_NAME "hello")
+
+//cmake 在构建⼀个新的target 时，会尝试清理掉其他使⽤这个名字的库，因为，在构建 libhello.so 时， 就
+会清理掉 libhello.a
+SET_TARGET_PROPERTIES(hello_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
+ADD_LIBRARY(hello SHARED ${LIBHELLO_SRC})
+SET_TARGET_PROPERTIES(hello PROPERTIES OUTPUT_NAME "hello")
+SET_TARGET_PROPERTIES(hello PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+```
+
+### 添加动态库版本号
+
+⼀般动态库都有⼀个版本号的关联
+
+```
+libhello.so.1.2
+libhello.so ->libhello.so.1
+libhello.so.1->libhello.so.1.2
+```
+
+设置版本号:
+
+```
+SET_TARGET_PROPERTIES(hello PROPERTIES VERION 1.2 SOVERSION 1)
+VERSION指代动态库版本，SOVERSION指代API版本。
+```
+
+
 
 
 
@@ -176,7 +290,7 @@ INSTALL(TARGETS targets...
 
 ##### FILES|PROGRAMS
 
-非目标文件的可执行程序安装(如**脚本**):
+普通文件(*.h)和非目标文件的可执行程序安装(如**脚本**):
 
 ```
 INSTALL(<FILES|PROGRAMS> files... 
@@ -187,7 +301,70 @@ INSTALL(<FILES|PROGRAMS> files...
 		[RENAME <name>] [OPTIONAL] [EXCLUDE_FROM_ALL])
 ```
 
-**安装后权限为755。**  
+可用于安装一般文件，并可以指定访问权限，文件名是此指令所在路径下的相对路径。如果默认不定义**PERMISSIONS**，安装后的权限为：OWNER_WRITE，OWNER_READ，GROUP_READ和WORLD_READ，权限==644==。
+
+非目标文件的可执行程序安装，如脚本之类的：安装后权限为：OWNER_EXECUTE，GROUP_EXECUTE和WORLD_EXECUTE，即==755==权限。
+
+##### DIRECTORY
+
+```
+install(DIRECTORY dirs...
+        TYPE <type> | DESTINATION <dir>
+        [FILE_PERMISSIONS permissions...]
+        [DIRECTORY_PERMISSIONS permissions...]
+        [USE_SOURCE_PERMISSIONS] [OPTIONAL] [MESSAGE_NEVER]
+        [CONFIGURATIONS [Debug|Release|...]]
+        [COMPONENT <component>] [EXCLUDE_FROM_ALL]
+        [FILES_MATCHING]
+        [[PATTERN <pattern> | REGEX <regex>]
+         [EXCLUDE] [PERMISSIONS permissions...]] [...])
+```
+
+这里主要介绍其中的DIRECTORY、PATTERN、以及PERMISSIONS参数。
+
+**DIRECTORY**后面连接的是所在Source目录的相对路径，当请**务必注意**：==abc和abc/有很大的区别。==
+
+如果目录名不以/结尾，那么**这个目录**将被安装到目标路径下的abc，如果目录名以/结尾，代表将**这个目录中的内容**安装到目标路径，但不包括这个目录本身。
+
+PATTERN用于使用正则表达式进行过滤，PERMISSIONS用于指定PATTERN过滤后的文件权限。
+
+举例:
+
+```
+install(DIRECTORY icons scripts/ DESTINATION share/myproj
+        PATTERN "CVS" EXCLUDE
+        PATTERN "scripts/*"
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ)
+```
+
+这条指令的执行结果是：
+
+将icons目录安装到<prefix>/share/myproj,将scripts/中的内容安装到<prefix>/share/myproj
+
+**不包含目录名为CVS的目录**，对于scripts/*文件指定权限为OWNER_EXECUTE OWNER_WRITE WONER_READ GROUP_EXECUTE GROUP_READ.
+
+##### 自定义安装逻辑
+
+```
+install([[SCRIPT <file>] [CODE <code>]]
+        [ALL_COMPONENTS | COMPONENT <component>]
+        [EXCLUDE_FROM_ALL] [...])
+```
+
+SCRIPT参数用于在安装时调用cmake脚本文件（也就是<abc>.cmake文件）
+
+CODE参数用于执行CMAKE指令，**必须以双引号括起来**。比如：
+
+```
+install(CODE "MESSAGE(\"Sample install message.\")")
+```
+
+在安装的时候将会打印一条信息。
+
+
+
+
 
 #### CMAKE_INSTALL_PREFIX
 
@@ -332,12 +509,7 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
 # 指定可执行程序和config.h安装路径
 install(TARGETS demo8 DESTINATION bin)	# 一定要写相对路径，否则打的就是空包
 install(FILES ${PROJECT_BINARY_DIR}/config.h DESTINATION include)
-
 ```
-
-
-
-
 
 如何配置生成各种平台上的**安装包，包括二进制安装包和源码安装包。**为了完成这个任务，我们需要用到 **CPack** ，它同样也是由 CMake 提供的一个工具，专门用于打包。
 
@@ -458,17 +630,19 @@ Now we use our own Math library.
 
 关于 CPack 的更详细的用法可以通过 `man 1 cpack` 参考 CPack 的文档。
 
+## 清理工程
+
+可以使用make clean清理makefile产生的中间的文件，但是，不能使用make distclean清除cmake产生的中间件。如果需要删除cmake的中间件，可以采用rm -rf ***来删除中间件。
 
 
 
+## CMAKE基础
 
-
-
-### 1.1 语法特性介绍
+### 1. 语法特性介绍
 
 - **基本语法格式：指令(参数1 参数2…)**
 
-- - 参数使用**括弧**括起
+  - 参数使用**括弧**括起
   - 参数之间使用**空格**或**分号**分开
 
 - **指令是大小写无关的，参数和变量是大小写相关的**
@@ -481,123 +655,166 @@ Now we use our own Math library.
 
 - **变量使用${}方式取值，但是在 IF 控制语句中是直接使用变量名**
 
-### 2.1 重要指令和CMake常用变量
+### 2. 重要指令和CMake常用变量
 
 https://cmake.org/cmake/help/latest/      -----> search
 
-#### 2.1.1 重要指令
+#### 2.1 常用函数
 
-- **cmake_minimum_required** **- 指定CMake的最小版本要求**
-  
-- 语法：**cmake_minimum_required(VERSION versionNumber [FATAL_ERROR])**
-  
-  ```
-  # CMake最小版本要求为2.8.3
-  cmake_minimum_required(VERSION 2.8.3)
-  ```
-  
-  
+##### cmake_minimum_required
 
+指定CMake的最小版本要求
 
-- **project** **- 定义工程名称，并可指定工程支持的语言** 
+```
+cmake_minimum_required(VERSION <min>[...<policy_max>] [FATAL_ERROR])
+```
 
-  - 语法：**project(projectname [CXX] [C] [Java])**
+```
+# CMake最小版本要求为2.8.3
+cmake_minimum_required(VERSION 2.8.3)
+```
 
-  ```
-  # 指定工程名为HELLOWORLD
-  project(HELLOWORLD)
-  ```
+##### project
 
-  
+定义工程名称，并可指定工程支持的语言
 
-- **set** **- 显式的定义变量** 
+```
+project(projectname [CXX] [C] [Java])
+```
 
+```
+# 指定工程名为HELLOWORLD
+project(HELLOWORLD)
+```
 
-  - 语法：**set(VAR [VALUE] [CACHE TYPE DOCSTRING [FORCE]])**
+##### set
 
-  ```
-  # 定义SRC变量，其值为main.cpp hello.cpp
-  set(SRC sayhello.cpp hello.cpp)
-  ```
+set可以设置普通变量、缓存变量和环境变量
 
-  
+设置普通变量：
 
-- **include_directories - 向工程添加多个特定的头文件搜索路径** --->相当于指定g++编译器的-I参数
+```
+set(<variable> <value>... [PARENT_SCOPE])
+```
 
+如果PARENT_SCOPE被设置，他的父级目录将可以访问子级目录的变量
 
-  - 语法：**include_directories([AFTER|BEFORE] [SYSTEM] dir1 dir2 …)**
+设置缓存变量:
+
+```
+set(<variable> <value>... CACHE <type> <docstring> [FORCE])
+```
+
+使用CACHE 将会把变量保存到CMakeCache.txt文件中，这样同级目录就能访问另一个目录中的变量
+
+设置环境变量:
+
+```
+set(ENV{<variable>} [<value>])
+```
+
+调用 `$ENV{<variable>}`返回设置的值
+
+如果在ENV{<variable>}之后没写任何值，或者<value>是一个空字符串，那么这条命令将会清空这个环境变量所对应的值
+
+##### include_directories
+
+向工程添加多个特定的头文件搜索路径 ---> 相当于指定g++编译器的-I参数
+
+```
+include_directories([AFTER|BEFORE] [SYSTEM] dir1 dir2 …)
+```
 
   ```
   # 将/usr/include/myincludefolder 和 ./include 添加到头文件搜索路径
   include_directories(/usr/include/myincludefolder ./include)
   ```
 
-  
+  这条指令可以用来向工程添加多个特定的头文件搜索路径，路径之间用空格分隔，可以使用双引号将它括起来，默认的行为是追加到当前的头文件搜索路径的后面，你可以通过两种方式来进行控制搜索路径添加的方式：
 
-- **link_directories** **- 向工程添加多个特定的库文件搜索路径** --->相当于指定g++编译器的-L参数
+1. 通过SET这个cmake变量(**CMAKE_INCLUDE_DIRECTORIES_BEFORE**)为on，可以将添加的头文件搜索路径放在已有路径的前面。
+2. 通过AFTER或者BEFOR参数，也可以控制是追加还是置前。
 
+##### link_directories
 
-  - 语法：link_directories(dir1 dir2 …) 
+向工程添加多个特定的库文件搜索路径  ---> 相当于指定g++编译器的-L参数
+
+添加非标准的共享库搜索路径，比如在工程内部同时存在共享库和可执行二进制，在编译时就需要指定一下这些共享库的路径。
+
+```
+link_directories([AFTER|BEFORE] directory1 [directory2 ...])
+```
 
   ```
   # 将/usr/lib/mylibfolder 和 ./lib 添加到库文件搜索路径
   link_directories(/usr/lib/mylibfolder ./lib)
   ```
 
-  
+##### add_executable
 
-- **add_library** **- 生成库文件**
+生成可执行文件
 
-
-  - 语法：**add_library(libname [SHARED|STATIC|MODULE] [EXCLUDE_FROM_ALL] source1 source2 … sourceN)**
-
-  ```
-  # 通过变量 SRC 生成 libhello.so 共享库 (默认是静态库)
-  add_library(hello SHARED ${SRC})
-  ```
-
-  
-
-- **add_executable** **- 生成可执行文件**
-
-
-  - 语法：**add_library(exename source1 source2 … sourceN)**
+```
+add_executable(<name> [WIN32] [MACOSX_BUNDLE]
+               [EXCLUDE_FROM_ALL]
+               [source1] [source2 ...])
+```
 
   ```
   # 编译main.cpp生成可执行文件main
   add_executable(main main.cpp)
   ```
 
-  
+##### target_link_libraries
 
-- **target_link_libraries** - 为 target 添加需要链接的共享库  --->相同于指定g++编译器-l参数
+为 target 添加需要链接的共享库  --->相同于指定g++编译器-l参数
 
-
-  - 语法：**target_link_libraries(target library1 library2…)**
+```
+target_link_libraries(target library1 library2…)
+```
 
   ```
   # 将hello动态库文件链接到可执行文件main
   target_link_libraries(main hello)
   ```
 
-  
+##### add_subdirectory
 
-- **add_subdirectory - 向当前工程添加存放源文件的子目录，并可以指定中间二进制和目标二进制存放的位置**
+```
+add_subdirectory(source_dir [binary_dir] [EXCLUDE_FROM_ALL] [SYSTEM])
+```
 
+这个指令用于向当前工程添加存放源文件的子目录。并可以指定中间二进制和目标二进制存放的位置。**EXCLUDE_FROM_ALL**参数的含义是将这个目录从编译过程中排除，比如，工程中的example，可能就需要工程构建完成后，再进入example目录单独进行构建（当然，你可以通过定义依赖来解决此类问题）。
 
-  - 语法：**add_subdirectory(source_dir [binary_dir] [EXCLUDE_FROM_ALL])**
-
-  ```
-  # 添加src子目录，src中需有一个CMakeLists.txt
-  add_subdirectory(src)
-  ```
-
-  
-
-- **aux_source_directory** - ==发现一个目录下所有的源代码文件并将列表存储在一个变量中，这个指令临时被用来自动构建源文件列表==
+```
+add_subdirectory(example EXCLUDE_FROM_ALL)
+```
 
 
-  - 语法：**aux_source_directory(dir VARIABLE)**
+
+##### set_target_properties
+
+```
+set_target_properties(target1 target2 ...
+                      PROPERTIES prop1 value1
+                      prop2 value2 ...)
+```
+
+##### get_target_property
+
+```
+get_target_property(<VAR> target property)
+```
+
+
+
+##### aux_source_directory
+
+==发现一个目录下所有的源代码文件并将列表存储在一个变量中，这个指令临时被用来自动构建源文件列表==
+
+```
+aux_source_directory(<dir> <variable>)
+```
 
   ```
   # 定义SRC变量，其值为当前目录下所有的源代码文件
@@ -608,22 +825,77 @@ https://cmake.org/cmake/help/latest/      -----> search
 
   
 
-#### 2.1.2 CMake常用变量
+##### find_package()
+
+
+
+##### find_library()
+
+###### CMAKE_LIBRARY_PATH
+
+
+
+##### find_path()
+
+###### CMAKE_INCLUDE_PATH
+
+
+
+##### FIND_FILE
+
+
+
+##### FIND_PROGRAM
+
+
+
+##### macro
+
+```
+macro(<name> [arg1 [arg2 [arg3 ...]]])
+		COMMAND1(ARGS ...)
+		COMMAND2(ARGS ...)
+endmacro(<name>)
+```
+
+
+
+
+
+#### 2.2 CMake常用变量
+
+##### ADD_DEFINITIONS
+
+向C/C++编译器添加-D定义，比如：
+
+`ADD_DEFINITIONS(-DENABLE_DEBUG -DABC)`，参数之间用空格分隔。如果你的代码中定义了
+
+`#ifdef ENABLE_DEBUG #endif`，这个代码块就会生效。如果要添加其他的编译器开关，可以通过CMAKE_C_FLAGS变量和CMAKE_CXX_FLAGS变量设置。
 
 ##### CMAKE_C_FLAGS  
 
-**gcc编译选项**
-
-
+**gcc编译选项**, 也可以通过指令ADD_DEFINITIONS()添加。
 
 ##### CMAKE_CXX_FLAGS  
 
-**g++编译选项**
+**g++编译选项**,也可以通过指令ADD_DEFINITIONS()添加。
 
 ```
 # 在CMAKE_CXX_FLAGS编译选项后追加-std=c++11
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ```
+
+##### CMAKE_C_COMPILER
+
+```
+-DCMAKE_C_COMPILER #指定C语言编译器如交叉编译器未加入到环境变量，需要使用绝对路径
+```
+
+##### CMAKE_CXX_COMPILER
+
+指定C++编译器
+
+
 
 ##### CMAKE_BUILD_TYPE
 
@@ -685,34 +957,29 @@ set(CMAKE_CXX_EXTENSIONS OFF
 
 3. PROJECT_SOURCE_DIR 跟其他指令稍有区别,现在,你可以理解为他们是一致的。
 
+##### CMAKE_CURRENT_SOURCE_DIR
+
+##### CMAKE_CURRENT_BINARY_DIR
+
+
+
 ##### CMAKE_CURRENT_LIST_DIR
 
 1. ${CMAKE_CURRENT_LIST_DIR}代表当前的CMakeLists.txt文件所在的**绝对路径**。
 
+##### CMAKE_CURRENT_LIST_LINE
 
+输出这个变量所在的行
 
-------
+##### CMAKE_MODULE_PATH
 
-##### CMAKE_C_COMPILER
-
-```
--DCMAKE_C_COMPILER #指定C语言编译器如交叉编译器未加入到环境变量，需要使用绝对路径
-```
-
-##### CMAKE_CXX_COMPILER
-
-指定C++编译器
-
-
-
-##### macro
+这个变量用来定义自己的cmake模块所在的路径。如果你的工程比较复杂，有可能会自己编写一些cmake模块，这些cmake模块是随你的工程发布的，为了让cmake在处理CMakeLists.txt时找到这些模块，你需要通过SET指令，将自己的cmake模块路径设置一下。
 
 ```
-macro(<name> [arg1 [arg2 [arg3 ...]]])
-		COMMAND1(ARGS ...)
-		COMMAND2(ARGS ...)
-endmacro(<name>)
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 ```
+
+这个时候你就可以通过INCLUDE指令来调用自己的模块。
 
 ##### CMAKE_INCLUDE_CURRENT_DIR 
 
@@ -724,9 +991,51 @@ endmacro(<name>)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 ```
 
+---------------
+
+##### 系统信息
+
+###### CMAKE_MAKOR_VERSION
+
+CMAKE的主版本号，比如2.4.6中的2
+
+###### CMAKE_MINOR_VERSION
+
+CAMKE的次版本号，比如2.4.6中的4
+
+###### CMAKE_PATCH_VERSION
+
+CMAKE的补丁等级，比如2.4.6中的6
+
+###### CAMKE_SYSTEM
+
+系统名称比如LInux-2.6.22
+
+###### CAMKE_SYSTEM_NAME
+
+不包含版本的系统名，比如linux
+
+###### CMAKE_SYSTEM_VERSION
+
+系统版本，比如2.6.22
+
+###### CMAKE_SYSTEM_PROCESSOR
+
+处理器的名称，比如i686。
+
+###### UNIX
+
+在所有的类UNIX平台为TRUE，包括OS X和cygwin
+
+###### WIN32
+
+在所有win32平台为TRUE，包括cygwin
 
 
-## CMake Generators
+
+### 3. CMake Generators
+
+cmake -G
 
 **references**: [cmake-generators(7)](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html#id7)
 
