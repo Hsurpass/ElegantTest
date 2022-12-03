@@ -87,6 +87,19 @@ ELSEIF(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
     MESSAGE("LINUX")
 ENDIF()
 
+IF(WIN32)
+    MESSAGE(STATUS "WIN")
+ELSEIF(WIN32)
+    MESSAGE(STATUS "LINUX")
+ENDIF(WIN32)
+
+IF(WIN32)
+    MESSAGE(STATUS "WIN")
+ELSE(UNIX)
+    MESSAGE(STATUS "UNIX")
+ENDIF()
+
+
 function(print x y z)
     message(STATUS "CALL print func:")
     message("x = ${x}")
@@ -127,4 +140,24 @@ LIST(REVERSE list1)
 message(${list1})
 LIST(SORT list1)
 message(${list1})
+
+
+
+MESSAGE("---------------------------")
+# find_package(Boost)
+find_package(Boost COMPONENTS atomic thread)
+
+message(STATUS ${Boost_VERSION})
+message(STATUS ${Boost_FOUND})
+message(STATUS ${Boost_INCLUDE_DIR})    # cache变量
+message(STATUS ${Boost_INCLUDE_DIRS})
+message(STATUS ${Boost_LIBRARY_DIRS})
+message(STATUS ${Boost_LIBRARIES})
+message(STATUS ${Boost_ATOMIC_LIBRARY})
+message(STATUS ${Boost_THREAD_LIBRARY})
+message(STATUS ${Boost_LIBRARY_DIR_RELEASE})
+message(STATUS ${Boost_LIBRARY_DIR_DEBUG})
+message(STATUS ${Boost_ROOT})
+message(STATUS ${BoostROOT})
+
 
