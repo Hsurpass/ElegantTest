@@ -143,21 +143,58 @@ message(${list1})
 
 
 
-MESSAGE("---------------------------")
+MESSAGE("--------------BOOST-----------------")
+# set(BOOST_ROOT "D:\\WorkSpace\\4openSourceCode\\Boost\\winBoost176")
+# SET(BOOST_INCLDUEDIR "D:\\WorkSpace\\4openSourceCode\\Boost\\winBoost176\\include\\boost-1_76")
+message("BOOST_INCLUDEDIR:" ${BOOST_INCLDUEDIR})
+# set(BOOST_LIBRARYDIR "D:\\WorkSpace\\4openSourceCode\\Boost\\winBoost176\\lib")
+message("BOOST_LIBRARYDIR:" ${BOOST_LIBRARYDIR})
+
+# module模式搜索
+# set(CMAKE_MODULE_PATH "D:\\WorkSpace\\4openSourceCode\\Boost\\winBoost176Build\\cmake")
+MESSAGE(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+
+
+#config模式搜索顺序
+#1. PACKAGE_ROOT
+message(STATUS "BOOST_ROOT:" ${BOOST_ROOT})
+message(STATUS "BOOSTROOT:" ${BOOSTROOT})
+#2.cmake特定的缓存变量 CMAKE_PREFIX_PATH CMAKE_FRAMEWORK_PATH CMAKE_APPBUNDLE_PATH
+MESSAGE(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+MESSAGE(STATUS "CMAKE_FRAMEWORK_PATH: ${CMAKE_FRAMEWORK_PATH}")
+MESSAGE(STATUS "CMAKE_APPBUNDLE_PATH: ${CMAKE_APPBUNDLE_PATH}")
+#3.cmake特定的环境变量 packagename_DIR CMAKE_PREFIX_PATH CMAKE_FRAMEWORK_PATH CMAKE_APPBUNDLE_PATH
+message(STATUS "Boost_DIR: " ${Boost_DIR}) 
+#4.HINTS字段指定的路径
+#5.系统环境变量PATH
+#6.存储在CMake的"User Package Registry"(用户包注册表)中的路径。
+#7.设定为当前系统定义的cmake变量 CMAKE_SYSTEM_PREFIX_PATH CMAKE_SYSTEM_FRAMEWORK_PATH CMAKE_SYSTEM_APPBUNDLE_PATH
+MESSAGE(STATUS "CMAKE_SYSTEM_PREFIX_PATH: ${CMAKE_SYSTEM_PREFIX_PATH}")
+MESSAGE(STATUS "CMAKE_SYSTEM_FRAMEWORK_PATH: ${CMAKE_SYSTEM_FRAMEWORK_PATH}")
+MESSAGE(STATUS "CMAKE_SYSTEM_APPBUNDLE_PATH: ${CMAKE_SYSTEM_APPBUNDLE_PATH}")
+#8.在cmake的"System Package Registry"(系统包注册表）中查找
+#9.从PATHS字段指定的路径中查找
+
+
 # find_package(Boost)
 find_package(Boost COMPONENTS atomic thread)
 
-message(STATUS ${Boost_VERSION})
-message(STATUS ${Boost_FOUND})
-message(STATUS ${Boost_INCLUDE_DIR})    # cache变量
-message(STATUS ${Boost_INCLUDE_DIRS})
-message(STATUS ${Boost_LIBRARY_DIRS})
-message(STATUS ${Boost_LIBRARIES})
-message(STATUS ${Boost_ATOMIC_LIBRARY})
-message(STATUS ${Boost_THREAD_LIBRARY})
-message(STATUS ${Boost_LIBRARY_DIR_RELEASE})
-message(STATUS ${Boost_LIBRARY_DIR_DEBUG})
-message(STATUS ${Boost_ROOT})
-message(STATUS ${BoostROOT})
+message(STATUS "Boost_VERSION:" ${Boost_VERSION})
+message(STATUS "Boost_FOUND:" ${Boost_FOUND})
+message(STATUS "Boost_INCLUDE_DIR:" ${Boost_INCLUDE_DIR})    # cache变量
+message(STATUS "Boost_INCLUDE_DIRS:" ${Boost_INCLUDE_DIRS})
+message(STATUS "Boost_LIBRARY_DIRS:" ${Boost_LIBRARY_DIRS})
+message(STATUS "Boost_LIBRARIES:" ${Boost_LIBRARIES})
+message(STATUS "Boost_ATOMIC_LIBRARY:" ${Boost_ATOMIC_LIBRARY})
+message(STATUS "Boost_THREAD_LIBRARY:" ${Boost_THREAD_LIBRARY})
+message(STATUS "Boost_LIBRARY_DIR_RELEASE:" ${Boost_LIBRARY_DIR_RELEASE})
+message(STATUS "Boost_LIBRARY_DIR_DEBUG:" ${Boost_LIBRARY_DIR_DEBUG})
 
+
+MESSAGE("---------------PROTOBUF-------------------")
+find_package(Protobuf)
+MESSAGE(STATUS "Protobuf_FOUND:" ${Protobuf_FOUND})
+MESSAGE(STATUS "Protobuf_VERSION:" ${Protobuf_VERSION})
+message(STATUS "Protobuf_INCLUDE_DIR: " ${Protobuf_INCLUDE_DIR})
+message("Protobuf_INCLUDE_DIRS: " ${Protobuf_INCLUDE_DIRS})
 
