@@ -207,7 +207,7 @@ default:
 b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --with-atomic --no-cmake-config release
 ```
 ```bash
-// 测试用
+// 测试用 只编译atomic库
 b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --with-atomic --cmakedir="..\winBoost176Build\cmake"
 ```
 
@@ -215,9 +215,12 @@ b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --wit
 #默认使用:
 1. 打开'Developer Command Prompt for VS 2019', 进入boost源码目录
 2. b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --without-python --no-cmake-config
+3. b2.exe install --prefix="..\winBoost176" --build-dir="..\winBoost176Build" --without-python  ## --no-cmake-config 如果加上这个选项find_package(Boost)时会找不到Boost, find_package要去搜索"BoostConfig.cmake"
 ```
 
 
+config:
+  环境变量添加Boost路径`D:\WorkSpace\4openSourceCode\Boost\winBoost176`
 
 reference:
 

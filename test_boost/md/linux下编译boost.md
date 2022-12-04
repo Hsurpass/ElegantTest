@@ -54,7 +54,7 @@
    export CPLUS_INCLUDE_PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/include:$CPLUS_INCLUDE_PATH
    export LIBRARY_PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/lib:$LIBRARY_PATH
    export LD_LIBRARY_PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/lib:$LD_LIBRARY_PATH
-export PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/:$PATH
+   export PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/:$PATH
    ```
    
    
