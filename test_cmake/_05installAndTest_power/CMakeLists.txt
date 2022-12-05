@@ -5,6 +5,7 @@ cmake_minimum_required (VERSION 2.8)
 project (Demo4)
 
 # set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install")
 
 # 是否使用自己的 MathFunctions 库
 option(USE_MYMATH "Use provided math implementation" ON)
@@ -34,8 +35,9 @@ add_executable(demo5 ${DIR_SRCS})
 target_link_libraries(demo5 ${EXTRA_LIBS})
 
 # 指定可执行程序和config.h安装路径
-install(TARGETS demo5 DESTINATION ${PROJECT_SOURCE_DIR}/install/bin)
-install(FILES config.h DESTINATION ${PROJECT_SOURCE_DIR}/install/include)
+
+install(TARGETS demo5 DESTINATION bin)
+install(FILES config.h DESTINATION include)
 
 
 #启用测试

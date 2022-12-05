@@ -10,6 +10,6 @@ message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/bin)
 message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 
-install(TARGETS MathFunctions DESTINATION ${PROJECT_SOURCE_DIR}/install/bin)
-install(FILES MathFunctions.h DESTINATION ${PROJECT_SOURCE_DIR}/install/include)
+install(TARGETS MathFunctions DESTINATION bin)
+install(FILES MathFunctions.h DESTINATION include)
 
