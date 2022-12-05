@@ -35,13 +35,13 @@
    + install: 会拷贝头文件并编译所有库 (会在linux目录下生成include、lib子目录)
 
    ```bash
-   ./b2 install --prefix=../linux176 --build-dir=../linux176 --without-python --no-cmake-config
+   ./b2 install --prefix=../installLinuxBoost176 --build-dir=../buildLinuxBoost176 --without-python
    ```
 
    + stage: 只会编译库（只会生成lib目录）
 
    ```bash
-   ./b2 stage --stagedir=../linux176 --build-dir=../linux176 --without-python --no-cmake-config
+   ./b2 stage --stagedir=../installLinuxBoost176 --build-dir=../buildLinuxBoost176 --without-python --no-cmake-config
    ```
 
    
