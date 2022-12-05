@@ -148,7 +148,7 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 1. build
 
    ```bash
-   cmake -B ../../buildlinux --parallel 4
+   cmake -B ../../buildlinux
    ```
 
    
@@ -156,7 +156,7 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 2. compile
 
    ```bash
-   cmake --build ../../buildlinux/ --config release
+   cmake --build ../../buildlinux/ --config release --parallel 4
    ```
 
    

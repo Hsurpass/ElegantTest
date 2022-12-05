@@ -1,5 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+# cmake 3.15及以后推荐用这个
+# if(POLICY CMP0091)
+#     message("POLICY CMP0091")
+#     cmake_policy(SET CMP0091 NEW)
+# endif()
+
 project(DEMO)
 
 set(exec "bash compile.sh")
@@ -14,7 +20,7 @@ MESSAGE(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 endif()
 message("exec: " ${exec})
 
-FIND_PACKAGE(Protobuf)
+FIND_PACKAGE(Protobuf REQUIRED COMPONENTS protobuf)
 
 MESSAGE(STATUS "Protobuf_FOUND:" ${Protobuf_FOUND})
 MESSAGE(STATUS "Protobuf_VERSION:" ${Protobuf_VERSION})
@@ -35,7 +41,25 @@ message("PBSRC:" ${PBSRC})
 set(SRC main.cpp)
 
 add_executable(demo ${SRC} ${PBSRC})
-target_link_directories(demo ${Protobuf_LIBRARIES})
+
+#cmake 3.15之前用这个
+if(WIN32)
+message("CMAKE_CXX_FLAGS_RELEASE: " ${CMAKE_CXX_FLAGS_RELEASE})
+message("CMAKE_CXX_FLAGS_DEBUG: " ${CMAKE_CXX_FLAGS_DEBUG})
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+message("CMAKE_CXX_FLAGS_RELEASE: " ${CMAKE_CXX_FLAGS_RELEASE})
+message("CMAKE_CXX_FLAGS_DEBUG: " ${CMAKE_CXX_FLAGS_DEBUG})
+endif(WIN32)
+
+# cmake 3.15及以后推荐用这个
+# reference: https://blog.csdn.net/Copperxcx/article/details/123084367
+# if(WIN32)
+#     message("MSVC_RUNTIME_LIBRARY")
+#     set_property(TARGET demo PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+# endif()
+
+target_link_libraries(demo ${Protobuf_LIBRARIES})
 
 
 
