@@ -180,21 +180,65 @@ MESSAGE(STATUS "CMAKE_SYSTEM_APPBUNDLE_PATH: ${CMAKE_SYSTEM_APPBUNDLE_PATH}")
 find_package(Boost COMPONENTS atomic thread)
 
 message(STATUS "Boost_VERSION:" ${Boost_VERSION})
+MESSAGE("Boost_VERSION_MACRO:" ${Boost_VERSION_MACRO})
+MESSAGE("Boost_VERSION_STRING:" ${Boost_VERSION_STRING})
+MESSAGE("Boost_LIB_VERSION:" ${Boost_LIB_VERSION})
+MESSAGE("Boost_MAJOR_VERSION:" ${Boost_MAJOR_VERSION})
+MESSAGE("Boost_MINOR_VERSION:" ${Boost_MINOR_VERSION})
+MESSAGE("Boost_VERSION_PATCH:" ${Boost_VERSION_PATCH})
+MESSAGE("Boost_VERSION_COUNT:" ${Boost_VERSION_COUNT})
+MESSAGE("Boost_LIB_DIAGNOSTIC_DEFINITIONS :" ${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+
 message(STATUS "Boost_FOUND:" ${Boost_FOUND})
-message(STATUS "Boost_INCLUDE_DIR:" ${Boost_INCLUDE_DIR})    # cache变量
+message(STATUS "Boost_ATOMIC_FOUND:" ${Boost_ATOMIC_FOUND})
+message(STATUS "Boost_THREAD_FOUND:" ${Boost_THREAD_FOUND})
+message(STATUS "Boost_CHRONO_FOUND:" ${Boost_CHRONO_FOUND})
+message(STATUS "Boost_ATOMIC_LIBRARY:" ${Boost_ATOMIC_LIBRARY})
+message(STATUS "Boost_THREAD_LIBRARY:" ${Boost_THREAD_LIBRARY})
+
+
 message(STATUS "Boost_INCLUDE_DIRS:" ${Boost_INCLUDE_DIRS})
 message(STATUS "Boost_LIBRARY_DIRS:" ${Boost_LIBRARY_DIRS})
 message(STATUS "Boost_LIBRARIES:" ${Boost_LIBRARIES})
 message(STATUS "Boost_ATOMIC_LIBRARY:" ${Boost_ATOMIC_LIBRARY})
 message(STATUS "Boost_THREAD_LIBRARY:" ${Boost_THREAD_LIBRARY})
+message(STATUS "Boost_SYSTEM_LIBRARY:" ${Boost_SYSTEM_LIBRARY})
 message(STATUS "Boost_LIBRARY_DIR_RELEASE:" ${Boost_LIBRARY_DIR_RELEASE})
 message(STATUS "Boost_LIBRARY_DIR_DEBUG:" ${Boost_LIBRARY_DIR_DEBUG})
 
+message("################BOOST cache 变量################")
+message(STATUS "Boost_INCLUDE_DIR:" ${Boost_INCLUDE_DIR})    # cache变量
+message(STATUS "Boost_LIBRARY_DIR_RELEASE:" ${Boost_LIBRARY_DIR_RELEASE})    # cache变量
+message(STATUS "Boost_LIBRARY_DIR_DEBUG:" ${Boost_LIBRARY_DIR_DEBUG})    # cache变量
+message(STATUS "Boost_ATOMIC_LIBRARY_DEBUG:" ${Boost_ATOMIC_LIBRARY_DEBUG})    # cache变量
+message(STATUS "Boost_ATOMIC_LIBRARY_RELEASE:" ${Boost_ATOMIC_LIBRARY_RELEASE})    # cache变量
+
+
+
 
 MESSAGE("---------------PROTOBUF-------------------")
+# MESSAGE(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+# list(APPEND CMAKE_PREFIX_PATH "D:\\WorkSpace\\4openSourceCode\\ProtoBuf\\installvs2019")
+# MESSAGE(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+MESSAGE(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+# set(CMAKE_MODULE_PATH "D:\\WorkSpace\\4openSourceCode\\ProtoBuf\\installvs2019")
+MESSAGE(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+
+
 find_package(Protobuf)
 MESSAGE(STATUS "Protobuf_FOUND:" ${Protobuf_FOUND})
 MESSAGE(STATUS "Protobuf_VERSION:" ${Protobuf_VERSION})
-message(STATUS "Protobuf_INCLUDE_DIR: " ${Protobuf_INCLUDE_DIR})
 message("Protobuf_INCLUDE_DIRS: " ${Protobuf_INCLUDE_DIRS})
-
+message("Protobuf_LIBRARIES: " ${Protobuf_LIBRARIES})
+message("Protobuf_PROTOC_LIBRARIES: " ${Protobuf_PROTOC_LIBRARIES})
+message("Protobuf_LITE_LIBRARIES: " ${Protobuf_LITE_LIBRARIES})
+# CACHE 变量
+message(STATUS "Protobuf_INCLUDE_DIR: " ${Protobuf_INCLUDE_DIR})
+message("Protobuf_LIBRARY: " ${Protobuf_LIBRARY})
+message("Protobuf_PROTOC_LIBRARY" ${Protobuf_PROTOC_LIBRARY})
+message("Protobuf_INCLUDE_DIR:" ${Protobuf_INCLUDE_DIR})
+message("Protobuf_PROTOC_EXECUTABLE: " ${Protobuf_PROTOC_EXECUTABLE})
+message("Protobuf_LIBRARY_DEBUG: " ${Protobuf_LIBRARY_DEBUG})
+message("Protobuf_PROTOC_LIBRARY_DEBUG: " ${Protobuf_PROTOC_LIBRARY_DEBUG})
+message("Protobuf_LITE_LIBRARY: " ${Protobuf_LITE_LIBRARY})
+message("Protobuf_LITE_LIBRARY_DEBUG: " ${Protobuf_LITE_LIBRARY_DEBUG})
