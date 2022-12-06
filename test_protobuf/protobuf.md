@@ -54,11 +54,23 @@ pb/json转换
 
 https://zhuanlan.zhihu.com/p/442458452
 
+## protobuf编译选项介绍
 
 
-## windows安装protobuf
+------------------------------------------------
 
-打开**`Developer Command Prompt for vs2019`**
+| CMAKE_BUILD_TYPE               | 编译模式(Debug[调试模式 ]\|Release[发布模式]) |
+| ------------------------------ | --------------------------------------------- |
+| CMAKE_INSTALL_PREFIX           | 编译后安装路径 可以使用相对路径               |
+| **protobuf_BUILD_SHARED_LIBS** | **是否编译为动态库(OFF\|ON)**                 |
+| protobuf_WITH_ZLIB             | 是否使用ZLIB库((OFF\|ON  建议设置为OFF)       |
+| protobuf_BUILD_TESTS           | 是否编译测试工程(OFF\|ON 建议设置为OFF)       |
+
+
+
+## **windows安装protobuf**
+
+**打开`Developer Command Prompt for vs2019`**
 
 ```bash
 cd protobuf
@@ -89,20 +101,21 @@ nmake install
 
 -----------------------------------------
 
-1. 打开**`Developer Command Prompt for vs2019`**, 以protobuf3.16为例，其他版本查看文档
+1. **打开`Developer Command Prompt for vs2019`, 以protobuf3.16为例，其他版本查看文档**
 
-   https://github.com/protocolbuffers/protobuf/blob/main/cmake/README.md
+   **https://github.com/protocolbuffers/protobuf/blob/main/cmake/README.md**
 
-   https://github.com/protocolbuffers/protobuf/blob/v3.16.0/src/README.md
+   **https://github.com/protocolbuffers/protobuf/blob/v3.16.0/src/README.md**
 
-2. 构建 build
+2. **构建 build**
 
    ```bash
    cd .../protobuf-3.16.0/cmake
    cmake -B ../../buildvs2019 -DCMAKE_INSTALL_PREFIX=../../installvs2019 -G "Visual Studio 16 2019"
+   cmake -B ../../buildvs2019 -DCMAKE_INSTALL_PREFIX=../../installvs2019 -G "Visual Studio 16 2019" -Dprotobuf_BUILD_SHARED_LIBS=ON -Dprotobuf_WITH_ZLIB=ON -Dprotobuf_BUILD_TESTS=ON
    ```
 
-3. 编译 compile
+3. **编译 compile**
 
    ```bash
    cmake --build ../../buildvs2019 --config release
@@ -111,16 +124,16 @@ nmake install
 
    
 
-4. 安装 install
+4. **安装 install**
 
    ```bash
    cmake --install ../../buildvs2019 --config release
    cmake --install ../../buildvs2019 --config debug
    ```
 
-5. 配置环境变量
+5. **配置环境变量**
 
-
+   **配置完环境变量需要重启**
 
 ```bash
 g++ addressbook.pb.cc main.cpp `pkg-config --cflags --libs protobuf` -std=c++11
@@ -128,7 +141,7 @@ g++ addressbook.pb.cc main.cpp `pkg-config --cflags --libs protobuf` -std=c++11
 
 
 
-## linux安装protobuf
+## **linux安装protobuf**
 
 ```bash
 sudo apt-get install autoconf automake libtool curl make g++ unzip
@@ -145,7 +158,7 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
 ----------------------------------------------
 
-1. build
+1. **build**
 
    ```bash
    cmake -B ../../buildlinux
@@ -153,7 +166,7 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
    
 
-2. compile
+2. **compile**
 
    ```bash
    cmake --build ../../buildlinux/ --config release --parallel 4
@@ -161,21 +174,21 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
    
 
-3. install
+3. **install**
 
    ```bash
    cmake --install ../../buildlinux/ --config release
    ```
 
-4. config
+4. **config**
 
-   ==默认安装在 /usr/local 目录下。/usr/local/include /usr/local/lib /usr/local/bin==
+   **==默认安装在 /usr/local 目录下。/usr/local/include /usr/local/lib /usr/local/bin==**
 
 
 
-### 配置编译选项
+### **配置编译选项**
 
-To compile a package that uses Protocol Buffers, you need to pass various flags to your compiler and linker. As of version 2.2.0, Protocol Buffers integrates with pkg-config to manage this. If you have pkg-config installed, then you can invoke it to get a list of flags like so:
+**To compile a package that uses Protocol Buffers, you need to pass various flags to your compiler and linker. As of version 2.2.0, Protocol Buffers integrates with pkg-config to manage this. If you have pkg-config installed, then you can invoke it to get a list of flags like so:**
 
 ```bash
 pkg-config --cflags protobuf         # print compiler flags
@@ -191,16 +204,16 @@ sudo apt install pkg-config
 
 
 
-##### example:
+##### **example:**
 
-  使用 **protoc** 将**.proto** 文件生成**.h .cpp** 文件的命令：
+  **使用 protoc 将.proto 文件生成.h .cpp 文件的命令：**
 ```bash
 protoc -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto
 ```
 
 
 
-linux平台下编译代码：
+**linux平台下编译代码：**
 
 ```bash
 g++ main.cpp *.cc `pkg-config --cflags --libs protobuf` -std=c++11
@@ -212,12 +225,12 @@ g++ main.cpp *.cc -I/usr/local/include -L/usr/local/lib -lprotobuf -lpthread -st
 
 
 
-windows平台下（VS013）编译：
+**windows平台下（VS013）编译：**
 
-​	需要配置include路径(-I)，lib库路径 (-L) , 静态库名称(-l)
+​	**需要配置include路径(-I)，lib库路径 (-L) , 静态库名称(-l)**
 
 
 
-reference:
+**reference:**
 
-​	https://github.com/protocolbuffers/protobuf/blob/master/src/README.md
+​	**https://github.com/protocolbuffers/protobuf/blob/master/src/README.md**

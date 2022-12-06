@@ -14,7 +14,7 @@ if(WIN32)
 
 set(exec "compile.bat")
 MESSAGE(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-set(CMAKE_MODULE_PATH "D:\\WorkSpace\\4openSourceCode\\ProtoBuf\\installvs2019")
+# set(CMAKE_MODULE_PATH "D:\\WorkSpace\\4openSourceCode\\ProtoBuf\\installvs2019")
 MESSAGE(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
 endif()
