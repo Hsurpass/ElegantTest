@@ -48,7 +48,7 @@ configure: error: CGDB requires GNU readline 5.1 or greater to link.
 
 
 vi ~/.bashrc
-export PATH=/mnt/d/WorkSpace/4openSourceCode/cgdb/_install/bin:/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/:$PATH
+export PATH=/mnt/d/WorkSpace/4openSourceCode/cgdb/_install/bin:$PATH
 
 references:
     官网: http://cgdb.github.io/
