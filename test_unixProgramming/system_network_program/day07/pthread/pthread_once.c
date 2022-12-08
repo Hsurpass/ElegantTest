@@ -1,5 +1,5 @@
 // once_run()函数仅执行一次，且究竟在哪个线程中执行是不定的，尽管pthread_once(&once,once_run)出现在两个线程中。
-// 如果在一个线程初始化的时候，另外一个线程也调用了pthread_once，则调用线程将阻塞等待，知道那个线程完成初始化后返回。
+// 如果在一个线程初始化的时候，另外一个线程也调用了pthread_once，则调用线程将阻塞等待，直到那个线程完成初始化后返回。
 // Linux Threads 使用互斥锁和条件变量保证由pthread_once()指定的函数执行且仅执行一次，而once_control则表征是否执行过。
 // 如果 once_control的初值不是PTHREAD_ONCE_INIT（LinuxThreads定义为0），pthread_once()的行为就会不正常。
 // 在LinuxThreads中，实际"一次性函数"的执行状态有三种：NEVER（0）、IN_PROGRESS（1）、DONE（2），
@@ -13,9 +13,9 @@
 #include <pthread.h>
 #include <sys/syscall.h>
 
-pthread_once_t once = PTHREAD_ONCE_INIT;
+// pthread_once_t once = PTHREAD_ONCE_INIT;
 // pthread_once_t once = 1;
-// pthread_once_t once = 2;
+pthread_once_t once = 2;
 
 void init()
 {
@@ -38,9 +38,9 @@ void* task2(void* arg)
 
 void* task3(void* arg)
 {
-    printf("task2: pid:%d, thread id = %lx, LWP:%ld\n", getpid(), pthread_self(), syscall(SYS_gettid));
+    printf("task3: pid:%d, thread id = %lx, LWP:%ld\n", getpid(), pthread_self(), syscall(SYS_gettid));
     int ret = pthread_once(&once, init);
-    printf("task2, ret=%d, once=%d\n", ret, once);
+    printf("task3, ret=%d, once=%d\n", ret, once);
 }
 
 void test_pthread_once()

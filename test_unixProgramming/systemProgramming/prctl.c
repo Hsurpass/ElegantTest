@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+// top -Hp pid 查看该程序的状态
+// 除了使用“PR_SET_NAME”参数可以设置线程名字外，另外一个函数pthread_setname_np()也可以实现此功能。
+// 设置完成后我们可以通过线程的tid来查看它的新名字：cat /proc/pid/task/[tid]/comm
+// 在/proc/pid/task/tid/目录下的stat文件和status文件，也可以看到相应的名字，方便查看线程状态。
+
 void* func(void* arg)
 {
     int i = (int)arg;
@@ -19,7 +24,7 @@ void* func(void* arg)
     prctl(PR_GET_NAME, buf1);
     printf("buf1:%s\n", buf1);
 
-    sleep(10);
+    sleep(100);
 }
 
 void test_prctl()
@@ -30,7 +35,7 @@ void test_prctl()
         pthread_create(&threadId[i], NULL, func, (void*)i);
     }
 
-    // sleep(20);
+    // sleep(100);
 
     for (size_t i = 0; i < sizeof(threadId)/sizeof(threadId[0]); i++)
     {
