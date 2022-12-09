@@ -55,12 +55,14 @@
 - weak_ptr：监视share_ptr, 不会增加引用计数，lock()函数提升为shared_ptr,引用计数加1. 
   weak_ptr可以解决share_ptr循环引用造成的内存泄漏问题。
 
-# 算法
+# Algorithm
 
 - 二叉搜索树：左子树都比根节点小，右子树都比根节点大。
+
 - 平衡搜索二叉树：(解决二插搜索树退化成链表的问题)
   1.左子树都比根节点小，右子树都比根节点大。
   2.左右子树高度差不超过1
+  
 - AVL-tree:
   平衡因子：导致不平衡的最小子树的根节点
   
@@ -75,26 +77,34 @@
   3.左右旋: 以某个节点的左子树为根节点的右子树插入节点导致不平衡
   4.右左旋: 以某个节点的右子树为根节点的左子树插入节点导致不平衡
   ```
-```
   
-- rb-tree特性:
-  1.每个节点或者是红色，或者是黑色。
-  2.根节点是黑色。
-  3.叶子结点是黑色。
-  4.如果一个节点是红色，那么他的左右孩子为黑色。
-  5.从一个节点到该节点的子孙节点的所有路径上包含$\color{red} {相同数目的黑节点}$。
-
-###设计模式
-- 单例
-  - 饿汉式
-  - 懒汉式
-  - pthread_once muduo
-- 观察者
-- 工厂模式
-- 装饰模式
   
+  
+  - rbtree
+  
+    rb-tree特性:
+  
+      1.每个节点或者是红色，或者是黑色。
+      2.根节点是黑色。
+      3.叶子结点是黑色。
+      4.如果一个节点是红色，那么他的左右孩子为黑色。
+      5.从一个节点到该节点的子孙节点的所有路径上包含$\color{red} {相同数目的黑节点}$。
+  
+  
+  
+# Design Patterns
+  - 单例
+    - 饿汉式
+    - 懒汉式
+    - pthread_once muduo
+  - 观察者
+  - 工厂模式
+  - 装饰模式
 
-###linux系统
+# Linux  System Programming
+
+## Process
+
 - 进程:最小的资源分配单位
 - 进程间通信:
   信号
@@ -105,10 +115,13 @@
   socket
   eventfd
 
+## Thread
+
 - 线程:最小的程序执行单位
   线程的创建，使用和回收
   多线程的同步互斥
   原子性操作 
+  
   - atomic(多线程对一个变量进行++操作，使用atomic比使用mutex的效率高), gcc提供的同步函数
   - 锁:
     - 互斥锁
@@ -125,40 +138,96 @@
   线程的局部存储 
   - __thread  只能使用POD类型
   - pthread_key_t，非POD类型可以使用
-  线程池 (生产线程，消费线程)
-
+线程池 (生产线程，消费线程)
+  
   **条件变量+互斥锁能解决大部分的线程同步问题**
+  
+# Linux Network Programming
 
-###网络
+  - 1.如何判断大小端
 
-- 1.如何判断大小端
-
-```
+```c++
   union bl
   {
       int data; // 0x12345678
       char byte;    // 0x78 -->低字节放在低地址：小端
       // uint8_t byte;
   };
-
-  ```
+```
 
 - 2.
 
-###HTTP
+# HTTP
+
 - cookie和session：
   cookie保存在客户端，session保存在服务端，当访问量增多session会影响服务器的的性能
   cookie不安全
 
-  ```
+
+
+# Boost
+
+## asio
 
 
 
-# cmake 
+# Script Language
 
-[cmake使用](../test_cmake/md/cmake.md)
+## Python
+
+## Shell
+
+## JavaScript && Typescript
+
+## Lua
+
+# GDB
+
+
+
+## CGDB
+
+[cgdb-manual-in-chinese](..\..\..\4openSourceCode\cgdb-manual-in-chinese)
+
+# Cmake 
+
+[cmake.md](../test_cmake/md/cmake.md)
 
 [Cmake入门到精通笔记(全).pdf](../../Blogs/pdf/cmake/Cmake入门到精通笔记(全).pdf)
 
 [从零开始详细介绍CMake.pdf](../../Blogs/pdf/cmake/从零开始详细介绍CMake.pdf)
+
+# Makefile
+
+
+
+# Git
+
+
+
+# Muduo
+
+[study.md](..\..\..\4openSourceCode\muduo\md\study.md)
+
+
+
+# Redis
+
+
+
+# Mongodb
+
+
+
+
+
+# Nginx
+
+
+
+# Nodejs
+
+
+
+# Protobuf
 
