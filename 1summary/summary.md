@@ -14,7 +14,7 @@
 
 - volatile
 
-  [volatile简介](<../test_cpp/keyword/volatile/volatile.md>)
+  [volatile](<../test_cpp/keyword/volatile/volatile.md>)
 
 # STL
 
@@ -141,7 +141,9 @@
 线程池 (生产线程，消费线程)
   
   **条件变量+互斥锁能解决大部分的线程同步问题**
-  
+
+[C_C++多线程编程精髓.md](../../Blogs/fanli/C_C++多线程编程精髓.md)
+
 # Linux Network Programming
 
   - 1.如何判断大小端
@@ -183,11 +185,11 @@
 
 # GDB
 
-
+[Linux GDB调试指南.md](../../Blogs/fanli/Linux GDB调试指南.md)
 
 ## CGDB
 
-[cgdb-manual-in-chinese](..\..\..\4openSourceCode\cgdb-manual-in-chinese)
+[cgdb-manual-in-chinese](../../../4openSourceCode\cgdb-manual-in-chinese)
 
 # Cmake 
 
