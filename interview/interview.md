@@ -3,6 +3,7 @@
   new/delete是关键字，malloc/free是函数
   new/delete会调用构造和析构函数。
   内存分配失败，new会抛异常bad_alloc
+  
 - static
   修饰全局变量:作用域和生命周期都在全局，不能跨文件使用
   修饰局部变量:作用域在函数内, 生命周期在全局。
@@ -10,21 +11,40 @@
   修饰类成员:类内定义，类外初始化，全部对象共享一个static成员变量
   修饰类成员函数: 只能访问static成员变量(没有this指针).
 ###STL
+  
+- volatile
+
+  [volatile简介](<../test_cpp/keyword/volatile/volatile.md>)
+
 - vector: 底层是数组，超过容量后会成倍增长，resize会调用构造函数，随机访问迭代器，取元素比较高效，在尾部插入元素比较高效，中间插入比较低效(会有元素的搬移)
+
 - deque: 一个管理器和多个缓冲区，支持随机访问，首尾增删比较高效。
+
 - list：底层是双向链表，双向迭代器，不支持随机访问，插入删除元素比较高效。
+
 - stack: 容器适配器，底层结构可以选用vector,deque, list 
+
 - queue: 容器适配器，底层结构可以选用deque, list. vector没有pop_back
+
 - priority_queue: 底层可以使vector, 算法为二叉堆
+
 - set: 红黑树, 自定义类型需要重载operator<()
+
 - map: rb operator[]需要有默认的构造函数, 查找复杂度O(logn)
+
 - multimap:
+
 - multiset:rb
+
 - unordered_map: hash表, 自定义类型需要重载operator==()，并提供hash-func
+
 - unordered_set: hash表
+
 - unordered_multimap: hash表
+
 - unordered_multiset: hash表
   
+
 ###C++11
 - auto_ptr: 复制和复制都会改变所有权
 - unique_ptr: 不能copy，assign
@@ -49,7 +69,8 @@
   2.右旋: 以某个节点的左子树为根节点的左子树插入节点导致不平衡
   3.左右旋: 以某个节点的左子树为根节点的右子树插入节点导致不平衡
   4.右左旋: 以某个节点的右子树为根节点的左子树插入节点导致不平衡
-
+```
+  
 - rb-tree特性:
   1.每个节点或者是红色，或者是黑色。
   2.根节点是黑色。
@@ -59,21 +80,51 @@
 
 ###设计模式
 - 单例
+  - 饿汉式
+  - 懒汉式
+  - pthread_once muduo
 - 观察者
 - 工厂模式
+- 装饰模式
   
+
 ###linux系统
 - 进程:最小的资源分配单位
 - 进程间通信:
   信号
-  管道
+  管道(有名管道pipe,管道只能单工通信)
   消息队列
-  信号量
-  共享内存
+  信号量(命名信号量)
+  共享内存 posix mmap
   socket
   eventfd
+
 - 线程:最小的程序执行单位
+  线程的创建，使用和回收
+  多线程的同步互斥
+  原子性操作 
+  - atomic(多线程对一个变量进行++操作，使用atomic比使用mutex的效率高), gcc提供的同步函数
+  - 锁:
+    - 互斥锁
+      死锁: 1. 一把锁，自己锁自己(递归调用)
+            2. 两把锁，两个线程调用锁的顺序相反， 解决c++11 std::  一起锁，一起释放
+      pstack lock_wait
+    - 递归锁
+    - 检错锁
+    - 读写锁 读共享，写独占，写锁优先级高(默认是读优先，需要改属性)， boost::shared_mutex内部实现就是读写锁
+    - 自旋锁
+    - 文件锁
+  - 条件变量  (生产者消费者模型)  和mutex一起使用， 内部有加锁，解锁的操作，所以要使用unique_lock, lockguard没有lock(),unlock()成员函数，但是lockguard的开销最少。
+  - 信号量(匿名信号量)， 二值信号量可以模拟互斥锁 (生产者消费者模型)
+  线程的局部存储 
+  - __thread  只能使用POD类型
+  - pthread_key_t，非POD类型可以使用
+  线程池 (生产线程，消费线程)
+
+  **条件变量+互斥锁能解决大部分的线程同步问题**
+
 ###网络
+
 - 1.如何判断大小端
 
   ```
@@ -83,6 +134,7 @@
       char byte;    // 0x78 -->低字节放在低地址：小端
       // uint8_t byte;
   };
+  ```
 
 - 2.
 
