@@ -1,4 +1,5 @@
-###C++
+# C++
+
 - new/delete 和 malloc/free 区别：
   new/delete是关键字，malloc/free是函数
   new/delete会调用构造和析构函数。
@@ -10,11 +11,12 @@
   修饰函数:不能跨文件使用
   修饰类成员:类内定义，类外初始化，全部对象共享一个static成员变量
   修饰类成员函数: 只能访问static成员变量(没有this指针).
-###STL
-  
+
 - volatile
 
   [volatile简介](<../test_cpp/keyword/volatile/volatile.md>)
+
+# STL
 
 - vector: 底层是数组，超过容量后会成倍增长，resize会调用构造函数，随机访问迭代器，取元素比较高效，在尾部插入元素比较高效，中间插入比较低效(会有元素的搬移)
 
@@ -45,20 +47,23 @@
 - unordered_multiset: hash表
   
 
-###C++11
+# C++11
+
 - auto_ptr: 复制和复制都会改变所有权
 - unique_ptr: 不能copy，assign
 - share_ptr：引用计数
 - weak_ptr：监视share_ptr, 不会增加引用计数，lock()函数提升为shared_ptr,引用计数加1. 
   weak_ptr可以解决share_ptr循环引用造成的内存泄漏问题。
 
-###算法
+# 算法
+
 - 二叉搜索树：左子树都比根节点小，右子树都比根节点大。
 - 平衡搜索二叉树：(解决二插搜索树退化成链表的问题)
   1.左子树都比根节点小，右子树都比根节点大。
   2.左右子树高度差不超过1
 - AVL-tree:
   平衡因子：导致不平衡的最小子树的根节点
+  
   ```
         5       5               5       5
        /         \             /         \
@@ -69,6 +74,7 @@
   2.右旋: 以某个节点的左子树为根节点的左子树插入节点导致不平衡
   3.左右旋: 以某个节点的左子树为根节点的右子树插入节点导致不平衡
   4.右左旋: 以某个节点的右子树为根节点的左子树插入节点导致不平衡
+  ```
 ```
   
 - rb-tree特性:
@@ -127,13 +133,14 @@
 
 - 1.如何判断大小端
 
-  ```
+```
   union bl
   {
       int data; // 0x12345678
       char byte;    // 0x78 -->低字节放在低地址：小端
       // uint8_t byte;
   };
+
   ```
 
 - 2.
@@ -142,3 +149,16 @@
 - cookie和session：
   cookie保存在客户端，session保存在服务端，当访问量增多session会影响服务器的的性能
   cookie不安全
+
+  ```
+
+
+
+# cmake 
+
+[cmake使用](../test_cmake/md/cmake.md)
+
+[Cmake入门到精通笔记(全).pdf](../../Blogs/pdf/cmake/Cmake入门到精通笔记(全).pdf)
+
+[从零开始详细介绍CMake.pdf](../../Blogs/pdf/cmake/从零开始详细介绍CMake.pdf)
+
