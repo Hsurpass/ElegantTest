@@ -1,20 +1,29 @@
 # C++
 
-- new/delete 和 malloc/free 区别：
-  new/delete是关键字，malloc/free是函数
-  new/delete会调用构造和析构函数。
-  内存分配失败，new会抛异常bad_alloc
-  
-- static
-  修饰全局变量:作用域和生命周期都在全局，不能跨文件使用
-  修饰局部变量:作用域在函数内, 生命周期在全局。
-  修饰函数:不能跨文件使用
-  修饰类成员:类内定义，类外初始化，全部对象共享一个static成员变量
-  修饰类成员函数: 只能访问static成员变量(没有this指针).
+## 关键字
 
-- volatile
+### new/delete 和 malloc/free 区别：
 
-  [volatile](<../test_cpp/keyword/volatile/volatile.md>)
+1. new/delete是关键字，malloc/free是函数
+2. new/delete会调用构造和析构函数。
+3. 内存分配失败，new会抛异常bad_alloc
+
+### static
+1. 修饰全局变量:作用域和生命周期都在全局，不能跨文件使用
+2. 修饰局部变量:作用域在函数内, 生命周期在全局。
+3. 修饰函数:不能跨文件使用
+4. 修饰类成员:类内定义，类外初始化，全部对象共享一个static成员变量
+5. 修饰类成员函数: 只能访问static成员变量(没有this指针).
+
+### const
+
+1. const int *p : p所指向的值不可变
+2. int* const p:  p这个地址不可变
+3. const修饰成员函数，只能用const对象访问。
+
+### volatile
+
+[volatile](<../test_cpp/keyword/volatile/volatile.md>)
 
 # STL
 
