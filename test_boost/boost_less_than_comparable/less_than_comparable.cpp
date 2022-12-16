@@ -3,6 +3,13 @@
 #include <boost/operators.hpp>
 #include <iostream>
 
+
+/*
+less_than_comparable: 只需要实现operator<() const, 则>, <=, >=,就会自动实现。
+equality_comparable：只需要实现operator==() const, 则 != 就会自动实现
+
+note: 如果使用成员函数重载，则应该是const成员函数。
+*/
 class A : public boost::less_than_comparable<A>, public boost::equality_comparable<A>
 {
 public:
