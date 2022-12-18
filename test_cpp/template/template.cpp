@@ -5,20 +5,23 @@
 using namespace std;
 
 template<typename T> 
-void _string2number(const char* str, T* number)
+static void _string2number(const char* str, T* number)
 {
+	cout << "_string2number(const char* str, T* number)" << endl;
 	*number = atoi(str);
 }
 
 template<>
-static void _string2number(const char* str, float* number)
+void _string2number(const char* str, float* number)
 {
+	cout << "_string2number(const char* str, float* number)" << endl;
 	*number = atof(str);
 }
 
 template<>
-static void _string2number(const char* str, long long* number)
+void _string2number(const char* str, long long* number)
 {
+	cout << "_string2number(const char* str, long long* number)" << endl;
 	*number = atoll(str);
 }
 
@@ -32,25 +35,25 @@ static void _numberArrayFromString(vector<T>* arr, const char* str)
 	arr->push_back(element);
 }
 
-int main()
+void test_string2number()
 {
-	char* str = "123.34";
+	const char* str = "123.34";
 	float num1;
-	_string2number(str, &num1);
+	_string2number(str, &num1);	// _string2number(const char* str, float* number)
 	cout << num1 << endl;
 	
 	str = "12345";
 	int num2;
-	_string2number(str, &num2);
+	_string2number(str, &num2);	// _string2number(const char* str, T* number)
 	cout << num2 << endl;
 
 	str = "1234567890123456789";
 	long long num3;
-	_string2number(str, &num3);
+	_string2number(str, &num3);	// _string2number(const char* str, long long* number)
 	cout << num3 << endl;
 }
 
-int main01()
+void test_numberArrayFromString()
 {
 	/*char* str = "123.34";
 	vector<float> f;
@@ -60,7 +63,7 @@ int main01()
 	vector<int> v;
 	_numberArrayFromString(&v, str);*/
 
-	char* str = "1234567890123456789";
+	const char* str = "1234567890123456789";
 	vector<long long> v;
 	_numberArrayFromString(&v, str);
 
@@ -69,6 +72,13 @@ int main01()
 		cout << i << " ";
 	}
 	cout << endl;
+
+}
+
+
+int main()
+{
+	test_string2number();
 
 	return 0;
 }

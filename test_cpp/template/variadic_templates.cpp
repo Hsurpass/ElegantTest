@@ -6,6 +6,7 @@ using namespace std;
 // 最后一次需要特殊处理，否则编译不过
 void print()
 {
+    cout << "void print()" << endl;
 }
 
 template <typename T, typename... U>
@@ -28,8 +29,10 @@ int main()
     // hello, sizeof(otherArgs): 2
     // 0000000101111001, sizeof(otherArgs): 1
     // 42, sizeof(otherArgs): 0
+    // void print()
     print(7.5, "hello", bitset<16>(377), 42);
 
+    cout << "-----------------------------" << endl;
     //20, sizeof(otherArgs): 1
     //40, sizeof(otherArgs): 0
     print<int>(20, 40);
