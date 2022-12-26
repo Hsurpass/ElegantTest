@@ -8,10 +8,7 @@ make PREFIX=/usr/local/redis install
 
 #### 服务器启动
     服务启动要加上配置文件，否则还是启动的本地回环(127.0.0.1)，并且密码也不会生效
-
-    ```
     ./redis-server ../redis.conf
-    ```
 
 #### 客户端连接
 
