@@ -1,26 +1,26 @@
 
 
-## cut
+# cut
 
-- 
 
-- references: 
+## references: 
 
   http://linux.51yip.com/search/cut
 
-## cp
+# cp
 
-- 复制某个文件并且重命名
+## 复制某个文件并且重命名
 
-```
+```bash
 cp a.txt /tmp/b.txt
 ```
 
 
 
 
-## grep
+# grep
 
+## 参数
 - **-A<显示行数> 或 --after-context=<显示行数>** : print NUM lines of leading context  (除了显示符合范本样式的那一列之外，并显示该行之后的内容。)
 - **-B<显示行数> 或 --before-context=<显示行数>** :  print NUM lines of trailing context (除了显示符合样式的那一行之外，并显示该行之前的内容。)
 - **-E 或 --extended-regexp** : PATTERN is an extended regular expression (将样式为延伸的正则表达式来使用。)
@@ -35,24 +35,24 @@ cp a.txt /tmp/b.txt
 
 
 
-- **匹配关键字之前和之后的N个字符**
+## 匹配关键字之前和之后的N个字符
 
-```
-这种适用于一个大文件中只有一行的情况下查找匹配项
+```bash
+#这种适用于一个大文件中只有一行的情况下查找匹配项
 grep -E -o ".{0,5}test_pattern.{0,5}" test.txt 
 cat test.txt | grep -E -o ".{0,5}test_pattern.{0,5}"
 grep -P -o ".{0,5}test_pattern.{0,5}" test.txt 
 ```
 
-example:
+### example
 
-```
-这将匹配"string"的前三个字符和后四个字符
-echo "some123_string_and_another" | grep -o -P '.{0,3}string.{0,4}'
-23_string_and
+```bash
+#这将匹配"string"的前三个字符和后四个字符
+echo "some123_string_and_another" | grep -o -P '.{0,3}string.{0,4}'	#23_string_and
 ```
 
-```
+```bash
+#下面文本包含以下内容
 test.txt:
 
 abcd
@@ -60,48 +60,44 @@ abcd
 efgh
 ```
 
+```bash
+#这将匹配 test.txt文件中 “45” 的前4个字符和后5个字符
+grep -E -o ".{0,4}45.{0,5}" test.txt	#123_45_6789
 ```
-这将匹配 test.txt文件中 “45” 的前4个字符和后5个字符
-grep -E -o ".{0,4}45.{0,5}" test.txt
-123_45_6789
+
+
+
+## 匹配关键字之前的n行和之后的n行
+
+```bash
+grep -Bn An "test_pattern" test.txt
+```
+
+### example
+```bash
+test.txt:
+
+eretrtrt
+sdsdfsddf
+abcd
+0123_45_6789
+efgh
+errterer
+vdghdbdvsd
+vvdhbrfwewec
+```
+
+```bash
+grep -B1 -A1 "45" test.txt
+
+#结果: 
+abcd
+0123_45_6789
+efgh
 ```
 
 
-
-- **匹配关键字之前的n行和之后的n行**
-
-  ```
-  grep -Bn An "test_pattern" test.txt
-  ```
-
-  example:
-
-  ```
-  test.txt:
-  
-  eretrtrt
-  sdsdfsddf
-  abcd
-  0123_45_6789
-  efgh
-  errterer
-  vdghdbdvsd
-  vvdhbrfwewec
-  ```
-
-  
-
-  ```
-  grep -B1 -A1 "45" test.txt
-  
-  abcd
-  0123_45_6789
-  efgh
-  ```
-
-  
-
-- references:
+## references:
 
    https://cloud.tencent.com/developer/ask/29626
 
@@ -109,52 +105,48 @@ grep -E -o ".{0,4}45.{0,5}" test.txt
 
 
 
-## head
-
-- 
-
-- 查看文件前几行内容
-
-  ```
-  head -n 10 xx.txt
-  ```
+# head
 
 
+## 查看文件前几行内容
+
+```bash
+head -n 10 xx.txt
+```
 
 
-## man
-
+# man
 
 
 ![image-20210516110533025](image/image-20210516110533025.png)
 
 1. **用户命令**
 
-   ```
+   ```bash
    man 1 cd
    ```
 
 2. 系统调用
 
-   ```
+   ```bash
    man 2 read
    ```
 
 3. 标准库调用
 
-   ```
+   ```bash
    man 3 sleep
    ```
 
 4. 特殊文件(设备文件)
 
-   ```
+   ```bash
    man 4 tty
    ```
 
 5. 文件格式(配置文件的语法)
 
-   ```
+   ```bash
    man 5 passwd
    ```
 
@@ -164,7 +156,7 @@ grep -E -o ".{0,4}45.{0,5}" test.txt
 
 8. 系统管理员命令
 
-   ```
+   ```bash
    man 8 fdisk
    ```
 
@@ -172,138 +164,127 @@ grep -E -o ".{0,4}45.{0,5}" test.txt
 
 
 
-references: https://cloud.tencent.com/developer/article/1725969?from=information.detail.linux%20man%201%202%203
+## references 
+
+ https://cloud.tencent.com/developer/article/1725969?from=information.detail.linux%20man%201%202%203
 
 
 
-## nc (可以快速构建网络连接。既可以以服务器的方式运行，也可以以客户端的方式运行。默认以客户端的方式运行)
+# nc 
+**可以快速构建网络连接。既可以以服务器的方式运行，也可以以客户端的方式运行。默认以客户端的方式运行****
 
 -p: 当nc命令以客户端的方式运行时，强制其使用指定的端口号。
 
-```
+```bash
 nc -p 12345 SERVERHOST PORT
 ```
 
 -l: 以服务器方式运行，监听指定端口
 
-```
+```bash
 nc -l 12345
 ```
 
 
-
-## scp
+# scp
 
 - -r： 递归复制整个目录。
 - -P port：注意是大写的P, port是指定数据传输用到的端口号
 
 
+## 从远程拷贝多个文件到本地
 
-
-
-- 从远程拷贝多个文件到本地
-
-  ```
+  ```bash
   scp -P port USER@HOST:/\{ 1.txt,2.json,3.py,4.sh \}
   ```
 
-- 从远程拷贝多个文件，多个文件夹到本地
+## 从远程拷贝多个文件，多个文件夹到本地
 
-  ```
+  ```bash
   scp -r USER@HOST:/\{ 1.txt,2.json,3.py,4.sh,folder \}
   ```
 
-- 从本地拷贝文件到远程
+## 从本地拷贝文件到远程
 
-	```
+```bash
 scp local_file remote_username@remote_ip:remote_folder 
-	或者 
-	scp local_file remote_username@remote_ip:remote_file 
-	或者 
-	scp local_file remote_ip:remote_folder 
-	或者 
-	scp local_file remote_ip:remote_file 
-	```
-	
-	- 第1,2个指定了用户名，命令执行后需要再输入密码，第1个仅指定了远程的目录，文件名字不变，第2个指定了文件名；
-	- 第3,4个没有指定用户名，命令执行后需要输入用户名和密码，第3个仅指定了远程的目录，文件名字不变，第4个指定了文件名；
-	
-- **references:**
+或者 
+scp local_file remote_username@remote_ip:remote_file 
+或者 
+scp local_file remote_ip:remote_folder 
+或者 
+scp local_file remote_ip:remote_file 
+```
+
+- 第1,2个指定了用户名，命令执行后需要再输入密码，第1个仅指定了远程的目录，文件名字不变，第2个指定了文件名；
+- 第3,4个没有指定用户名，命令执行后需要输入用户名和密码，第3个仅指定了远程的目录，文件名字不变，第4个指定了文件名；
+
+## references
 
   https://www.binarytides.com/linux-scp-command/
 
 
 
-## sed
+# sed 
 
-- 
-
-- 查看文件第a行到第b行的内容。
+## 查看文件第a行到第b行的内容。
 
   - 第一种方法：
-
-    ```
+	```bash
     sed -n 'a,bp' xxx.txt
-    sed -n '5,10p' xxx.txt	//查看第5行到第10行的内容
-    ```
+    sed -n '5,10p' xxx.txt	#查看第5行到第10行的内容
+	```
 
   - 第二种方法
 
-    ```
+    ```bash
     cat xxx.txt | tail -n +a | head -n b-a
-    cat xxx.txt | tail -n +3000 | head -n 1000 	// 显示从第3000行到3999行
+    cat xxx.txt | tail -n +3000 | head -n 1000 	# 显示从第3000行到3999行
     ```
 
-    ```
+    ```bash
     cat xxx.txt | head -n b | tail -n +a
-    cat xxx.txt | head -n 4000 | tail -n +3000	// 显示从第3000行到4000行
+    cat xxx.txt | head -n 4000 | tail -n +3000	# 显示从第3000行到4000行
     ```
 
+	```bash
+	tail -n 1000 	# 显示最后1000行的内容。
+	tail -n +1000	# 从第1000行开始显示，显示之后的内容。
+    head -n 1000 	# 显示前面1000行内容。
+	```
 
-  ```
-  tail -n 1000 	// 显示最后1000行的内容。
-  tail -n +1000	// 从第1000行开始显示，显示之后的内容。
-  head -n 1000 	// 显示前面1000行内容。
-  ```
-
-- 批量替换文件中指定的字符串
-
-  ```
+## 批量替换文件中指定的字符串
+  ```bash
   sed -i 's/Search_String/Replacement_String/g' Input_File
   
   sudo sed -i 's/archive.ubuntu.com/mirrors.163.com/g' sources.list
+  sudo sed -i 's/http://archive.ubuntu.com/https://mirrors.163.com/g' sources.list
   sudo sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' sources.list
   ```
 
 
 
-**references:** 
+## references:
 
 https://linux.cn/article-11367-1.html
-
-https://www.linuxprobe.com/sed-find-replace.html
-
+	https://www.linuxprobe.com/sed-find-replace.html
 
 
-## strip
+
+# strip
 
 移除可执行程序中的调试信息。
 
 
 
-## tail
+# tail 
+## 查看文件的最后几行内容
 
-- 
-
-- 查看文件的最后几行内容
-
-  ```
+  ```bash
   tail -n 10 xxx.txt
   ```
 
-
-
-## tcpdump
+# tcpdump
 
 - -c: 仅抓取指定数量的数据包。
 - -e: 显示以太网帧头部信息。
@@ -318,19 +299,17 @@ https://www.linuxprobe.com/sed-find-replace.html
 - -X: 与-x选项类似，不过还打印每个十六进制字节对应的ASCII字符。
 - -XX, 与-X相同，不过还打印以太网帧的头部信息。
 
-```
+```bash
 tcpdump -nt -i eth0 port 12345 -w tmp.pcap
 ```
 
 
 
-## time
+# time
 
 time + 可执行程序：可以统计程序的运行时间
 
-
-
-## ulimit
+# ulimit
 
 永久修改 ulimit参数，修改`/etc/security/limits.conf`
 
@@ -338,32 +317,35 @@ time + 可执行程序：可以统计程序的运行时间
 
 - -a: 查看系统参数。
 - -c : ulimit -c unlimited 把core文件的大小设置为无限制。(临时修改)
-- 
 
 
+# whatis
+## 可以使用 `whatis` 查看某个命令都有哪些功能。
 
-## whatis
-
-- 可以使用 `whatis` 查看某个命令都有哪些功能。
-
-  ```
+  ```bash
   whatis sleep
   ```
 
   ![image-20210516110024368](image/image-20210516110024368.png)
 
+# 网络命令
 
-## 网络命令
-  ```
-  pstree -p pid //查看当前线程和子线程的关系
-  ```
+## pstree
 
-  ```
-  pstree -a //显示所有进程的所有详细信息，遇到相同的进程名可以压缩显示
+  ```bash
+  pstree -p pid #查看当前线程和子线程的关系
   ```
 
+  ```bash
+  pstree -a #显示所有进程的所有详细信息，遇到相同的进程名可以压缩显示
   ```
-  sudo pstack pid  //线程栈结构的查看
+
+
+
+## pstack
+
+  ```bash
+  sudo pstack pid  #线程栈结构的查看
   ```
 
 
