@@ -14,7 +14,8 @@ cd /etc/apt/ && sudo cp sources.list sources.list.bak
 
 ```bash
 sudo sed -i 's/archive.ubuntu.com/mirrors.163.com/g' sources.list
-sudo sed -i 's/http://archive.ubuntu.com/https://mirrors.163.com/g' sources.list
+sudo sed -i 's/http/https/g' sources.list
+
 sudo sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' sources.list 
 ```
 
