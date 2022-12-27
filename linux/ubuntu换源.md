@@ -26,6 +26,14 @@ sudo sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' sources.list
 sudo apt‐get update
 ```
 
+4. 升级已安装软件包(可选)
+
+```bash
+sudo apt list --upgradable 查看可更新的包
+sudo apt upgrade 更新已安装的包
+```
+
+
 
 
 国内源：
