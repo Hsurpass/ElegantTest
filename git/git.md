@@ -4,9 +4,9 @@
 
 ## 设置name和email
 
-`git config  -–global user.name “Your Name”`
+`git config --global user.name "your name"`
 
-`git config –global user.email “Your Email”`
+`git config --global user.email "your email"`
 
 ## 查看name 和 email
 `git config --global --list (-l)`
