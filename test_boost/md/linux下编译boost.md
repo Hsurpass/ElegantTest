@@ -51,10 +51,14 @@
    ```bash
    vi ~/.bashrc
    
-   export CPLUS_INCLUDE_PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/include:$CPLUS_INCLUDE_PATH
-   export LIBRARY_PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/lib:$LIBRARY_PATH
-   export LD_LIBRARY_PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/lib:$LD_LIBRARY_PATH
-   export PATH=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/:$PATH
+   boost176_root=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176
+   boost176_include=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/include
+   boost176_lib=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/lib
+   
+   export CPLUS_INCLUDE_PATH=${boost176_include}:$CPLUS_INCLUDE_PATH
+   export LIBRARY_PATH=${boost176_lib}:$LIBRARY_PATH
+   export LD_LIBRARY_PATH=${boost176_lib}:$LD_LIBRARY_PATH
+   export PATH=${boost176_root}:$PATH
    ```
    
    

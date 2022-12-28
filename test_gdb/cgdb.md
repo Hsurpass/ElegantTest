@@ -62,7 +62,9 @@ sudo apt install libreadline-dev
 
 ```bash
 vi ~/.bashrc
-export PATH=/mnt/d/WorkSpace/4openSourceCode/cgdb/_install/bin:$PATH
+
+cgdb_bin=/mnt/d/WorkSpace/4openSourceCode/cgdb/_install/bin
+export PATH=${cgdb_bin}:$PATH
 ```
 
 # references:
