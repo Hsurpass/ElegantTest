@@ -221,7 +221,7 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
      
      ```cmake
      ## set(Protobuf_DIR "/home/zz/soft/protobuf-3.8.0/lib/cmake/protobuf")
-     find_package(Protobuf REQUIRED CONFIG)	#可以尝试一下只指定CONFIG, 然后看find_package会不会到环境变量(${protobuf32112_root})中找到protobuf
+     find_package(Protobuf REQUIRED CONFIG)	#可以尝试一下只指定CONFIG, 然后看find_package会不会到环境变量(${protobuf32112_root})中找到protobuf	#已验证找到protobufversion, 但是include,libs还没找到
      ```
      
       发现运行后不输出任何关于Protobuf的信息；发现还需要手动开启`protobuf_MODULE_COMPATIBLE`。于是改为：
