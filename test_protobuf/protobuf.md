@@ -54,10 +54,11 @@ pb/json转换
 
 https://zhuanlan.zhihu.com/p/442458452
 
-## protobuf编译选项介绍
 
 
+# protobuf编译选项介绍
 ------------------------------------------------
+## 编译为动态库
 
 | CMAKE_BUILD_TYPE               | 编译模式(Debug[调试模式 ]\|Release[发布模式]) |
 | ------------------------------ | --------------------------------------------- |
@@ -68,7 +69,9 @@ https://zhuanlan.zhihu.com/p/442458452
 
 
 
-## **windows安装protobuf**
+# windows编译安装protobuf
+
+旧记录：
 
 **打开`Developer Command Prompt for vs2019`**
 
@@ -99,7 +102,11 @@ nmake
 nmake install
 ```
 
------------------------------------------
+
+
+---------------------------------------------------------------------------
+
+新记录：
 
 1. **打开`Developer Command Prompt for vs2019`, 以protobuf3.16为例，其他版本查看文档**
 
@@ -135,13 +142,11 @@ nmake install
 
    **配置完环境变量需要重启**
 
-```bash
-g++ addressbook.pb.cc main.cpp `pkg-config --cflags --libs protobuf` -std=c++11
-```
 
 
+# linux安装protobuf
 
-## **linux安装protobuf**
+旧版步骤：
 
 ```bash
 sudo apt-get install autoconf automake libtool curl make g++ unzip
@@ -158,11 +163,13 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
 ----------------------------------------------
 
+新版步骤：
+
 1. **build**
 
    ```bash
-   cmake -B ../../buildlinux
-   cmake -B ../../buildlinux -DCMAKE_INSTALL_PREFIX=../../installLinuxxxx
+   cmake -B ../../buildlinux #默认安装在 /usr/local/include /usr/local/lib /usr/local/bin
+   cmake -B ../../buildlinux -DCMAKE_INSTALL_PREFIX=../../installLinuxxxx	#安装在自定义目录
    ```
 
    
@@ -183,36 +190,73 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
 4. **config**
 
-   **==默认安装在 /usr/local 目录下。/usr/local/include /usr/local/lib /usr/local/bin==**
-   
-   ```bash
-   vi ~/.bashrc
-   
-   protobuf32112_root=/mnt/d/WorkSpace/4openSourceCode/Protobuf/installLinux3.21.12
-   protobuf32112_include=${protobuf32112_root}/include
-   protobuf32112_lib=${protobuf32112_root}/lib
-   protoc_bin=${protobuf32112_root}/bin
-   
-   export CPLUS_INCLUDE_PATH=${protobuf32112_include}:$CPLUS_INCLUDE_PATH
+   - 默认安装
+
+     **==默认安装在 /usr/local 目录下。/usr/local/include /usr/local/lib /usr/local/bin==**
+
+   - 自定义安装
+
+     仅供参考，未做尝试。
+
+     ```bash
+     vi ~/.bashrc
+     
+     protobuf32112_root=/mnt/d/WorkSpace/4openSourceCode/Protobuf/installLinux3.21.12
+     protobuf32112_include=${protobuf32112_root}/include
+     protobuf32112_lib=${protobuf32112_root}/lib
+     protoc_bin=${protobuf32112_root}/bin
+     protobuf32112_pkg=${protobuf32112_root}/lib/pkgconfig
+     
+     export CPLUS_INCLUDE_PATH=${protobuf32112_include}:$CPLUS_INCLUDE_PATH
    export LIBRARY_PATH=${protobuf32112_lib}:$LIBRARY_PATH
-   export LD_LIBRARY_PATH=${protobuf32112_lib}:$LD_LIBRARY_PATH
+     export LD_LIBRARY_PATH=${protobuf32112_lib}:$LD_LIBRARY_PATH
    export PATH=${protobuf32112_root}:${protoc_bin}:$PATH
-   ```
-   
-   
+     
+     export PKG_CONFIG_PATH=${protobuf32112_pkg}
+     ```
+     
+      由于cmake安装路径下提供了`FindProtobuf.cmake`( **/usr/share/cmake-3.16/Modules/FindProtobuf.cmake**)，使得`find(Protobuf REQUIRED)`是在MODULE模式下进行检查；而不设定`CMAKE_PREFIX_PATH`等预设变量、仅设定`Protobuf_DIR`变量的情况下，==并不能进入CONFIG模式做查找，== `Protobuf_DIR`并没有起到作用。
+     
+     于是乎，觉得：应当同时设定`Protobuf_DIR`并指定`CONFIG`或者`NO_MODULE`字段，才能找到手工编译的Protobuf版本：
+     
+     ```cmake
+     ## set(Protobuf_DIR "/home/zz/soft/protobuf-3.8.0/lib/cmake/protobuf")
+     find_package(Protobuf REQUIRED CONFIG)	#可以尝试一下只指定CONFIG, 然后看find_package会不会到环境变量(${protobuf32112_root})中找到protobuf
+     ```
+     
+      发现运行后不输出任何关于Protobuf的信息；发现还需要手动开启`protobuf_MODULE_COMPATIBLE`。于是改为：
+     
+     ```cmake
+     set(Protobuf_DIR "/home/zz/soft/protobuf-3.8.0/lib/cmake/protobuf")
+     set(protobuf_MODULE_COMPATIBLE ON CACHE BOOL "")
+     find_package(Protobuf REQUIRED CONFIG)
+     ```
+     
+     
+
+ references:
+
+ [深入理解CMake(5)：find_package寻找手动编译安装的Protobuf过程分析](https://www.jianshu.com/p/5dc0b1bc5b62)
+
+ [深入理解CMake(6):多个Protobuf版本时让find_package正确选择](https://www.jianshu.com/p/ae5c56845896)
 
 
 
-### **配置编译选项**
+
+
+# 导入protobuf库编译代码
+
+## linux
 
 **To compile a package that uses Protocol Buffers, you need to pass various flags to your compiler and linker. As of version 2.2.0, Protocol Buffers integrates with pkg-config to manage this. If you have pkg-config installed, then you can invoke it to get a list of flags like so:**
 
 ```bash
-pkg-config --cflags protobuf         # print compiler flags
-	-pthread -I/usr/local/include
-pkg-config --libs protobuf           # print linker flags
-	-L/usr/local/lib -lprotobuf -pthread -lpthread
-pkg-config --cflags --libs protobuf  # print both
+pkg-config --cflags protobuf    # print compiler flags 
+		# -I/usr/local/include
+pkg-config --libs protobuf     	# print linker flags
+		#-L/usr/local/lib -lprotobuf -lpthread
+pkg-config --cflags --libs protobuf  	# print both
+		# -I/usr/local/include -L/usr/local/lib -lprotobuf -lpthread
 ```
 
 ```bash
@@ -220,8 +264,6 @@ sudo apt install pkg-config
 ```
 
 
-
-##### **example:**
 
   **使用 protoc 将.proto 文件生成.h .cpp 文件的命令：**
 ```bash
@@ -234,10 +276,21 @@ protoc -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto
 
 ```bash
 g++ main.cpp *.cc `pkg-config --cflags --libs protobuf` -std=c++11
+g++ addressbook.pb.cc main.cpp `pkg-config --cflags --libs protobuf` -std=c++11
 ```
 
 ```bash
 g++ main.cpp *.cc -I/usr/local/include -L/usr/local/lib -lprotobuf -lpthread -std=c++11
+```
+
+
+
+## windows
+
+  **使用 protoc 将.proto 文件生成.h .cpp 文件的命令：**
+
+```bash
+protoc.exe -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto
 ```
 
 
