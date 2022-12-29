@@ -52,8 +52,8 @@
    vi ~/.bashrc
    
    boost176_root=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176
-   boost176_include=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/include
-   boost176_lib=/mnt/d/WorkSpace/4openSourceCode/Boost/linux176/lib
+   boost176_include=${boost176_root}/include
+   boost176_lib=${boost176_root}/lib
    
    export CPLUS_INCLUDE_PATH=${boost176_include}:$CPLUS_INCLUDE_PATH
    export LIBRARY_PATH=${boost176_lib}:$LIBRARY_PATH

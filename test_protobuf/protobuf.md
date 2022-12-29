@@ -162,7 +162,7 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
    ```bash
    cmake -B ../../buildlinux
-   cmake -B ../../buildlinux -DCMAKE_INSTALL_PREFIX=installLinuxxxx
+   cmake -B ../../buildlinux -DCMAKE_INSTALL_PREFIX=../../installLinuxxxx
    ```
 
    
@@ -189,13 +189,14 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
    vi ~/.bashrc
    
    protobuf32112_root=/mnt/d/WorkSpace/4openSourceCode/Protobuf/installLinux3.21.12
-   protobuf32112_include=/mnt/d/WorkSpace/4openSourceCode/Protobuf/installLinux3.21.12/include
-   protobuf32112_lib=/mnt/d/WorkSpace/4openSourceCode/Protobuf/installLinux3.21.12/lib
+   protobuf32112_include=${protobuf32112_root}/include
+   protobuf32112_lib=${protobuf32112_root}/lib
+   protoc_bin=${protobuf32112_root}/bin
    
    export CPLUS_INCLUDE_PATH=${protobuf32112_include}:$CPLUS_INCLUDE_PATH
    export LIBRARY_PATH=${protobuf32112_lib}:$LIBRARY_PATH
    export LD_LIBRARY_PATH=${protobuf32112_lib}:$LD_LIBRARY_PATH
-   export PATH=${protobuf32112_root}:$PATH
+   export PATH=${protobuf32112_root}:${protoc_bin}:$PATH
    ```
    
    
