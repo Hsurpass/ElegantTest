@@ -36,7 +36,7 @@
 
 ### 内部构建
 
-```
+```cmake
 cmake .
 make
 ```
@@ -45,7 +45,7 @@ make
 
 linux:
 
-```
+```cmake
 mkdir build && cd build && cmake .. && make (同cmake --build . )
 
 or
@@ -56,7 +56,7 @@ cmake --build build --config Release  #生成可执行文件
 
 windows:
 
-```
+```cmake
 cmake -B build -G "Visual Studio 16 2019" 
 cmake --build build --config Release  #生成可执行文件
 ```
@@ -67,7 +67,7 @@ cmake --build build --config Release  #生成可执行文件
 
 ### 构建时传递参数
 
-```
+```cmake
 cmake -DCMAKE_BUILD_TYPE=Debug
 ```
 
@@ -75,7 +75,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug
 
 ## 设置编译选项
 
-```
+```cmake
 set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
@@ -97,13 +97,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 设置库文件(动态库和静态库)输出目录：
 
-```
+```cmake
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib) 
 ```
 
 ##### add_library
 
-```
+```cmake
 add_library(<name> [STATIC | SHARED | MODULE]
             [EXCLUDE_FROM_ALL]
             [<source>...])
@@ -123,7 +123,7 @@ EXCLUDE_FROM_ALL参数的意思是这个不会被默认构建，除非有其他�
 
 这个开关用来控制默认的库编译方式，如果不进行设置，使用ADD_LIBRARY并没有指定库类型的情况下，默认编译生成的库都是静态库。
 
-```
+```cmake
 SET(BUILD_SHARED_LIBS ON)	# 默认生成的为动态库。
 ```
 
@@ -133,12 +133,12 @@ SET(BUILD_SHARED_LIBS ON)	# 默认生成的为动态库。
 
 ##### CMAKE_ARCHIVE_OUTPUT_DIRECTORY
 
-```
+```cmake
 # 静态库输出目录
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/lib)
 ```
 
-```
+```cmake
 # 通过变量 hello.c 生成 libhello.a 静态库 (默认是静态库)
 add_library(hello STATIC hello.c)
 ```
@@ -147,28 +147,28 @@ add_library(hello STATIC hello.c)
 
 ##### CMAKE_LIBRARY_OUTPUT_DIRECTORY
 
-```
+```cmake
 # 动态库输出目录
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 ```
 
 ==**cmake在windows平台链接动态库错误, error LNK1181(1104): 无法打开输入文件**==
 
-```
+```cmake
 if(MSVC)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
   SET(BUILD_SHARED_LIBS TRUE)
 endif()
 ```
 
-```
+```cmake
 # 通过变量 hello.c 生成 libhello.so 共享库 (默认是静态库)
 add_library(hello SHARED hello.c)
 ```
 
 ### 同时构建动态库和静态库
 
-```
+```cmake
 // 如果⽤这种⽅式，只会构建⼀个动态库，不会构建出静态库，虽然静态库的后缀是.a
 // 因为使用了这个语句，hello作为target是不能重名的。所以会造成静态库的构建指令无效。
 ADD_LIBRARY(hello SHARED ${LIBHELLO_SRC})
@@ -181,14 +181,14 @@ ADD_LIBRARY(hello_static STATIC ${LIBHELLO_SRC})
 
 所以使用SET_TARGET_PROPERTIES添加一条：
 
-```
+```cmake
 //对hello_static的重名为hello
 SET_TARGET_PROPERTIES(hello_static PROPERTIES OUTPUT_NAME "hello")
 ```
 
 可以使用GET_TARGET_PROPERTY获取目标属性：
 
-```
+```cmake
 GET_TARGET_PROPERTY(OUTPUT_VALUE hello_static OUTPUT_NAME)
 MESSAGE(STATUS "This is the hello_static OUTPUT_NAME:"${OUTPUT_VALUE})
 ```
@@ -197,14 +197,14 @@ MESSAGE(STATUS "This is the hello_static OUTPUT_NAME:"${OUTPUT_VALUE})
 
 向CMakeLists.txt中添加：
 
-```
+```cmake
 SET_TARGET_PROPERTIES(hello PROPERTIES CLEAN_DIRECT_PUTPUT 1)
 SET_TARGET_PROPERTIES(hello_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 ```
 
 最终方案：
 
-```
+```cmake
 SET(LIBHELLO_SRC hello.cpp)
 ADD_LIBRARY(hello_static STATIC ${LIBHELLO_SRC})
 //对hello_static的重名为hello
@@ -223,7 +223,7 @@ SET_TARGET_PROPERTIES(hello PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
 ⼀般动态库都有⼀个版本号的关联
 
-```
+```c
 libhello.so.1.2
 libhello.so ->libhello.so.1
 libhello.so.1->libhello.so.1.2
@@ -231,9 +231,9 @@ libhello.so.1->libhello.so.1.2
 
 设置版本号:
 
-```
+```cmake
 SET_TARGET_PROPERTIES(hello PROPERTIES VERION 1.2 SOVERSION 1)
-VERSION指代动态库版本，SOVERSION指代API版本。
+#VERSION指代动态库版本，SOVERSION指代API版本。
 ```
 
 
@@ -246,13 +246,13 @@ VERSION指代动态库版本，SOVERSION指代API版本。
 
 设置可执行文件输出目录： 
 
-```
+```cmake
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 ```
 
 ##### CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
-```
+```cmake
 # 可执行文件输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 ```
@@ -269,7 +269,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
 执行INSTALL命令时需要注意**CMAKE_INSTALL_PREFIX**参数的值。INSTALL命令形式如下：
 
-```
+```cmake
 INSTALL(TARGETS targets...
 		[[ARCHIVE|LIBRARY|RUNTIME]
 		 [DESTINATION <dir>]
@@ -292,7 +292,7 @@ INSTALL(TARGETS targets...
 
 普通文件(*.h)和非目标文件的可执行程序安装(如**脚本**):
 
-```
+```cmake
 INSTALL(<FILES|PROGRAMS> files... 
 		TYPE <type> | DESTINATION <dir>
 		[PERMISSIONS permissions...]
@@ -307,7 +307,7 @@ INSTALL(<FILES|PROGRAMS> files...
 
 ##### DIRECTORY
 
-```
+```cmake
 install(DIRECTORY dirs...
         TYPE <type> | DESTINATION <dir>
         [FILE_PERMISSIONS permissions...]
@@ -330,7 +330,7 @@ PATTERN用于使用正则表达式进行过滤，PERMISSIONS用于指定PATTERN�
 
 举例:
 
-```
+```cmake
 install(DIRECTORY icons scripts/ DESTINATION share/myproj
         PATTERN "CVS" EXCLUDE
         PATTERN "scripts/*"
@@ -346,7 +346,7 @@ install(DIRECTORY icons scripts/ DESTINATION share/myproj
 
 ##### 自定义安装逻辑
 
-```
+```cmake
 install([[SCRIPT <file>] [CODE <code>]]
         [ALL_COMPONENTS | COMPONENT <component>]
         [EXCLUDE_FROM_ALL] [...])
@@ -356,7 +356,7 @@ SCRIPT参数用于在安装时调用cmake脚本文件（也就是<abc>.cmake文�
 
 CODE参数用于执行CMAKE指令，**必须以双引号括起来**。比如：
 
-```
+```cmake
 install(CODE "MESSAGE(\"Sample install message.\")")
 ```
 
@@ -370,7 +370,7 @@ install(CODE "MESSAGE(\"Sample install message.\")")
 
 ==/usr/local （默认安装路径）==
 
-```
+```cmake
 # 设置安装路径
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/bin)
 ```
@@ -381,7 +381,7 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/bin)
 
 ##### enable_testing()
 
-```
+```cmake
 enable_testing()	#默认 测试是不开启的，需要调用开启
 ```
 
@@ -397,7 +397,7 @@ See also the [`add_test()`](https://cmake.org/cmake/help/latest/command/add_test
 
 Add a test to the project to be run by [`ctest(1)`](https://cmake.org/cmake/help/latest/manual/ctest.1.html#manual:ctest(1)).
 
-```
+```cmake
 add_test(NAME <name> COMMAND <command> [<arg>...]
          [CONFIGURATIONS <config>...]
          [WORKING_DIRECTORY <dir>]
@@ -420,13 +420,13 @@ COMMAND_EXPAND_LISTS：是否展开命令的参数
 
 ##### set_tests_properties
 
-```
+```cmake
 set_tests_properties(test1 [test2...] PROPERTIES prop1 value1 prop2 value2)
 ```
 
 设置测试的属性。如果测试没发现，cmake将会报错。
 
-```
+```cmake
 #测试5的平方
 add_test(NAME test_5_2 COMMAND demo5 5 2)
 set_tests_properties(test_5_2 PROPERTIES PASS_REGULAR_EXPRESSION "is 25")
@@ -442,7 +442,7 @@ set_tests_properties(test_5_2 PROPERTIES PASS_REGULAR_EXPRESSION "is 25")
 
 First version number component of the [`<PROJECT-NAME>_VERSION`](https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION.html#variable:_VERSION) variable as set by the [`project()`](https://cmake.org/cmake/help/latest/command/project.html#command:project) command.
 
-```
+```cmake
 set (Demo_VERSION_MAJOR 1)	#指定当前的项目的主版本号
 ```
 
@@ -450,7 +450,7 @@ set (Demo_VERSION_MAJOR 1)	#指定当前的项目的主版本号
 
 Second version number component of the [`<PROJECT-NAME>_VERSION`](https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION.html#variable:_VERSION) variable as set by the [`project()`](https://cmake.org/cmake/help/latest/command/project.html#command:project) command.
 
-```
+```cmake
 set (Demo_VERSION_MINOR 0)	# 指定当前的项目的副版本号
 ```
 
@@ -458,13 +458,13 @@ set (Demo_VERSION_MINOR 0)	# 指定当前的项目的副版本号
 
 Third version number component of the [`_VERSION`](https://cmake.org/cmake/help/latest/variable/PROJECT-NAME_VERSION.html#variable:_VERSION) variable as set by the [`project()`](https://cmake.org/cmake/help/latest/command/project.html#command:project) command.
 
-```
+```cmake
 set (Demo_VERSION_PATCH 0)	# 指定当前的项目的补丁号
 ```
 
 之后，为了在代码中获取版本信息，我们可以修改 config.h.in 文件，添加两个预定义变量：
 
-```
+```c++
 // the configured options and settings for Tutorial
 #define Demo_VERSION_MAJOR @Demo_VERSION_MAJOR@
 #define Demo_VERSION_MINOR @Demo_VERSION_MINOR@
@@ -472,7 +472,7 @@ set (Demo_VERSION_PATCH 0)	# 指定当前的项目的补丁号
 
 cmake -B build && cmake --build build 。生成`config.h`
 
-```
+```c
 // the configured options and settings for Tutorial
 #define Demo7_VERSION_MAJOR 1
 #define Demo7_VERSION_MINOR 0
@@ -480,7 +480,7 @@ cmake -B build && cmake --build build 。生成`config.h`
 
 这样就可以直接在代码中打印版本信息了：
 
-```
+```c
 // print version info
 printf("%s Version %d.%d\n", argv[0], Demo_VERSION_MAJOR, Demo_VERSION_MINOR);
 ```
@@ -503,7 +503,7 @@ printf("%s Version %d.%d\n", argv[0], Demo_VERSION_MAJOR, Demo_VERSION_MINOR);
 
 ​	3.2 **写install的时候一定要写==相对路径==，==不然这个临时目录就是个空==**
 
-```
+```cmake
 # 设置安装根目录
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
 # 指定可执行程序和config.h安装路径
@@ -515,7 +515,7 @@ install(FILES ${PROJECT_BINARY_DIR}/config.h DESTINATION include)
 
 首先在**顶层**的 CMakeLists.txt 文件尾部添加下面几行：
 
-```
+```cmake
 # 构建一个 CPack 安装包
 include (InstallRequiredSystemLibraries)
 set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
@@ -534,19 +534,19 @@ include (CPack)
 
 - 生成二进制安装包：
 
-```
+```bash
 cpack -C CPackConfig.cmake
 ```
 
 - 生成源码安装包
 
-```
+```bash
 cpack -C CPackSourceConfig.cmake
 ```
 
 我们可以试一下。在生成项目后，执行 `cpack -C CPackConfig.cmake` 命令：
 
-```
+```bash
 [ehome@xman Demo8]$ cpack -C CPackSourceConfig.cmake
 CPack: Create package using STGZ
 CPack: Install projects
@@ -570,14 +570,14 @@ CPack: - package: /home/ehome/Documents/programming/C/power/Demo8/Demo8-1.0.1-Li
 
 此时会在该目录下创建 3 个不同格式的二进制包文件：
 
-```
+```bash
 [ehome@xman Demo8]$ ls Demo8-*
 Demo8-1.0.1-Linux.sh  Demo8-1.0.1-Linux.tar.gz  Demo8-1.0.1-Linux.tar.Z
 ```
 
 这 3 个二进制包文件所包含的内容是完全相同的。我们可以执行其中一个。此时会出现一个由 CPack 自动生成的交互式安装界面：
 
-```
+```bash
 [ehome@xman Demo8]$ sh Demo8-1.0.1-Linux.sh 
 Demo8 Installer Version: 1.0.1, Copyright (c) Humanity
 This is a self-extracting archive.
@@ -622,7 +622,7 @@ Unpacking finished successfully
 
 完成后提示安装到了 Demo8-1.0.1-Linux 子目录中，我们可以进去执行该程序：
 
-```
+```bash
 [ehome@xman Demo8]$ ./Demo8-1.0.1-Linux/bin/Demo 5 2
 Now we use our own Math library. 
 5 ^ 2 is 25
@@ -647,7 +647,7 @@ Now we use our own Math library.
 
 - **指令是大小写无关的，参数和变量是大小写相关的**
 
-  ```
+  ```cmake
   set(HELLO hello.cpp)
   add_executable(hello main.cpp hello.cpp)
   ADD_EXECUTABLE(hello main.cpp ${HELLO})
@@ -665,11 +665,11 @@ https://cmake.org/cmake/help/latest/      -----> search
 
 指定CMake的最小版本要求
 
-```
+```cmake
 cmake_minimum_required(VERSION <min>[...<policy_max>] [FATAL_ERROR])
 ```
 
-```
+```cmake
 # CMake最小版本要求为2.8.3
 cmake_minimum_required(VERSION 2.8.3)
 ```
@@ -678,11 +678,11 @@ cmake_minimum_required(VERSION 2.8.3)
 
 定义工程名称，并可指定工程支持的语言
 
-```
+```cmake
 project(projectname [CXX] [C] [Java])
 ```
 
-```
+```cmake
 # 指定工程名为HELLOWORLD
 project(HELLOWORLD)
 ```
@@ -693,7 +693,7 @@ set可以设置普通变量、缓存变量和环境变量
 
 设置普通变量：
 
-```
+```cmake
 set(<variable> <value>... [PARENT_SCOPE])
 ```
 
@@ -701,7 +701,7 @@ set(<variable> <value>... [PARENT_SCOPE])
 
 设置缓存变量:
 
-```
+```cmake
 set(<variable> <value>... CACHE <type> <docstring> [FORCE])
 ```
 
@@ -709,7 +709,7 @@ set(<variable> <value>... CACHE <type> <docstring> [FORCE])
 
 设置环境变量:
 
-```
+```cmake
 set(ENV{<variable>} [<value>])
 ```
 
@@ -721,11 +721,11 @@ set(ENV{<variable>} [<value>])
 
 向工程添加多个特定的头文件搜索路径 ---> 相当于指定g++编译器的-I参数
 
-```
+```cmake
 include_directories([AFTER|BEFORE] [SYSTEM] dir1 dir2 …)
 ```
 
-  ```
+  ```cmake
   # 将/usr/include/myincludefolder 和 ./include 添加到头文件搜索路径
   include_directories(/usr/include/myincludefolder ./include)
   ```
@@ -741,11 +741,11 @@ include_directories([AFTER|BEFORE] [SYSTEM] dir1 dir2 …)
 
 添加非标准的共享库搜索路径，比如在工程内部同时存在共享库和可执行二进制，在编译时就需要指定一下这些共享库的路径。
 
-```
+```cmake
 link_directories([AFTER|BEFORE] directory1 [directory2 ...])
 ```
 
-  ```
+  ```cmake
   # 将/usr/lib/mylibfolder 和 ./lib 添加到库文件搜索路径
   link_directories(/usr/lib/mylibfolder ./lib)
   ```
@@ -754,13 +754,13 @@ link_directories([AFTER|BEFORE] directory1 [directory2 ...])
 
 生成可执行文件
 
-```
+```cmake
 add_executable(<name> [WIN32] [MACOSX_BUNDLE]
                [EXCLUDE_FROM_ALL]
                [source1] [source2 ...])
 ```
 
-  ```
+  ```cmake
   # 编译main.cpp生成可执行文件main
   add_executable(main main.cpp)
   ```
@@ -769,24 +769,24 @@ add_executable(<name> [WIN32] [MACOSX_BUNDLE]
 
 为 target 添加需要链接的共享库  --->相同于指定g++编译器-l参数
 
-```
+```cmake
 target_link_libraries(target library1 library2…)
 ```
 
-  ```
+  ```cmake
   # 将hello动态库文件链接到可执行文件main
   target_link_libraries(main hello)
   ```
 
 ##### add_subdirectory
 
-```
+```cmake
 add_subdirectory(source_dir [binary_dir] [EXCLUDE_FROM_ALL] [SYSTEM])
 ```
 
 这个指令用于向当前工程添加存放源文件的子目录。并可以指定中间二进制和目标二进制存放的位置。**EXCLUDE_FROM_ALL**参数的含义是将这个目录从编译过程中排除，比如，工程中的example，可能就需要工程构建完成后，再进入example目录单独进行构建（当然，你可以通过定义依赖来解决此类问题）。
 
-```
+```cmake
 add_subdirectory(example EXCLUDE_FROM_ALL)
 ```
 
@@ -794,7 +794,7 @@ add_subdirectory(example EXCLUDE_FROM_ALL)
 
 ##### set_target_properties
 
-```
+```cmake
 set_target_properties(target1 target2 ...
                       PROPERTIES prop1 value1
                       prop2 value2 ...)
@@ -802,7 +802,7 @@ set_target_properties(target1 target2 ...
 
 ##### get_target_property
 
-```
+```cmake
 get_target_property(<VAR> target property)
 ```
 
@@ -812,11 +812,11 @@ get_target_property(<VAR> target property)
 
 ==发现一个目录下所有的源代码文件并将列表存储在一个变量中，这个指令临时被用来自动构建源文件列表==
 
-```
+```cmake
 aux_source_directory(<dir> <variable>)
 ```
 
-  ```
+  ```cmake
   # 定义SRC变量，其值为当前目录下所有的源代码文件
   aux_source_directory(. SRC)
   # 编译SRC变量所代表的源代码文件，生成main可执行文件
@@ -851,7 +851,7 @@ aux_source_directory(<dir> <variable>)
 
 ##### macro
 
-```
+```cmake
 macro(<name> [arg1 [arg2 [arg3 ...]]])
 		COMMAND1(ARGS ...)
 		COMMAND2(ARGS ...)
@@ -880,14 +880,14 @@ endmacro(<name>)
 
 **g++编译选项**,也可以通过指令ADD_DEFINITIONS()添加。
 
-```
+```cmake
 # 在CMAKE_CXX_FLAGS编译选项后追加-std=c++11
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ```
 
 ##### CMAKE_C_COMPILER
 
-```
+```cmake
 -DCMAKE_C_COMPILER #指定C语言编译器如交叉编译器未加入到环境变量，需要使用绝对路径
 ```
 
@@ -901,7 +901,7 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 **编译类型(Debug, Release)**
 
-```
+```cmake
 # 设定编译类型为debug，调试时需要选择debug
 set(CMAKE_BUILD_TYPE Debug) 
 # 设定编译类型为release，发布时需要选择release
@@ -910,7 +910,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 ##### CMAKE_CXX_STANDARD
 
-```
+```cmake
 # 设置c++11标准
 set(CMAKE_CXX_STANDARD 11)
 ```
@@ -919,7 +919,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 ##### CMAKE_CXX_STANDARD_REQUIRED
 
-```
+```cmake
 # 需要满足c++标准
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ```
@@ -928,7 +928,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ##### CMAKE_CXX_EXTENSIONS
 
-```
+```cmake
 # 不用c++扩展语法
 set(CMAKE_CXX_EXTENSIONS OFF
 ```
@@ -975,7 +975,7 @@ set(CMAKE_CXX_EXTENSIONS OFF
 
 这个变量用来定义自己的cmake模块所在的路径。如果你的工程比较复杂，有可能会自己编写一些cmake模块，这些cmake模块是随你的工程发布的，为了让cmake在处理CMakeLists.txt时找到这些模块，你需要通过SET指令，将自己的cmake模块路径设置一下。
 
-```
+```cmake
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 ```
 
@@ -987,7 +987,7 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 如果启用此变量，CMake会自动将**CMAKE_CURRENT_SOURCE_DIR**和CMAKE_CURRENT_BINARY_DIR添加到每个目录的包含路径中。这些附加包含目录不会向下传播到子目录。这主要对外部构建有用，生成到构建树(build目录)中的文件包含在源树(main目录)中的文件中。
 
-```
+```cmake
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 ```
 
