@@ -162,6 +162,7 @@ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
    ```bash
    cmake -B ../../buildlinux
+   cmake -B ../../buildlinux -DCMAKE_INSTALL_PREFIX=installLinuxxxx
    ```
 
    
