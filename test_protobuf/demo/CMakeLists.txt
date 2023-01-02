@@ -21,6 +21,7 @@ endif()
 message("exec: " ${exec})
 
 FIND_PACKAGE(Protobuf REQUIRED COMPONENTS protobuf)
+#FIND_PACKAGE(Protobuf REQUIRED CONFIG COMPONENTS protobuf)
 
 MESSAGE(STATUS "Protobuf_FOUND:" ${Protobuf_FOUND})
 MESSAGE(STATUS "Protobuf_VERSION:" ${Protobuf_VERSION})
