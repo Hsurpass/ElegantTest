@@ -107,10 +107,28 @@ void test_shared_ptr_redestructor02()
 #endif
 }
 
+void test_sharedPtr_assign_weakPtr()
+{
+    shared_ptr<Test> spt(new Test);
+
+    // weak_ptr<Test> wpt(spt);
+    // weak_ptr<Test> wpt = spt;
+
+    shared_ptr<Test>& sptref = spt;
+    cout << "spt.use_count: " << spt.use_count() << endl;
+    cout << "sptref.use_count: " << sptref.use_count() << endl;
+
+    // const weak_ptr<Test>& wpt = spt;
+    const weak_ptr<Test>& wpt = sptref;
+
+    cout << wpt.use_count() << endl;
+}
+
 int main()
 {
-    test_shared_ptr_redestructor01();
+    // test_shared_ptr_redestructor01();
     // test_shared_ptr_redestructor02();
+    test_sharedPtr_assign_weakPtr();
 
 
     return 0;

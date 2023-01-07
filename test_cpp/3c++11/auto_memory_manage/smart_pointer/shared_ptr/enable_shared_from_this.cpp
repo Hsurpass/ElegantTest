@@ -38,6 +38,11 @@ public:
         // 不能在构造/析构函数中调用 shared_from_this(): 对象还没初始化完
         // shared_ptr<CopyEnableShared> tmp = shared_from_this();  // core dump
     }
+
+    shared_ptr<CopyEnableShared> getSharedPtr() 
+    {
+        return shared_from_this();
+    }
 };
 
 class CopyNOEnableShared : public Copy
@@ -146,8 +151,10 @@ void test_no_enable_shared_from_this_with_bind_crash()
     }
 }
 
-void test_no_enable_shared_from_this_sharedPtr_redestructor()
+// 两个shared_ptr托管同一个指针，会造成重析构而崩溃
+void test_sharedPtr_redestructor()
 {
+#if 0
     {
         CopyNOEnableShared *c = new CopyNOEnableShared(); // Copy(int i)0x7fffe9477e70
 
@@ -157,7 +164,38 @@ void test_no_enable_shared_from_this_sharedPtr_redestructor()
         cout << s1.use_count() << endl; // 1
         cout << s2.use_count() << endl; // 1
     }                                   // ~Copy()0x7fffe9477e70 ~Copy()0x7fffe9477e70 ----> core dumped
+#endif
+
+#if 1
+    {
+        CopyEnableShared *c = new CopyEnableShared(); // Copy(int i)
+
+        shared_ptr<CopyEnableShared> s1(c);
+        shared_ptr<CopyEnableShared> s2(c);
+
+        cout << s1.use_count() << endl; // 1
+        cout << s2.use_count() << endl; // 1
+    }
+#endif   
 }
+
+void test_use_shared_from_this_slove_redestructor()
+{
+    {   
+        // 必须先初始化一个shared_ptr把weak_this初始化，再使用shared_from_this()。
+        // CopyEnableShared *s = new CopyEnableShared(); // Copy(int i)
+        shared_ptr<CopyEnableShared> s(new CopyEnableShared()); // Copy(int i)
+        cout << s.use_count() << endl; // 1
+
+        shared_ptr<CopyEnableShared> s1 = s->getSharedPtr();
+        cout << s1.use_count() << endl; // 2
+        shared_ptr<CopyEnableShared> s2 = s->getSharedPtr();
+
+        cout << s1.use_count() << endl; // 3
+        cout << s2.use_count() << endl; // 3
+    }
+}
+
 
 // 
 void enable_shared_from_this_why01()
@@ -200,8 +238,11 @@ void enable_shared_from_this_test01()
 int main()
 {
     // enable_shared_from_this_test01();
-    enable_shared_from_this_why01();
-    // test_no_enable_shared_from_this_sharedPtr_redestructor();
+    // enable_shared_from_this_why01();
+
+    // test_sharedPtr_redestructor();
+    test_use_shared_from_this_slove_redestructor();
+    
     // test_no_enable_shared_from_this_with_bind_crash();
     // test_no_enable_shared_from_this_with_bind_placeholders_crash();
     // test_enable_shared_from_this_with_bind();
