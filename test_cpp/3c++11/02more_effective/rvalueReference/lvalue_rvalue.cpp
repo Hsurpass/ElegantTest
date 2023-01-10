@@ -269,8 +269,8 @@ void test_rvalue()
     cout << "****************************************" << endl;
 #if 1
     {
-        // Copy &&c2 = getObject();    // 关闭RVO，对于右值引用，如果实现了move constructor, 则直接把返回值移动给c2
-        Copy &&c2 = getObjectNROV();// 关闭RVO，对于右值引用，如果实现了move constructor, 则先把返回值移动给临时变量，再把临时变量移动给c2
+        Copy &&c2 = getObject();    // 关闭RVO，对于右值引用，如果实现了move constructor, 则直接把返回值移动给c2
+        // Copy &&c2 = getObjectNROV();// 关闭RVO，对于右值引用，如果实现了move constructor, 则先把返回值移动给临时变量，再把临时变量移动给c2
         // Copy &&c2 = getXvalueObject();  // Segmentation fault
         c2.dis();
         cout << "&c2:" << &c2 << endl;

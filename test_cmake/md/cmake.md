@@ -882,7 +882,7 @@ endmacro(<name>)
 
 ```cmake
 # 在CMAKE_CXX_FLAGS编译选项后追加-std=c++11
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-elide-constructors")
 ```
 
 ##### CMAKE_C_COMPILER
