@@ -73,6 +73,18 @@ void test_auto_virtual()
     b.f();
 }
 
+// 不同的返回类型会导致auto推导失败
+// auto sum(long a1, long a2)
+// {
+//     if(a1 < 0)
+//     {
+//         return 0;
+//     }
+//     else
+//     {
+//         return a1 + a2; // 返回long类型
+//     }
+// }
 
 int main()
 {
