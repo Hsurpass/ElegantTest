@@ -75,10 +75,17 @@ void test_numberArrayFromString()
 
 }
 
+template<typename T>
+T sum(T a, T b)
+{
+	return a + b; 
+}
+
 
 int main()
 {
-	test_string2number();
+	// test_string2number();
+	cout << sum(1.5, 2.3) << endl;
 
 	return 0;
 }
