@@ -245,22 +245,22 @@ void test_rvalue()
     cout << "&a:" << &a << endl;    //0x7ffc029ea5a0
 
     // c++编译器默认是开启RVO的，-fno-elide-constructors关闭RVO
-#if 0
+#if 1
     {
         Copy c = getObject();   // 1.关闭RVO, 如果只实现了copy constructor, 先把返回值拷贝给临时对象，再把临时对象拷贝给c
         c.dis();                // 2.关闭RVO, 如果实现了move constructor, 则先把返回值移动给临时对象，再把临时对象移动给c
         cout << "&c:" << &c << endl;
     }
 #endif
-#if 0
+#if 1
     {
         // 1.关闭RVO, 对于常量左值引用，如果只实现了copy constructor, 则直接把返回值拷贝给c1
         // 2.关闭RVO, 对于常量左值引用，如果实现了move constructor, 则直接把返回值移动给c1
-        // const Copy &c1 = getObject();   
+        const Copy &c1 = getObject();   
         // const Copy &c1 = getConstObject();   
         // 3.1关闭RVO, 如果只实现了copy constructor, 先把返回值拷贝给临时对象，再把临时对象拷贝给c1
         // 3.2关闭RVO，对于右值引用，如果实现了move constructor, 则先把返回值移动给临时变量，再把临时变量移动给c1
-        const Copy &c1 = getObjectNROV();   
+        // const Copy &c1 = getObjectNROV();   
         // const Copy &c1 = getXvalueObject(); // error egmentation fault
         c1.dis();                       
         cout << "&c1:" << &c1 << endl;
@@ -282,17 +282,39 @@ void test_xvalue()
 {
     // getObject().dis();
     // cout << &(getXvalueObject()) << endl;   // xvalue不能&
-    const Copy &c = getXvalueObject(); // xvalue
-    c.dis();
+    
+    // const Copy &c = getXvalueObject(); // xvalue Segmentation fault
+    // c.dis();
+
+    // Copy()是一个纯右值，访问其成员函数dis()却需要一个泛左值，所以这里会发生一次临时变量实质化，
+    // 将Copy()转换为将亡值，最后再访问其属性。
+    // 在c++17标准之前临时变量是纯右值，只有转换为右值引用的类型才是将亡值。
+    Copy().dis();
+}
+
+void test_move_constructor()
+{
+    // 如何将右值引用绑定到左值上
+    int i = 1;
+    // int &&k = i;    // compile error
+    // 利用static_cast转换为将亡值, 将亡值属于右值，右值可以被右值引用绑定
+    // 值得注意的是，由于转换的并不是右值，因此它依然有着和转换之前相同的声明周期和内存地址。
+    int &&k = static_cast<int&&>(i);
+
+    // static_cast<Copy&&>的最大作用是让左值使用移动语义。
+    Copy c1;
+    Copy c2 = static_cast<Copy&&>(c1);
 }
 
 int main()
 {
     // test_lvalue();
     cout << "----------------------" << endl;
-    test_rvalue();
+    // test_rvalue();
     cout << "----------------------" << endl;
     // test_xvalue();
+    test_move_constructor();
+
     // fromConstTRefToRefref();
     // test_referenceCollapsing_and_prefectForward();
 
