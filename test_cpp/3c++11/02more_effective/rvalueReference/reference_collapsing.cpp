@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <typeinfo>
 
 using namespace std;
 
@@ -162,10 +163,64 @@ void test_referenceCollapsing_and_prefectForward()
 
 /*********************引用折叠****************************/
 
+// from 现代c++语言核心特性解析 6.8
+
+//T会推导两次
+template<typename T>
+void bar(T &&t, T v)    // 可以利用这个方法让编译器报错来告诉你推导的类型是什么。
+{
+    // t = v;  
+}
+
+
+// 如果传递进来的是左值，则推导为左值引用
+// 如果传递进来的是右值，则推导为类型本身
+// 如果传递进来的是左值引用，则推导为左值引用
+// 如果传递进来的是右值引用，则推导为右值引用
+template<typename T>
+void bar(T &&t)
+{
+    t = 2;
+    // T a;
+    T a = 1;
+
+    cout << typeid(T).name() << endl;
+    // cout << typeid(a).name() << endl;
+
+}
+
+int getval()
+{
+    return 5;
+}
+
+void test_universal_reference_Rreference()
+{
+    int i = 0;
+    const int j = 1;
+    int& ri = i;
+    // int&& rri = std::move(i);
+    int &&rri = 2;
+
+    // bar(i);  //T=int&
+    // bar(j);  //T=const int&
+    // bar(1);  //T=int
+    // bar(getval());  // T=int
+    // bar(ri);    //T=int&
+    bar(rri);   //T=int&&
+
+    // bar(i, i);  // i是左值, 类型为int, T推导为int, T&&推导为int&， t和v类型冲突。
+    // bar(j, j);  // j是左值，类型为const int, T推导为从const int, T&&推导为const int&, t和v类型冲突。
+    // bar(getval(), 1);   // getval()返回的是右值，T推导为int, T&&推导为int&&， 
+    
+    // int &ri = i;
+    // bar(ri, 1); // ri是左值引用，T推导为int&, T&&推导为int&。
+}
 
 int main()
 {
-    test_referenceCollapsing_and_prefectForward();
+    // test_referenceCollapsing_and_prefectForward();
+    test_universal_reference_Rreference();
 
     return 0;
 }
