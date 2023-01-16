@@ -1,5 +1,6 @@
 // g++ -fno-elide-constructors
 #include <iostream>
+#include <memory>
 
 using namespace std;
 
@@ -97,7 +98,17 @@ void test_const_auto_Lreference(const auto& obj)
     obj.dis();
 }
 
+template<typename T>
+void test_T_rvalue_reference(T&& obj)
+{
+    // T& a;
+    obj.dis();
+}
 
+void test_auto_rvalue_reference(auto&& obj)
+{
+    obj.dis();
+}
 
 int main()
 {
@@ -112,7 +123,13 @@ int main()
     // }
     // test_const_auto_Lreference(c);
     // test_const_auto_Lreference(getObject());
+
+    // std::shared_ptr<Copy> spc(new Copy());
+    // const weak_ptr<Copy>& wpc = spc;
     
+
+    test_T_rvalue_reference(getObject());
+    // test_auto_rvalue_reference(getObject());
 
     return 0;
 }

@@ -74,6 +74,12 @@ const Copy getConstObject()
     return Copy();
 }
 
+Copy&& getRvalueReferenceObject()
+{
+    Copy c;
+    return std::move(c);
+}
+
 /*********************引用折叠****************************/
 // from https://docs.microsoft.com/zh-cn/cpp/cpp/rvalue-reference-declarator-amp-amp?view=msvc-170
 template <typename T>
@@ -180,9 +186,9 @@ void bar(T &&t, T v)    // 可以利用这个方法让编译器报错来告诉�
 template<typename T>
 void bar(T &&t)
 {
-    t = 2;
-    // T a;
-    T a = 1;
+    // t = 2;
+    T a;
+    // T a = 1;
 
     cout << typeid(T).name() << endl;
     // cout << typeid(a).name() << endl;
@@ -200,14 +206,16 @@ void test_universal_reference_Rreference()
     const int j = 1;
     int& ri = i;
     // int&& rri = std::move(i);
-    int &&rri = 2;
+    int &&rri = i;
 
-    // bar(i);  //T=int&
-    // bar(j);  //T=const int&
-    // bar(1);  //T=int
-    // bar(getval());  // T=int
-    // bar(ri);    //T=int&
-    bar(rri);   //T=int&&
+    // bar(i);  //左值 T=int&
+    // bar(j);  //常量左值 T=const int&
+    // bar(1);  //右值 T=int
+    // bar(getval());  //右值 T=int
+    // bar(std::move(i));
+    // bar(ri);    //左值引用 T=int&
+    // bar(rri);   //T=int&&
+    bar(getRvalueReferenceObject());
 
     // bar(i, i);  // i是左值, 类型为int, T推导为int, T&&推导为int&， t和v类型冲突。
     // bar(j, j);  // j是左值，类型为const int, T推导为从const int, T&&推导为const int&, t和v类型冲突。
