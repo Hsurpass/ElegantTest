@@ -107,11 +107,10 @@ void print(const T &&v)
 }
 
 // 遇左则左
-// 如果传递进来的是左值，则推导为左值引用
-// 如果传递进来的是右值，则推导为类型本身
-// 如果传递进来的是左值引用，则推导为左值引用
-// 如果传递进来的是右值引用，则推导为右值引用
-
+// 针对万能引用T&&, 如果传递进来的是左值，则T推导为左值引用
+// 针对万能引用T&&, 如果传递进来的是右值，则T推导为类型本身
+// 针对万能引用T&&, 如果传递进来的是左值引用，则T推导为左值引用
+// 针对万能引用T&&, 如果传递进来的是右值引用，则T推导为类型本身 (右值引用?)
 template <typename T>
 void print_type_and_value(T &&t)
 {
@@ -169,8 +168,8 @@ void test_referenceCollapsing_and_prefectForward()
 
 /*********************引用折叠****************************/
 
-// from 现代c++语言核心特性解析 6.8
 
+// from 现代c++语言核心特性解析 6.8
 //T会推导两次
 template<typename T>
 void bar(T &&t, T v)    // 可以利用这个方法让编译器报错来告诉你推导的类型是什么。
@@ -182,15 +181,46 @@ void bar(T &&t, T v)    // 可以利用这个方法让编译器报错来告诉�
 // 如果传递进来的是左值，则推导为左值引用
 // 如果传递进来的是右值，则推导为类型本身
 // 如果传递进来的是左值引用，则推导为左值引用
-// 如果传递进来的是右值引用，则推导为右值引用
+// 如果传递进来的是右值引用，则推导为类型本身 (右值引用?)
 template<typename T>
-void bar(T &&t)
+void bar__(T &&t)
+{
+    // T a;
+    // T& a;
+    // decltype(t) a = 3;
+
+    std::cout << std::boolalpha;
+    std::cout << "T: " << std::is_reference<T>::value << std::endl;
+    std::cout << "T: " << std::is_lvalue_reference<T>::value << std::endl;
+    std::cout << "T: " << std::is_rvalue_reference<T>::value << std::endl;
+
+    std::cout << "t: " << std::is_reference<T &&>::value << std::endl;
+    std::cout << "t: " << std::is_lvalue_reference<T &&>::value << std::endl;
+    std::cout << "t: " << std::is_rvalue_reference<T &&>::value << std::endl;
+
+    // cout << typeid(T).name() << endl;
+    // cout << typeid(a).name() << endl;
+
+}
+
+template<typename T>
+void bar_(T t)
 {
     // t = 2;
-    T a;
+    // T a;
+    // T& a;
     // T a = 1;
 
-    cout << typeid(T).name() << endl;
+    std::cout << std::boolalpha;
+    std::cout << "T: " << std::is_reference<T>::value << std::endl;
+    std::cout << "T: " << std::is_lvalue_reference<T>::value << std::endl;
+    std::cout << "T: " << std::is_rvalue_reference<T>::value << std::endl;
+
+    std::cout << "t: " << std::is_reference<T &&>::value << std::endl;
+    std::cout << "t: " << std::is_lvalue_reference<T &&>::value << std::endl;
+    std::cout << "t: " << std::is_rvalue_reference<T &&>::value << std::endl;
+
+    // cout << typeid(T).name() << endl;
     // cout << typeid(a).name() << endl;
 
 }
@@ -206,23 +236,34 @@ void test_universal_reference_Rreference()
     const int j = 1;
     int& ri = i;
     // int&& rri = std::move(i);
-    int &&rri = i;
+    int &&rri = 2;
+    cout << "&rri:" << &rri << endl;
+#if 0
+    bar_(i);    // T=int
+    bar_(j);    // T=int
+    bar_(ri);   // T=int
+    bar_(rri);  // T=int
+#endif
 
-    // bar(i);  //左值 T=int&
-    // bar(j);  //常量左值 T=const int&
-    // bar(1);  //右值 T=int
-    // bar(getval());  //右值 T=int
-    // bar(std::move(i));
-    // bar(ri);    //左值引用 T=int&
-    // bar(rri);   //T=int&&
-    bar(getRvalueReferenceObject());
-
-    // bar(i, i);  // i是左值, 类型为int, T推导为int, T&&推导为int&， t和v类型冲突。
-    // bar(j, j);  // j是左值，类型为const int, T推导为从const int, T&&推导为const int&, t和v类型冲突。
-    // bar(getval(), 1);   // getval()返回的是右值，T推导为int, T&&推导为int&&， 
-    
-    // int &ri = i;
-    // bar(ri, 1); // ri是左值引用，T推导为int&, T&&推导为int&。
+    cout << "****************************" << endl;
+#if 0
+    // bar__(i);  //左值 T=int&
+    // bar__(j);  //常量左值 T=const int&
+    // bar__(1);              //右值 T=int
+    // bar__(getval());       //右值 T=int
+    // bar__(std::move(i));   //右值 T=int
+    // bar__(ri);    //左值引用 T=int&
+    // bar__(rri);   // T=int& 为啥推导出来是个左值引用
+    bar__(getRvalueReferenceObject());    // T=Copy
+#endif
+    cout << "****************************" << endl;
+#if 1
+    // bar(i, i);  // t的T推导为int&, 折叠后T&&推导为int&, v的T推导为int, 一个T两种类型会冲突
+    // bar(j, j);  // t的T推导为const int&, 折叠后T&&推导为const int&, v的T推导为int, 一个T两种类型会冲突
+    bar(getval(), 1);   // getval()返回的是右值，t的T推导为int, 折叠后T&&推导为int&&， v的T推导为int, t和v的类型相同不会冲突。
+    // bar(ri, 1); // ri是左值引用，t的T推导为int&, 折叠后T&&推导为int&, v的T推导为int, 一个T两种类型会冲突。
+    bar(getRvalueReferenceObject(), 1);    // T=Copy, int
+#endif
 }
 
 int main()
