@@ -82,6 +82,12 @@ const Copy getConstObject()
     return Copy();
 }
 
+Copy getLocalObject()
+{
+    Copy c(11);
+    return c;
+}
+
 //函数的返回类型是右值引用，return右值引用，没有临时对象的消耗，但是仍不可取，因为右值引用的对象在使用前已经析构了。
 // 将亡值
 Copy &&getXvalueObject()
@@ -167,8 +173,8 @@ void test_rvalue()
         // 1.关闭RVO, 如果只实现了copy constructor, 先把返回值拷贝给临时对象，再把临时对象拷贝给c
         // 2.关闭RVO, 如果实现了move constructor, 则先把返回值移动给临时对象，再把临时对象移动给c
         // Copy c = getObject();
-        
-        Copy c = getObjectNROV();
+        Copy c = getLocalObject();
+        // Copy c = getObjectNROV();
 
         c.dis();                
         cout << "&c:" << &c << endl;
@@ -235,16 +241,57 @@ void test_move_constructor()
     Copy c2 = static_cast<Copy&&>(c1);
 }
 
+/**********************************************************/
+// 现代c++语言核心特性解析 6.10
+Copy f(Copy&& x)
+{
+    cout << "Copy f(Copy&& x), &x:" << &x << endl;
+    return x;
+    /*
+    c++20之前是不会调用任何移动构造函数的。因为形参x是一个左值，左值要调用copy constructor,
+    若要实现移动语义，需要改为return std::move(x).
+    */
+}
+
+Copy f1(Copy&& x)
+{
+    return std::move(x);    // 如果使用std::move则函数外的实参在函数调用结束后将不可用
+}
+
+void test_return_val_move_or_copy()
+{
+#if 0
+    Copy x = f(Copy());
+    cout << "&x:" << &x << endl;
+#endif
+
+#if 1
+    Copy c;
+    cout << "&c:" << &c << endl;
+    // Copy c1 = f1(std::move(c));
+    Copy c1 = f(std::move(c));
+    cout << "&c1:" << &c1 << endl;
+
+    c.dis();
+    c1.dis();
+
+#endif
+}
+
+/**********************************************************/
+
 int main()
 {
     // test_lvalue();
     cout << "----------------------" << endl;
-    // test_rvalue();
+    test_rvalue();
     cout << "----------------------" << endl;
     // test_xvalue();
     // test_move_constructor();
 
-    fromConstTRefToRefref();
+    // fromConstTRefToRefref();
+
+    test_return_val_move_or_copy();
 
     return 0;
 }
