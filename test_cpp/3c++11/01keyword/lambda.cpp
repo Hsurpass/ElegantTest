@@ -182,6 +182,65 @@ void test_lambda_template()
     }, 10, 20, 30);
 }
 
+
+int g_a=1;
+void test_lambda_capture()
+{
+    int a = 100;
+    static int b = 2;
+    // 全局变量和静态局部变量直接访问，不用捕获和传参
+    auto f = [](){
+        cout << "g_a:" << g_a << endl;
+        cout << "b:" << b << endl;
+        // cout << "a:" << a << endl;
+        
+    };
+
+    f();
+}
+
+// from 现代c++核心特性解析7.2.2
+// 值捕获的变量在lambda表达式定义的时候就已经固定下来了，无论在表达式定义之后如何修改外部变量的值，lambda捕获的值都不会变化。
+void test_lambda_cpature_value()
+{
+    int x = 5, y = 8;
+
+    auto f = [x, &y]() mutable{
+        x += 1;
+        y += 1;
+        cout << "x:" << x << ",y:" << y << endl;    // x:6, y=101
+        
+    };
+    // f();
+    x = 10;
+    y = 100;
+    f();
+
+
+}
+
+
+// from 现代c++核心特性解析7.2.3
+// 捕获this指针，可以在lambda内部使用this类型的成员函数和变量
+class A
+{
+public:
+    A(int x = 10){}
+
+    void print() { cout << "A::print(), x:" << x << endl; }
+
+    void test_capture_this()
+    { 
+        auto f = [this](){
+            print();
+        };
+        x = 5;
+        f();
+    }
+private:
+    int x;
+};
+
 int main()
 {
     // smallestLambda();
@@ -195,5 +254,11 @@ int main()
 
     // test_foreach_with_lambda();
     // test_std_sort_with_lambda();
-    test_lambda_template();
+    // test_lambda_template();
+    
+    // test_lambda_capture();
+
+    // A a;
+    // a.test_capture_this();
+    test_lambda_cpature_value();
 }
