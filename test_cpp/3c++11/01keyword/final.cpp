@@ -11,31 +11,31 @@ public:
 class B : public A
 {
 public:
+    // 阻止了虚函数的覆写
     void func() const override final
     {
         cout << "B::func()" << endl;
     }
 };
 
-// 阻止了虚函数的覆写
 // 阻止了类的无限扩展。
-class C : public B
+class C final : public B
 {
 public:
-    // void func() const override
+    // void func() const override  // 无法覆写虚函数，编译器报错
     // {
     //     cout << "C::func()" << endl;
     // }
 };
 
-void test_final()
-{
-    B b;
-}
+// class D : public C  //阻止了类的继承
+// {
+// public:
+
+// };
 
 int main()
 {
-    test_final();
 
     return 0;
 }
