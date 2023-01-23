@@ -5,6 +5,7 @@ using namespace std;
 class A
 {
 public:
+    A();
     virtual void func() const { cout << "A::func()" << endl; };
 };
 
