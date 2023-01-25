@@ -28,8 +28,8 @@ configure: error: CGDB requires curses.h or ncurses/curses.h to build.
 ```bash
 重要：确认是否安装ncurses库，且必须要安装 libncursesw5-dev，否则中文乱码
 
-apt install libncurses5-dev
-apt install libncursesw5-dev
+sudo apt install libncurses5-dev
+sudo apt install libncursesw5-dev
 ```
 (2) 出现错误：
 ```bash
