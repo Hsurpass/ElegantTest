@@ -123,7 +123,7 @@ void test_reverse_placeholders()
     
     // 反转参数 returns y/x
     auto fn_invert = std::bind(myDivide, _2, _1);
-    cout << fn_invert(10, 2) << endl;   // 0.2 --> 2放到_2, 1放到_1
+    cout << fn_invert(10, 2) << endl;   // 0.2 --> 2放到_2, 10放到_1
 }
 
 int main()

@@ -131,6 +131,7 @@ void fromConstTRefToRefref()
 void test_lvalue()
 {
     cout << "&\"abc\":" << &"abc" << endl; // 字符串常量是一个左值， 可以取地址&
+    // cout << &'c' << endl;   // 'c'是个右值
     int a = 5;
     int &a1 = a;
     cout << "&a1: " << &a1 << endl;
@@ -284,14 +285,14 @@ int main()
 {
     // test_lvalue();
     cout << "----------------------" << endl;
-    test_rvalue();
+    // test_rvalue();
     cout << "----------------------" << endl;
     // test_xvalue();
     // test_move_constructor();
 
-    // fromConstTRefToRefref();
+    fromConstTRefToRefref();
 
-    test_return_val_move_or_copy();
+    // test_return_val_move_or_copy();
 
     return 0;
 }

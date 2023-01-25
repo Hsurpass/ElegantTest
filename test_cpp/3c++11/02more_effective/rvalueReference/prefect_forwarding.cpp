@@ -144,7 +144,9 @@ void test_prefectForward()
     cout << "x: " << x << endl;
 
     cout << "---------std::forward<int>----------------" << endl;
-    testForward(std::forward<int>(x)); // lvalue rvalue rvalue   return static_cast<int&&>(x) ---> testForward<int&&>(int&& && v)
+    // std::forward<int>(x) std::forward<int>并不是完美转发只是一个模板函数，把x变成了右值
+    // return static_cast<int&&>(x) ---> testForward<int&&>(int&& && v)
+    testForward(std::forward<int>(x)); // lvalue rvalue rvalue  
     cout << "x: " << x << endl;
 
     cout << "---------std::forward<int&>----------------" << endl;
