@@ -43,10 +43,11 @@ void test_move_uniquePtr_to_sharedPtr()
 {
     unique_ptr<Copy> uc(new Copy(123));
 
-    shared_ptr<Copy> sc = std::move(uc);
+    shared_ptr<Copy> sc = std::move(uc);    // shared_ptr(unique_ptr<_Yp, _Del>&& __r)
     cout << sc.use_count() << endl; // 1
     sc->dis();  // 123
     // uc->dis();  // core dump
+    cout << (uc ? true : false) << endl;// 0
     cout << (uc == nullptr) << endl;    // 1
 
 }
@@ -60,7 +61,7 @@ void test_vector_pushback_unique_ptr()
     unique_ptr<Copy> uc3(new Copy(7));
     unique_ptr<Copy> uc4(new Copy(8));
     unique_ptr<Copy> uc5(new Copy(9));
-
+    cout << "------------------------------" << endl;
     // error copy constructor = delete
     // vc.push_back(uc1);
     // vc.push_back(uc2);
@@ -80,10 +81,19 @@ void test_vector_pushback_unique_ptr()
     // vc.push_back(std::move(uc5));
 
     vc.emplace_back(std::move(uc1) );
+    cout << "size:" << vc.size() << ", capacity:" << vc.capacity() << endl;   // 1 2
+
     vc.emplace_back(std::move(uc2) );
+    cout << "size:" << vc.size() << ", capacity:" << vc.capacity() << endl;   // 2 2
+
     vc.emplace_back(std::move(uc3) );
+    cout << "size:" << vc.size() << ", capacity:" << vc.capacity() << endl;   // 3 4
+
     vc.emplace_back(std::move(uc4) );
+    cout << "size:" << vc.size() << ", capacity:" << vc.capacity() << endl;   // 4 4
+
     vc.emplace_back(new Copy(9));
+    cout << "size:" << vc.size() << ", capacity:" << vc.capacity() << endl;   // 5 8
 
     cout << (uc1 ? "uc1 is not empty": "uc1 is empty") << endl;
     cout << (uc2 ? "uc2 is not empty": "uc2 is empty") << endl;
@@ -97,7 +107,7 @@ void test_vector_pushback_unique_ptr()
     vc.push_back(make_unique<Copy>(4));
 #endif
 
-    cout << "size:" << vc.size() << "capacity:" << vc.capacity() << endl;
+    cout << "size:" << vc.size() << ", capacity:" << vc.capacity() << endl;
 }
 
 void test_make_unique()
@@ -113,14 +123,15 @@ void test_unique_ptr_std_move()
 
     unique_ptr<Copy> up1;
     up1 = std::move(up);
-
     cout << *up1->_i << endl;   // 100
+
+    cout << (up ? true : false) << endl;    // 0
     cout << *up->_i << endl;    // core dump    所有权被转移了
 }
 
 void test_uniquePtr_newArray()
 {
-#if 0
+#if 1
     int arr[10]= {};
     typedef int(*INT)[2];
     INT a = (int(*)[2])arr;
@@ -129,9 +140,9 @@ void test_uniquePtr_newArray()
     unique_ptr<int[]> up(new int[10]{1, 3, 5});
     for (int i = 0; i < 10; i++)
     {
-        cout << up[i] << endl;
+        cout << up[i] << " ";  // 1 3 5
     }
-
+    cout << endl;
     cout << "--------------------------" << endl;
     
     unique_ptr<Copy[]> upc(new Copy[5]);
@@ -167,7 +178,19 @@ void test_unique_ptr_release()
         {
             cout << "up has no resource" << endl;
         }
+
+        cout << "------------------" << endl;
         Copy *p = up.release(); // 放弃托管，但不会释放资源
+        if (up)
+        {
+            cout << "up has resource" << endl;
+            cout << "resource this: " << up.get() << endl;
+        }
+        else
+        {
+            cout << "up has no resource" << endl;
+        }
+
         cout << *p->_i << endl;     // 100
         // cout << *up->_i << endl;    // core dump    up已经放弃托管
         delete p;
@@ -184,6 +207,10 @@ void test_unique_ptr_get()
     Copy* p = cp.get();
     cout << *(p->_i) << endl;
     cout << *(cp->_i) << endl;
+    cout << p->_i << endl;
+    cout << cp->_i << endl;
+
+    cout << (cp ? true : false) << endl;
 
 }
 
@@ -246,7 +273,7 @@ int main()
     // test_uniquePtr_newArray();
     // test_unique_ptr_std_move();
 
-    test_vector_pushback_unique_ptr();
-    // test_move_uniquePtr_to_sharedPtr();
+    // test_vector_pushback_unique_ptr();
+    test_move_uniquePtr_to_sharedPtr();
 
 }
