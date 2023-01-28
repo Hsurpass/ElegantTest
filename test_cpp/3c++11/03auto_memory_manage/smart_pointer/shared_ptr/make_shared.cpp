@@ -9,10 +9,14 @@ using namespace placeholders;
 class Copy
 {
 public:
+    // static shared_ptr<Copy> create_shared_ptr() { return make_shared<Copy>(); } // error constructor is private
+// private:
     Copy(int i = 10) : _i(new int(i))
     {
         cout << "Copy(int i)" << this << endl;
     }
+public:
+
     // 若拷贝自实现，移动默认即无
     Copy(const Copy &another) : _i(new int(*another._i))
     {
@@ -65,14 +69,32 @@ public:
 
 void test_make_shared()
 {
+    // shared_ptr<Copy> spc = Copy::create_shared_ptr();
+
     {
         shared_ptr<Copy> sc = make_shared<Copy>(123);
     }
 }
 
+// 没测试出延迟释放的场景
+void test_make_shared_delay_release_memory()
+{
+    shared_ptr<Copy> sc = make_shared<Copy>(123);
+    weak_ptr<Copy> wc(sc);
+
+    {
+        weak_ptr<Copy> wpc(sc);
+        // sc.reset();
+        cout << "-------------------" << endl;
+
+    }
+    cout << "-------------------" << endl;
+}
+
 int main()
 {
-    test_make_shared();
+    // test_make_shared();
+    test_make_shared_delay_release_memory();
 
     return 0;
 }

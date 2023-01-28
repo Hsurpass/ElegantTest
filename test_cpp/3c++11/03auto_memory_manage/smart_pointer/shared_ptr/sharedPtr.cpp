@@ -34,7 +34,7 @@ void test_vector_shared_ptr_moveConstructor()
     cout << cp.use_count() << endl; // 1
 
     vector<copyPtr> vcp;
-    vcp.push_back(std::move(cp));  // 调用shared_ptr 的 move constructor， 引用计数不变化
+    vcp.push_back(std::move(cp)); // 调用shared_ptr 的 move constructor， 引用计数不变化
     vcp.push_back(make_shared<Copy>(11));
     vcp.push_back(make_shared<Copy>(22));
 
@@ -44,11 +44,10 @@ void test_vector_shared_ptr_moveConstructor()
     // 1,110
     // 1,11
     // 1,12
-    for (auto &p: vcp)
+    for (auto &p : vcp)
     {
-        cout << p.use_count() << "," << *p->_i << endl; 
+        cout << p.use_count() << "," << *p->_i << endl;
     }
-    
 }
 
 void test_vector_shared_ptr()
@@ -62,9 +61,8 @@ void test_vector_shared_ptr()
     cout << p1.use_count() << endl; // 1
     cout << p2.use_count() << endl; // 1
 
-
     vector<copyPtr> vcp;
-    vcp.push_back(cp);  // 调用shared_ptr 的 copy constructor， 引用计数加一
+    vcp.push_back(cp); // 调用shared_ptr 的 copy constructor， 引用计数加一
     vcp.push_back(p1);
     vcp.push_back(p2);
 
@@ -74,11 +72,10 @@ void test_vector_shared_ptr()
     // 2,110
     // 2,11
     // 2,12
-    for (auto &p: vcp)
+    for (auto &p : vcp)
     {
-        cout << p.use_count() << "," << *p->_i << endl; 
+        cout << p.use_count() << "," << *p->_i << endl;
     }
-    
 }
 
 void test_shared_ptr_stdMove()
@@ -138,12 +135,12 @@ void test_shared_ptr_swap()
 {
     shared_ptr<Copy> sc = make_shared<Copy>(100);
     shared_ptr<Copy> other = make_shared<Copy>(200);
-    sc = other; // sc ~Copy()
-    sc->dis();  // 200
-    cout << other.use_count() << endl;    // 2
+    sc = other;                        // sc ~Copy()
+    sc->dis();                         // 200
+    cout << other.use_count() << endl; // 2
 
     shared_ptr<Copy> another = make_shared<Copy>(300);
-    cout << another.use_count() << endl;  // 1
+    cout << another.use_count() << endl; // 1
 #if 0
     other = another;
     cout << another.use_count() << endl;  // 2
@@ -153,11 +150,11 @@ void test_shared_ptr_swap()
 #endif
 #if 1
     other.swap(another);
-    cout << another.use_count() << endl;  // 2
-    cout << other.use_count() << endl;    // 1
-    cout << sc.use_count() << endl;       // 2
-    another->dis(); // 200 
-    other->dis();   // 300
+    cout << another.use_count() << endl; // 2
+    cout << other.use_count() << endl;   // 1
+    cout << sc.use_count() << endl;      // 2
+    another->dis();                      // 200
+    other->dis();                        // 300
 #endif
 }
 
@@ -166,19 +163,18 @@ void test_shared_ptr_one_assign_other()
     {
         shared_ptr<Copy> sc = make_shared<Copy>(100);
         shared_ptr<Copy> sc1 = sc;
-        cout << sc1.use_count() << endl;    // 2
+        cout << sc1.use_count() << endl; // 2
         shared_ptr<Copy> other = make_shared<Copy>(111);
         shared_ptr<Copy> other1 = other;
         shared_ptr<Copy> other2 = other;
-        cout << other.use_count() << other1.use_count() << other2.use_count() << endl;  // 3 3 3
+        cout << other.use_count() << other1.use_count() << other2.use_count() << endl; // 3 3 3
 
         sc = other;
-        cout << sc1.use_count() << endl;    // 1
-        sc1->dis(); // 100
-        cout << sc.use_count() << endl;     // 4
-        sc->dis();  // 111
-        cout << other.use_count() << endl;  // 4
-
+        cout << sc1.use_count() << endl;   // 1
+        sc1->dis();                        // 100
+        cout << sc.use_count() << endl;    // 4
+        sc->dis();                         // 111
+        cout << other.use_count() << endl; // 4
     }
     cout << "----------------" << endl;
 }
@@ -187,17 +183,16 @@ void test_shared_ptr_reset_self()
 {
     shared_ptr<Copy> sc = make_shared<Copy>(100);
     cout << sc.use_count() << endl; // 1
-    shared_ptr<Copy> sc1 = sc;  
-    shared_ptr<Copy> sc2 = sc;  
+    shared_ptr<Copy> sc1 = sc;
+    shared_ptr<Copy> sc2 = sc;
     cout << sc.use_count() << endl; // 3
 
     sc.reset(new Copy(*sc));
-    cout << sc.use_count() << endl; // 1
-    sc->dis();  // 100
+    cout << sc.use_count() << endl;  // 1
+    sc->dis();                       // 100
     cout << sc1.use_count() << endl; // 2
     cout << sc2.use_count() << endl; // 2
-    sc1->dis(); // 100
-
+    sc1->dis();                      // 100
 }
 
 void func_reset(shared_ptr<int> tmp)
@@ -257,6 +252,18 @@ void test_shared_ptr_get()
     cout << sc.use_count() << endl; // 1
 }
 
+void test_shared_ptr_refCount03()
+{
+    int *p = new int(10);
+    shared_ptr<int> sp(p);
+    cout << sp.use_count() << endl; // 1 
+
+    delete p;
+    // cout << *sp << endl;            // crash
+    cout << sp.use_count() << endl; // 1 托管的指针被释放了而引用计数还在
+    cout << "-----------------------" << endl;
+}
+
 void test_shared_ptr_refCount02()
 {
     int *p = new int(10);
@@ -300,6 +307,7 @@ int main()
 {
     // test_shared_ptr_refCount01();
     // test_shared_ptr_refCount02();
+    test_shared_ptr_refCount03();
     // test_shared_ptr_get();
     // test_shared_ptr_reset01();
     // test_shared_ptr_reset02();
@@ -309,7 +317,7 @@ int main()
     // test_vector_shared_ptr_moveConstructor();
     // test_shared_ptr_reset_self();
     // test_shared_ptr_one_assign_other();
-    test_shared_ptr_swap();
+    // test_shared_ptr_swap();
 
     return 0;
 }
