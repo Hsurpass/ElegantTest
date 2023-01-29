@@ -14,7 +14,7 @@ public:
     // 可以返回临时对象，不能返回临时对象的引用
     shared_ptr<Test> getSharedPtr()
     {
-        cout << "shared_from_this().use_count:" << shared_from_this().use_count() << endl;
+        cout << "shared_from_this().use_count:" << shared_from_this().use_count() << endl;  //2
         shared_ptr<Test> obj = shared_from_this();
         cout << "getSharedPtr, use_count:" << obj.use_count() << endl;    // 2
 
@@ -60,8 +60,8 @@ void test_shared_ptr_redestructor01()
 #if 1
     // 使用shared_from_this解决此问题
     shared_ptr<Test> t1 = t->getSharedPtr();
-    cout << "t.use_count: " << t.use_count() << endl;   // 1
-    cout << "t1.use_count: " << t1.use_count() << endl; // 1
+    cout << "t.use_count: " << t.use_count() << endl;   // 2
+    cout << "t1.use_count: " << t1.use_count() << endl; // 2
 #endif
 
 #if 0
@@ -85,7 +85,7 @@ void test_shared_ptr_redestructor02()
 {
     Test* t = new Test;
 
-#if 1
+#if 0
     {
         shared_ptr<Test> t1 = t->get_redestructor_SharedPtr();
         cout << "t1->m_a: " << t1->m_a << endl;             // 10
@@ -94,7 +94,7 @@ void test_shared_ptr_redestructor02()
     }
 #endif
 
-#if 0
+#if 1
 // enable_shared_from_this中有个weak_ptr成员变量weak_this, shared_from_this()函数就是通过weak_ptr来生成shared_ptr,
 // (weak_ptr中保存着引用计数，这样生成的shared_ptr就能共用引用计数了，不会再出现重析构的问题)
 // 而weak_this则是在shared_ptr的构造函数中被赋值的，所以要使用shared_from_this()必须先构造一个shared_ptr对象。
@@ -115,13 +115,13 @@ void test_sharedPtr_assign_weakPtr()
     // weak_ptr<Test> wpt = spt;
 
     shared_ptr<Test>& sptref = spt;
-    cout << "spt.use_count: " << spt.use_count() << endl;
-    cout << "sptref.use_count: " << sptref.use_count() << endl;
+    cout << "spt.use_count: " << spt.use_count() << endl;       // 1
+    cout << "sptref.use_count: " << sptref.use_count() << endl; // 1
 
     // const weak_ptr<Test>& wpt = spt;
     const weak_ptr<Test>& wpt = sptref;
 
-    cout << wpt.use_count() << endl;
+    cout << wpt.use_count() << endl;    // 1
 }
 
 int main()

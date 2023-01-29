@@ -82,8 +82,8 @@ void test_bind_this_expired()
     {
         shared_ptr<B> spb = pa->getB();
         delete pa;
-        cout << "spb.use_count:" << spb.use_count() << endl;
-    }
+        cout << "spb.use_count:" << spb.use_count() << endl;    //1
+    }   //Segmentation fault
 
     // delete pa;
 
@@ -92,11 +92,11 @@ void test_bind_this_expired()
 void test_bind_shared_from_this()
 {
     shared_ptr<C> spc(new C());
-    cout << "spa.use_count:" << spc.use_count() << endl;
+    cout << "spc.use_count:" << spc.use_count() << endl;    // 1
     {
         shared_ptr<B> spb = spc->getB();
-        cout << "spa.use_count:" << spc.use_count() << endl;
-        cout << "spb.use_count:" << spb.use_count() << endl;
+        cout << "spc.use_count:" << spc.use_count() << endl;    // 2
+        cout << "spb.use_count:" << spb.use_count() << endl;    // 1
     }
 
 }
@@ -130,12 +130,14 @@ void test_bind_this_expired01()
 void test_bind_shared_from_this01()
 {
     shared_ptr<C> spc(new C());
-    cout << "spa.use_count:" << spc.use_count() << endl;    // 1
+    cout << "spc.use_count:" << spc.use_count() << endl;    // 1
     {
         shared_ptr<B> spb = spc->getB_();
-        cout << "spa.use_count:" << spc.use_count() << endl;    // 2
         cout << "spb.use_count:" << spb.use_count() << endl;    // 1
+        cout << "spc.use_count:" << spc.use_count() << endl;    // 2
+        spb->m_function();
     }
+    cout << "spc.use_count:" << spc.use_count() << endl;    // 1
 }
 
 int main()

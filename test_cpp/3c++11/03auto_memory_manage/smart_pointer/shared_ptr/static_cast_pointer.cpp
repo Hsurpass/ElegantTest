@@ -6,3 +6,15 @@
 而static_pointer_cast 工作的前提是：static_cast<T*>(r.get()) 必须是有效的。二者理念相同！
 
 */
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+int main()
+{
+    int *p;
+    // static_pointer_cast<int>(p);
+
+    return 0;
+}

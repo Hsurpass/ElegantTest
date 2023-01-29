@@ -97,7 +97,7 @@ void test_enable_shared_from_this_with_bind()
             cout << s1.use_count() << endl; // 2 | 0
             f();                            // 11 current | crash dump
             cout << s1.use_count() << endl; // 2 | 0
-        } 
+        }   // f对象释放，引用计数减1
         cout << s1.use_count() << endl; // 1 | 0
     }
 }
@@ -134,19 +134,29 @@ void test_no_enable_shared_from_this_with_bind_crash()
         f();    // core dumped
 
 #endif
-#if 1
+
         shared_ptr<CopyEnableShared> s1;
         s1.reset(c);
         // s1 = shared_ptr<CopyEnableShared>(c);
-        cout << s1.use_count() << endl; // 1
+        cout << "s1.use_count:" << s1.use_count() << endl; // 1
+#if 1
 
-        // {
+        
+        auto f = std::bind(&CopyEnableShared::dis, s1); // s1 传参是值类型 shared_ptr会在bind内部拷贝一个，placeholder传参是引用类型
+        // s1.reset(); // 0 引用计数减1，同时放弃托管。
+        cout << "s1.use_count:" << s1.use_count() << endl; // 2
+        f();   // 11                        
+        
+        cout << "s1.use_count:" << s1.use_count() << endl; // 2 f 这个对象还没析构所以还是 2）
+#endif
+#if 0
+        {
             auto f = std::bind(&CopyEnableShared::dis, s1); // s1 传参是值类型 shared_ptr会在bind内部拷贝一个，placeholder传参是引用类型
-            // s1.reset(); // 0
-            cout << s1.use_count() << endl; // 0 2
-            f();                            // 11 current
-        // }   // 1(f 这个对象析构了所以是 1)
-        cout << s1.use_count() << endl; // 0 2(f 这个对象还没析构所以还是 2)
+            cout << s1.use_count() << endl; // 2
+            f();  // 11 current
+            cout << s1.use_count() << endl; // 2
+        }   // 1(f 这个对象析构了所以是 1)
+        cout << s1.use_count() << endl; // 1)
 #endif
     }
 }
@@ -241,13 +251,13 @@ int main()
     // enable_shared_from_this_why01();
 
     // test_sharedPtr_redestructor();
-    test_use_shared_from_this_slove_redestructor();
+    // test_use_shared_from_this_slove_redestructor();
     
     // test_no_enable_shared_from_this_with_bind_crash();
     // test_no_enable_shared_from_this_with_bind_placeholders_crash();
     // test_enable_shared_from_this_with_bind();
     // test_enable_shared_from_this_with_bind_placeholders();
-    // test_enable_shared_from_this_in_constructor();
+    test_enable_shared_from_this_in_constructor();
 
     return 0;
 }

@@ -35,6 +35,7 @@ void test_vector_shared_ptr_moveConstructor()
 
     vector<copyPtr> vcp;
     vcp.push_back(std::move(cp)); // 调用shared_ptr 的 move constructor， 引用计数不变化
+    cout << cp.use_count() << endl; // 0
     vcp.push_back(make_shared<Copy>(11));
     vcp.push_back(make_shared<Copy>(22));
 
@@ -89,7 +90,7 @@ void test_shared_ptr_stdMove()
     cout << sp2.use_count() << endl; // 3
 
     cout << "------------------------------" << endl;
-    shared_ptr<Copy> stmp = move(sp);
+    shared_ptr<Copy> stmp = move(sp);   // std::move会把引用计数和资源都转移
 
     cout << stmp.use_count() << endl; // 3
     cout << sp.use_count() << endl;   // 0
@@ -149,12 +150,13 @@ void test_shared_ptr_swap()
     other->dis(); // 300
 #endif
 #if 1
-    other.swap(another);
+    other.swap(another);    //交换的是other,不关sc的事，原来是sc和other指向200，现在是sc和another指向200
     cout << another.use_count() << endl; // 2
     cout << other.use_count() << endl;   // 1
     cout << sc.use_count() << endl;      // 2
     another->dis();                      // 200
     other->dis();                        // 300
+    sc->dis();                           // 200
 #endif
 }
 
@@ -169,7 +171,7 @@ void test_shared_ptr_one_assign_other()
         shared_ptr<Copy> other2 = other;
         cout << other.use_count() << other1.use_count() << other2.use_count() << endl; // 3 3 3
 
-        sc = other;
+        sc = other; // sc 引用计数减一，托管新资源，新资源引用计数加一。
         cout << sc1.use_count() << endl;   // 1
         sc1->dis();                        // 100
         cout << sc.use_count() << endl;    // 4
@@ -186,10 +188,13 @@ void test_shared_ptr_reset_self()
     shared_ptr<Copy> sc1 = sc;
     shared_ptr<Copy> sc2 = sc;
     cout << sc.use_count() << endl; // 3
+    cout << sc.get() << endl;
 
     sc.reset(new Copy(*sc));
     cout << sc.use_count() << endl;  // 1
     sc->dis();                       // 100
+    cout << sc.get() << endl;
+
     cout << sc1.use_count() << endl; // 2
     cout << sc2.use_count() << endl; // 2
     sc1->dis();                      // 100
@@ -227,7 +232,7 @@ void test_shared_ptr_reset01()
         shared_ptr<Copy> sp2(sp);
         shared_ptr<Copy> sp3(sp);
         cout << sp.use_count() << endl; // 3
-        sp.reset();
+        sp.reset(); // 引用计数减一，同时放弃托管
         // sp.reset();sp.reset();sp.reset();   // 多次reset也只是对自己的引用计数减一
         // sp2.reset();
         // sp3.reset();
@@ -307,7 +312,7 @@ int main()
 {
     // test_shared_ptr_refCount01();
     // test_shared_ptr_refCount02();
-    test_shared_ptr_refCount03();
+    // test_shared_ptr_refCount03();
     // test_shared_ptr_get();
     // test_shared_ptr_reset01();
     // test_shared_ptr_reset02();
@@ -317,7 +322,7 @@ int main()
     // test_vector_shared_ptr_moveConstructor();
     // test_shared_ptr_reset_self();
     // test_shared_ptr_one_assign_other();
-    // test_shared_ptr_swap();
+    test_shared_ptr_swap();
 
     return 0;
 }

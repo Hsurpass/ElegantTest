@@ -33,7 +33,8 @@ public:
 /*
 template<class D, class B>
 shared_ptr<D> dynamic_cast_pointer(const shared_ptr<B>& r)
-该函数不会抛出任何异常（noexcept）。若执行成功（ 前提：shared_ptr<B>对象 r 已经指向了一个D对象），则返回 shared_ptr<D> 共享资源的所有权，否则返回一个空对象。
+该函数不会抛出任何异常（noexcept）。若执行成功（ 前提：shared_ptr<B>对象 r 已经指向了一个D对象），
+则返回 shared_ptr<D> 共享资源的所有权，否则返回一个空对象。
 */
 
 void test_dynamic_pointer_cast01()
@@ -80,7 +81,8 @@ void test_dynamic_pointer_cast02()
     }
     cout << uptr.use_count() << endl;   // 2
     cout << uptr->getdata() << endl;    // 100
-    cout << "--------------------" << endl;
+    cout << iptr.use_count() << endl;   // 2
+    cout << "------------------------------------------" << endl;
 
     shared_ptr<D> dptr = dynamic_pointer_cast<D>(iptr);
     if(dptr)
