@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int main()
+void test_reference01()
 {
     int i = 10, &r1 = i; 
     double d = 0, &r2 = d;
@@ -39,6 +39,23 @@ int main()
     int *p = &i;
     int &pr = *p;
     cout << "pr:" << pr << endl;
+
+}
+
+struct R
+{
+    char &r;
+};
+void test_sizeof_reference()
+{
+    cout << sizeof(void*) << endl;  // 8
+    cout << sizeof(R) << endl;      // 8
+}
+
+int main()
+{
+    // test_reference01();
+    test_sizeof_reference();
 
     return 0;
 }
