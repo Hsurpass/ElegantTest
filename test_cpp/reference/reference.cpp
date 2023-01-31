@@ -9,7 +9,9 @@ void test_reference01()
     // int &r3 = d; // error
     cout << "&i: " << &i << endl; 
     cout << "&r1: " << &r1 << endl; 
-
+    int a = 100;
+    r1 = a; // 引用一经声明不可变更。初始化时为谁的引用就是谁的引用，不可中间在更改引用的对象。
+    cout << "r1:" << r1 << endl;
 
     int &tmp = r1;
     cout << "tmp:" << tmp << endl;
@@ -54,8 +56,8 @@ void test_sizeof_reference()
 
 int main()
 {
-    // test_reference01();
-    test_sizeof_reference();
+    test_reference01();
+    // test_sizeof_reference();
 
     return 0;
 }

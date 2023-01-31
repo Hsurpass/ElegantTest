@@ -61,9 +61,9 @@ void test_temporary_obj_destroy()
 
 int main()
 {
-    // test01();
+    test01();
     // test02();
-    test_temporary_obj_destroy();
+    // test_temporary_obj_destroy();
     
     return 0;
 
