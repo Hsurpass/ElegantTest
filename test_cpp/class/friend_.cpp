@@ -23,6 +23,7 @@ private:
 
 class C {
 public:
+    // 声明为谁的友元就可以通过谁的对象访问谁的私有成员。
     int f(const A& a) { return a.m_a; }
     // friend 不具有传递性
     // int f1(const B& b) { return b.m_b; }
