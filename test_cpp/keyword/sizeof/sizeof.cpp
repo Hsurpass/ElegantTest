@@ -97,7 +97,7 @@ void test01()
 	int c[] = {0};
 	int c1[] = {0,0};
 	cout << "sizeof(TrafficEvent):" << sizeof(TrafficEvent) << endl;
-	cout << "sizeof(A):" << sizeof(A) << endl;	// 4
+	cout << "sizeof(A):" << sizeof(A) << endl;	// 4	空数组不占位
 	cout << "sizeof(B):" << sizeof(B) << endl;	// 1
 	cout << "sizeof(C):" << sizeof(C) << endl;	// 16
 
@@ -371,7 +371,7 @@ int main()
 	cout << "sizeof(void*)" << sizeof(void*) << endl;
 	// cout << sizeof(ncStruct::RegulationResult) << endl;
 	
-	// test01();
+	test01();
 	// test02();
 	// test03();
 	// test04();
@@ -380,5 +380,5 @@ int main()
 	// test_structA();
 	// test_structC();
 	// test_empty_class01();
-	test_empty_class02();
+	// test_empty_class02();
 }

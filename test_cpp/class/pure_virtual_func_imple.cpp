@@ -5,6 +5,7 @@ using namespace std;
 class A
 {
 public:
+    A(){ cout << "A()" << endl; }
     virtual void f() = 0;
 
 };
@@ -17,6 +18,7 @@ void A::f()
 class B : public A
 {
 public:
+    B(){ cout << "B()" << endl; }
     virtual void f() 
     {
         cout << "B::f()" << endl;

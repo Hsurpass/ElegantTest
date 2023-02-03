@@ -53,6 +53,7 @@ public:
     virtual void func1() { cout << "C::func1(), this:" << this << endl; }
 };
 
+// 虚表 虚表 虚表
 void test01()
 {
     A *pa = new A;
@@ -188,10 +189,11 @@ void test07()
     // delete b1;   // 没有虚析构，子类不会被析构  // ~Base()
     cout << "-------------------------" << endl;
     // Derived d;  // Base() Derived()
-    // Base &b2 = d;   // 子类被释放了 ~Derived() ~Base()
+    // Base &b2 = d;   // 子类被释放了 ~Derived() ~Base() 栈上对象当当会释放
 
     Derived *b3 = new Derived; // Base() Derived()
-    Base &b4 = *b3;   // 父子类都不会被释放
+    Base &b4 = *b3;   // 父子类都不会被释放，堆上对象要调delete
+    delete b3;
 
 }
 

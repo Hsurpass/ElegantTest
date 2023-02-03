@@ -15,6 +15,7 @@ public:
     int m_x;
 };
 
+// 只要父类中定义了虚析构，即使子类中没覆写析构函数，虚函数表中也会覆盖掉父类的析构函数。
 class B : public A
 {
 public:

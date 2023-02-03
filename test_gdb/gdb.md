@@ -3,11 +3,14 @@
 查看虚函数表：
 
 ```
-info vtbl xxx
+info vtbl 类对象指针或引用
 ```
 
-watch: `watch i`监控变量，当值发生变化时会停下来，并产生一个 watchpoint,类似vs中watch，停止监控和删除断点一样`del 1`
-display: 在break打断点之后使用display,就不用每次在断点停下来后再手动输入命令`p i`查看了
+
+
+watch: `watch i`监控变量，当值发生变化时会停下来，并产生一个 watchpoint,类似vs中watch，停止监控和删除断点一样`del 1`。
+
+display: 在break打断点之后使用display,就不用每次在断点停下来后再手动输入命令`p i`查看了。
 
 
 
