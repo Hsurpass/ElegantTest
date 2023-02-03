@@ -67,6 +67,29 @@ public:
     int *_i;
 };
 
+class Derive : public Copy
+{
+public:
+    Derive(){ cout << "Derive" << endl; }
+    ~Derive(){ cout << "~Derive" << endl; }
+};
+
+void test_shared_ptr_inherit_destructor()
+{
+    // {
+    //     shared_ptr<Copy> spd = make_shared<Derive>();
+    // }
+
+    // {
+    //     shared_ptr<Copy> spd = (shared_ptr<Copy>)(make_shared<Derive>());
+    // }
+    
+    // 赋值之前强制转换成父类，就不会释放子类了，因为refcount.ptr记录的是父类的指针。
+    {
+        shared_ptr<Copy> spd((Copy*)(new Derive));
+    }
+}
+
 void test_make_shared()
 {
     // shared_ptr<Copy> spc = Copy::create_shared_ptr();
@@ -94,7 +117,8 @@ void test_make_shared_delay_release_memory()
 int main()
 {
     // test_make_shared();
-    test_make_shared_delay_release_memory();
+    // test_make_shared_delay_release_memory();
+    test_shared_ptr_inherit_destructor();
 
     return 0;
 }

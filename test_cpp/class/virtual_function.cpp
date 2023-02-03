@@ -223,9 +223,9 @@ int main()
     // test04();
     // test05();
     // test06();
-    test_smartPtr_with_virtualDestructor();
+    // test_smartPtr_with_virtualDestructor();
     // test_class_sizeof();
-    // test_virtual_function();
+    test_virtual_function();
 
     return 0;
 }

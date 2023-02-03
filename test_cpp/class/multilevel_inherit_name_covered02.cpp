@@ -49,7 +49,7 @@ void test02()
     B b;
     cout << "sizeof(A):" << sizeof(A) << "sizeof(B):" << sizeof(B) << endl; // 8 16
 
-    a = b;  // B中的a的值并不会赋给A中的a的值，地址都不一样
+    a = b;  // 赋值兼容
     cout << a.a << endl;        // 10
     cout << b.a << endl;        // 100 
     printf("a.getc:%f\n", a.getc());   // 12.1
