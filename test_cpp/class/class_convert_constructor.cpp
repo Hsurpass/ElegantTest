@@ -51,6 +51,8 @@ void test_convert_constructor()
     cout << "--------------------------------" << endl;
 
     const A& a1 = b1;
+    cout << "&a1:" << &a1 << endl;
+    cout << "&b1:" << &b1 << endl;
     a1.dis();
 }
 

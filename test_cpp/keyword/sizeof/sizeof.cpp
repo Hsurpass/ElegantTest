@@ -23,72 +23,6 @@ using namespace std;
 
 // #pragma pack(push, 1)
 
-struct TrafficEvent
-{
-	bool forbid;					// 1
-	int restrictedVehicleTypes;		// 4
-	char eventIdUpstream[256];		// 256
-	int eventSource;				// 4
-	int eventId;					// 4
-	int type;						// 4
-	int descriptionLength;			// 4
-	char description[];				// 0
-};									// 277
-
-struct A
-{
-	int a;
-	char b[];
-};
-
-struct B
-{
-	/* data */
-};
-
-struct C
-{
-	int a;
-	char* p;
-	char b[];	// 必须在末尾
-};
-
-void test_structA()
-{
-	// A a1;
-	// a1.a = 10;
-	// strcpy(a1.b, "hello");	// abort
-	cout << "sizeof(A):" << sizeof(A) << endl;	// 4
-	A* pa = (A*)malloc(sizeof(A) + 6);	// 10
-	pa->a = 100;
-	strcpy(pa->b, "world");
-	cout << pa->a << endl;
-	cout << pa->b << endl;
-
-	free(pa);
-
-}
-
-void test_structC()
-{
-	// A a1;
-	// a1.a = 10;
-	// strcpy(a1.b, "hello");	// abort
-
-	cout << "sizeof(void*):" << sizeof(void*) << endl;	// 8
-	cout << "sizeof(C):" << sizeof(C) << endl;	// 4 + 8 => 16
-
-	C* pc = (C*)malloc(sizeof(C) + 12);
-	pc->a = 100;
-	// *(pc->p) = 'c';
-	strcpy(pc->b, "hello world");
-	cout << pc->a << endl;
-	// cout << pc->p << endl;
-	cout << pc->b << endl;
-
-	free(pc);
-
-}
 
 void test01()
 {
@@ -96,11 +30,6 @@ void test01()
 	char b1[] = {0,0};
 	int c[] = {0};
 	int c1[] = {0,0};
-	cout << "sizeof(TrafficEvent):" << sizeof(TrafficEvent) << endl;
-	cout << "sizeof(A):" << sizeof(A) << endl;	// 4	空数组不占位
-	cout << "sizeof(B):" << sizeof(B) << endl;	// 1
-	cout << "sizeof(C):" << sizeof(C) << endl;	// 16
-
 	cout << sizeof(b) << endl;			// 1
 	cout << sizeof(b1) << endl;			// 2
 	cout << sizeof(c) << endl;			// 4
@@ -291,8 +220,8 @@ void test_smart_ptr()
 {
 	cout << "sizeof(void*):" << sizeof(void*) << endl;	// 8
 	// auto_ptr
-    cout << "sizeof(auto_ptr<int>): " << sizeof(auto_ptr<int>) << endl;			// 8
-	cout << "sizeof(auto_ptr<double>): " << sizeof(auto_ptr<double>) << endl;	// 8
+    // cout << "sizeof(auto_ptr<int>): " << sizeof(auto_ptr<int>) << endl;			// 8
+	// cout << "sizeof(auto_ptr<double>): " << sizeof(auto_ptr<double>) << endl;	// 8
 	
 	// unique_ptr
 	cout << "sizeof(unique_ptr<int>): " << sizeof(unique_ptr<int>) << endl;		 // 8
@@ -347,11 +276,11 @@ void test_empty_class01()
 
 void test_empty_class02()
 {
-	cout << "sizeof(InheritEmpty):" << sizeof(InheritEmpty) << endl;	// 8
+	cout << "sizeof(InheritEmpty):" << sizeof(InheritEmpty) << endl;	// 4
 	// sizeof(int) == sizeof(InheritEmpty)
 	if( sizeof(int) == sizeof(InheritEmpty) )
 	{
-		cout << "sizeof(int) == sizeof(InheritEmpty)" << endl;
+		cout << "sizeof(int) == sizeof(InheritEmpty)" << endl;	// .
 	}
 	else if(sizeof(int) > sizeof(InheritEmpty))
 	{
@@ -364,21 +293,19 @@ void test_empty_class02()
 }
 
 int main()
-{
-	cout << "sizeof(int):" << sizeof(int) << endl;
-	cout << "sizeof(int32_t):" << sizeof(int32_t) << endl;
-	cout << "sizeof(int64_t):" << sizeof(int64_t) << endl;
-	cout << "sizeof(void*)" << sizeof(void*) << endl;
+{	
+	cout << "sizeof(int):" << sizeof(int) << endl;			// 4
+	cout << "sizeof(int32_t):" << sizeof(int32_t) << endl;	// 4
+	cout << "sizeof(int64_t):" << sizeof(int64_t) << endl;	// 8
+	cout << "sizeof(void*)" << sizeof(void*) << endl;		// 8
 	// cout << sizeof(ncStruct::RegulationResult) << endl;
-	
-	test01();
+	cout << "-------------------------" << endl;
+	// test01();
 	// test02();
 	// test03();
 	// test04();
-	//test05();
+	// test05();
 	// test_smart_ptr();
-	// test_structA();
-	// test_structC();
 	// test_empty_class01();
 	// test_empty_class02();
 }
