@@ -143,6 +143,7 @@ void test_classD()
 	// D d;
 	// d.a = 10;
 	// strcpy(d.c, "hello");	// abort
+	cout << alignof(D) << endl;
 	cout << "sizeof(D):" << sizeof(D) << endl;	// 4
 	
     // 都没由调用构造和析构，要想调用使用定位new运算符，看上面的例子。

@@ -51,7 +51,7 @@ public:
     a(a_)
     ,A(a_)
     ,B(a_)
-    ,Base(a_*3) 
+    // ,Base(a_*3) 
     { cout << "C(int a_ = 40)" << endl; }
     ~C(){cout << "~C()" << endl;}
     
@@ -73,6 +73,7 @@ C(int a_ = 30)
 // 同名隐藏，赋值兼容同样适用
 void test_C_name_covered()
 {
+    cout << alignof(Base) << endl;  // 4
     cout << sizeof(Base) << endl; // 4
     cout << sizeof(A) << endl;    // 4+8(虚表?)=12 --> 16
     cout << sizeof(B) << endl;    // 4+8(虚表?)=12 --> 16
@@ -139,8 +140,8 @@ void test_C_assign_compatibility()
 // 
 int main()
 {
-    // test_C_name_covered();
-    test_C_assign_compatibility();
+    test_C_name_covered();
+    // test_C_assign_compatibility();
 
     return 0;
 }

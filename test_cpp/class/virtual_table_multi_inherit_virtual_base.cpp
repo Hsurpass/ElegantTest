@@ -77,6 +77,7 @@ C(int a_ = 30)
 // 同名隐藏，赋值兼容同样适用
 void test_C_name_covered()
 {
+    cout << alignof(Base) << endl;  // 8
     // 先不研究 太乱
     cout << sizeof(Base) << endl; // 4 + 8(虚基类指针) = 12 -> 16
     cout << sizeof(A) << endl;    // 4 + 8(虚基类指针?) + 8(虚表) = 24 
@@ -161,9 +162,9 @@ void test_virtual_base_vtable()
 }
 int main()
 {
-    // test_C_name_covered();
+    test_C_name_covered();
     // test_C_assign_compatibility();
-    test_virtual_base_vtable();
+    // test_virtual_base_vtable();
 
     return 0;
 }

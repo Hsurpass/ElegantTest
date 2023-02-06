@@ -1,5 +1,20 @@
 
 
+
+
+# apt
+
+```bash
+apt-get update 	# 获取最新软件**列表** 
+apt-get upgrade # 升级最新列表软件 
+apt-cache search vim	# 查询软件列表 
+apt-get install qt5-default qtcreator qt5-doc #安装软件 
+apt-get remove vim 	#卸载软件 
+apt --help
+```
+
+
+
 # cut
 
 
@@ -167,6 +182,40 @@ head -n 10 xx.txt
 ## references 
 
  https://cloud.tencent.com/developer/article/1725969?from=information.detail.linux%20man%201%202%203
+
+
+
+# mount
+
+1.查看 U 盘是否接入 ：==/dev/sdb==为u盘
+
+```bash
+[root@localhost Desktop]# fdisk -l
+Device 	  Boot Start End Blocks  Id     System
+/dev/sdb1  *    165 2405 7082112  c   W95 FAT32 (LBA)
+```
+
+2.建立挂载节点：
+
+```bash
+[root@localhost Desktop]# mkdir /mnt/usb
+[root@localhost Desktop]# ls /mnt/
+hgfs usb
+```
+
+3.挂载命令
+
+```bash
+[root@localhost Desktop]# mount /dev/sdb1 /mnt/usb/	
+```
+
+4.卸载命令
+
+```bash
+[root@localhost mnt]# umount /mnt/usb/
+```
+
+
 
 
 

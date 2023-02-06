@@ -23,7 +23,6 @@ using namespace std;
 
 // #pragma pack(push, 1)
 
-
 void test01()
 {
 	char b[] = {0};
@@ -300,7 +299,7 @@ int main()
 	cout << "sizeof(void*)" << sizeof(void*) << endl;		// 8
 	// cout << sizeof(ncStruct::RegulationResult) << endl;
 	cout << "-------------------------" << endl;
-	// test01();
+	test01();
 	// test02();
 	// test03();
 	// test04();
