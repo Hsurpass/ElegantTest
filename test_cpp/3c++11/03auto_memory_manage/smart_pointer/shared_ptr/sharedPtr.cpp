@@ -160,6 +160,19 @@ void test_shared_ptr_swap()
 #endif
 }
 
+shared_ptr<Copy> getObj()
+{
+    shared_ptr<Copy> obj = make_shared<Copy>();
+    return obj;
+}
+
+void test_shared_ptr_RVO()
+{
+    shared_ptr<Copy> upc = getObj();
+    cout << upc.use_count() << endl;//1
+    upc->dis();
+}
+
 void test_shared_ptr_one_assign_other()
 {
     {
@@ -322,7 +335,8 @@ int main()
     // test_vector_shared_ptr_moveConstructor();
     // test_shared_ptr_reset_self();
     // test_shared_ptr_one_assign_other();
-    test_shared_ptr_swap();
+    // test_shared_ptr_swap();
+    test_shared_ptr_RVO();
 
     return 0;
 }

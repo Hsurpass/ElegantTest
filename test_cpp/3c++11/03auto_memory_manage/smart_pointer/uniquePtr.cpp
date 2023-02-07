@@ -39,6 +39,18 @@ public:
     int *_i;
 };
 
+unique_ptr<Copy> getObj()
+{
+    unique_ptr<Copy> obj = make_unique<Copy>();
+    return obj;
+}
+
+void test_unique_ptr_RVO()
+{
+    unique_ptr<Copy> upc = getObj();
+    upc->dis();
+}
+
 void test_move_uniquePtr_to_sharedPtr()
 {
     unique_ptr<Copy> uc(new Copy(123));
@@ -274,6 +286,7 @@ int main()
     // test_unique_ptr_std_move();
 
     // test_vector_pushback_unique_ptr();
-    test_move_uniquePtr_to_sharedPtr();
+    // test_move_uniquePtr_to_sharedPtr();
+    test_unique_ptr_RVO();
 
 }

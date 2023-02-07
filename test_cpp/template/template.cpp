@@ -11,6 +11,7 @@ static void _string2number(const char* str, T* number)
 	*number = atoi(str);
 }
 
+// 函数模板的全特化
 template<>
 void _string2number(const char* str, float* number)
 {
