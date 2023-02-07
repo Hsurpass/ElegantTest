@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <string.h>
 using namespace std;
 
 // 类模板泛化
@@ -15,6 +16,21 @@ public:
             cout << "num1:" << num1 << " > num2:" << num2 << endl;
         else
             cout << "num1:" << num1 << " <= num2:" << num2 << endl;
+    }
+};
+
+// 类模板全特化
+template <>
+class Compare<const char*, const char*>
+{
+public:
+    void compare(const char* num1, const char* num2)
+    {
+        cout << "全特化" << endl;
+        if (strcmp(num1, num2) > 0)
+            cout << "num1:" << num1 << " > num2:" << num2 << endl;
+        else
+            cout << "num1:" << num1 << " < num2:" << num2 << endl;
     }
 };
 
@@ -67,6 +83,9 @@ int main()
 {
     Compare<int, int> c;
     c.compare(30, 31); // 调用泛化版本compare<int,int>(int num1, int num2)
+
+    Compare<const char*, const char*> cc;
+    cc.compare("china", "hello"); // 调用泛化版本compare<const char*,const char*>(int num1, int num2)
 
     Compare<int, char> c1;
     c1.compare(30, '1'); // 调用偏特化版本compare<char>(int num1, char num2)

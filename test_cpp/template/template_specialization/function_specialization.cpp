@@ -19,6 +19,7 @@ void _string2number(const char* str, float* number)
 	*number = atof(str);
 }
 
+// 函数模板的全特化
 template<>
 void _string2number(const char* str, long long* number)
 {
@@ -56,17 +57,17 @@ void test_string2number()
 
 void test_numberArrayFromString()
 {
-	/*char* str = "123.34";
-	vector<float> f;
-	_numberArrayFromString(&f, str);*/
-
-	/*char* str = "12345";
-	vector<int> v;
-	_numberArrayFromString(&v, str);*/
-
-	const char* str = "1234567890123456789";
-	vector<long long> v;
+	char* str = "123.34";
+	vector<float> v;
 	_numberArrayFromString(&v, str);
+
+	// char* str = "12345";
+	// vector<int> v;
+	// _numberArrayFromString(&v, str);
+
+	// const char* str = "1234567890123456789";
+	// vector<long long> v;
+	// _numberArrayFromString(&v, str);
 
 	for (auto &i : v)
 	{
@@ -86,7 +87,8 @@ T sum(T a, T b)
 int main()
 {
 	// test_string2number();
-	cout << sum(1.5, 2.3) << endl;
+	test_numberArrayFromString();
+	// cout << sum(1.5, 2.3) << endl;
 
 	return 0;
 }

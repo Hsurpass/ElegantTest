@@ -13,6 +13,7 @@ public:
 
 class B
 {
+public:
     void func() { cout << "B::func()" << endl; }
 };
 
@@ -46,6 +47,10 @@ void test_template_base_class()
     modelImple<A> ma;
     ma.sendTo1();
     ma.send();
+
+    modelImple<B> mb;
+    mb.sendTo1();
+    mb.send();
 }
 
 int main()

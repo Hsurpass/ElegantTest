@@ -1,5 +1,7 @@
 #include <vector>
 #include <iostream>
+#include <string.h>
+
 using namespace std;
 
 // 函数模板泛化
@@ -12,6 +14,18 @@ void compare(T num1, U num2)
     else
         cout << "num1:" << num1 << " <= num2:" << num2 << endl;
 }
+
+// 函数模板全特化
+// template <>
+void compare(const char* num1, const char* num2)
+{
+    cout << "全特化" << endl;
+    if (strcmp(num1, num2) > 0)
+        cout << "num1:" << num1 << " > num2:" << num2 << endl;
+    else
+        cout << "num1:" << num1 << " <= num2:" << num2 << endl;
+}
+
 
 // 对部分模板参数进行偏特化
 template <class U>
@@ -49,6 +63,8 @@ void compare(std::vector<T> &vecLeft, std::vector<U> &vecRight)
 int main()
 {
     compare<int, int>(30, 31); // 调用泛化版本compare<int,int>(int num1, int num2)
+
+    compare("china", "hello"); // 调用泛化版本compare<const char*,const char*>(int num1, int num2)
 
     compare(30, '1'); // 调用偏特化版本compare<char>(int num1, char num2)
 
