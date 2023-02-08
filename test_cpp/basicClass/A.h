@@ -60,6 +60,12 @@ public:
         return false;
     }
 
+    bool operator<(const A& other)
+    {
+        cout << "bool operator<(const A& other), other._data:" << &other << "|" << other._data << " " << "this.data:" << this << "|" << this->_data << endl;
+        return _data < other._data;
+    }
+
     int print() const
     {
         return _data;

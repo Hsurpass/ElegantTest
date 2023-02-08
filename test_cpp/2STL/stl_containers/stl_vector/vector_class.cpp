@@ -22,84 +22,124 @@ void print(vector<T>& tmpVec)
     cout << endl;
 }
 
-void test20()
+void test_vector_remove_erase()
 {
-    // A a(10);
     vector<A> va;
-    // va.push_back(a);
-    // va.push_back(a);
-    // va.push_back(a);
+    va.reserve(10);
 
-    // va.emplace_back(a);
-    // va.emplace_back(a);
-    // va.emplace_back(a);
+    va.emplace_back(1);
+    va.emplace_back(2);
+    va.emplace_back(3);
+    va.emplace_back(4);
+    va.emplace_back(2);
+    va.emplace_back(5);
+    va.emplace_back(6);
+    va.emplace_back(2);
+    
+    cout << "----------------------" << endl;
+    auto itr = std::remove(va.begin(), va.end(), A(2));//应该传个临时对象
+    va.erase(itr, va.end());
+    for(auto &x:va)
+    {
+        cout << x.print() << " ";
+    }
+    cout << endl;
+}
 
-    // va.push_back(A(100));
-    // va.push_back(A(200));
-    // va.push_back(A(200));
+void test_vector_remove()
+{
+    vector<A> va;
+    va.reserve(10);
 
-    va.emplace_back(A(100));
-    va.emplace_back(A(200));
-    va.emplace_back(A(200));
+    va.emplace_back(1);
+    va.emplace_back(2);
+    va.emplace_back(3);
+    va.emplace_back(4);
+    va.emplace_back(2);
+    va.emplace_back(5);
+    va.emplace_back(6);
+    va.emplace_back(2);
+    cout << "size:" << va.size() << ", capacity:" << va.capacity() << endl;
+
+    cout << "----------------------" << endl;
+    auto itr = std::remove(va.begin(), va.end(), A(2));//应该传个临时对象
+    for(auto i = va.begin(); i != itr; ++i)
+    {
+        cout << i->print() << " ";
+    }
+    cout << endl;
+    cout << "----------------------" << endl;
+    for(auto &x:va)
+    {
+        cout << x.print() << " ";
+    }
+    cout << endl;
+
+}
+
+void test_emplace_copy()
+{
+    vector<A> va;
+
+    // va.emplace_back(A(100));
+    // va.emplace_back(A(200));
+    // va.emplace_back(A(200));
+
+    va.emplace_back(100);
+    va.emplace_back(200);
+    va.emplace_back(200);
 
     cout << "size:" << va.size() << ", capacity:" << va.capacity() << endl;
 }
 
 // shared_ptr放vector，利用其引用计数
-int test15()
+int test_shared_ptr_save_vector()
 {
 //    vector<A> *pvsp = new vector<A>;
     shared_ptr<vector<A>> pvsp(new vector<A>);
     return 0;
 }
 
-// vector 里面放智能指针，待测试
-int test_pushback_smartPtr()
-{
-    //    vector<A*> vap;
-    //    vap.push_back(new A);
-    vector<shared_ptr<A>> vap;
-    vap.push_back(shared_ptr<A>(new A));
-
-    return 0;
-}
 
 // vector 里面放智能指针
-void test14()
+void test_push_shared_ptr()
 {
     vector<shared_ptr<A>> vsp;
     vsp.reserve(10);
     cout << "---------------------"<<endl;
-    cout << vsp.size() << endl;
-    cout << vsp.capacity() << endl;
+    cout << vsp.size() << endl;     // 0
+    cout << vsp.capacity() << endl; // 10
     cout << "---------------------"<<endl;
     for(int i =0;i < 10;++i)
     {
-//        vsp.emplace_back(new A(i));
-//        vsp.emplace_back(make_shared<A>(i));
-        vsp.push_back(make_shared<A>(i));
+        // vsp.emplace_back(new A(i));
+        vsp.emplace_back(make_shared<A>(i));
+        // vsp.push_back(make_shared<A>(i));  
     }
     for(vector<shared_ptr<A>>::iterator itr = vsp.begin();itr != vsp.end();++itr)
     {
-        cout << (*itr)->print() << endl;
+        cout << (*itr)->print() << " ";
     }
+    cout << endl;
     cout << "---------------------"<<endl;
-    cout << vsp.size() << endl;
-    cout << vsp.capacity() << endl;
+    cout << vsp.size() << endl;     // 10
+    cout << vsp.capacity() << endl; // 10
     cout << "---------------------"<<endl;
 
 }
 
-void test019()
+void test_reserve02()
 {
     vector<A> v1;
 
     v1.push_back(A(1));
+    cout << v1.capacity() << endl;  //1
+
+    // 看会不会发生内存copy? 会发生，只不过之后的capacity都变成4了
+    v1.reserve(4);  // 重新开辟空间，并发生拷贝。
     cout << v1.capacity() << endl;
 
-    v1.reserve(4); // 看会不会发生内存copy? 会发生，只不过之后的capacity都变成4了
-    cout << v1.capacity() << endl;
-
+    cout << "------------------------" << endl;
     v1.push_back(A(2));
     cout << v1.capacity() << endl;
 
@@ -115,7 +155,7 @@ void test019()
 
 // c++ primer 练习9.24
 // test operator[] at() front() begin()
-void test018()
+void test_core_dump()
 {
     vector<string> svec;
     // cout << svec[0];    // Segmentation fault (core dumped)
@@ -126,7 +166,7 @@ void test018()
 }
 
 // vector嵌套 二维数组
-void test017()
+void test_two_dimensional_array()
 {
     vector<vector<int>> arr(5,vector<int>(5,10));
     cout << arr.size() << endl;
@@ -148,7 +188,7 @@ void test017()
 }
 
 // integration test
-int test016()
+int integration_test()
 {
     vector<int> vi;
     int data[10] = {1,3,5,7,9,2,4,6,8,10};
@@ -203,7 +243,7 @@ int test016()
 }
 
 // vector 放指针
-void test015()
+void test_push_pointer()
 {
     A *p1 = new A(1);
     A *p2 = new A(2);
@@ -250,12 +290,12 @@ void test_emplace_back()
     cout << "---------------------"<<endl;
 
     va.emplace_back(std::move(a4));    // 因为传入的是A类型的右值参数，所以会调用move constructor
-    cout << va.size() << endl;      // 4
+    cout << va.size() << endl;      // 5
     cout << va.capacity() << endl;  // 10
     cout << "---------------------"<<endl;
 
     va.emplace_back(A(8));    // 因为传入的是A类型的右值参数，所以会调用move constructor
-    cout << va.size() << endl;      // 5
+    cout << va.size() << endl;      // 6
     cout << va.capacity() << endl;  // 10
     cout << "---------------------"<<endl;
 
@@ -266,17 +306,17 @@ void test_emplace_back()
 }
 
 // test vector insert
-void test013()
+void test_insert()
 {
-    vector<A> va(5);
+    vector<A> va(5, A(10));
     cout << va.size() << endl;
     cout << va.capacity() << endl;
     cout << "---------------------"<<endl;
     
     A a(2);
     va.insert(va.begin(),a);    // insert 会使元素后移，导致元素拷贝
-    cout << va.size() << endl;
-    cout << va.capacity() << endl;
+    cout << va.size() << endl;  // 6
+    cout << va.capacity() << endl;  // 10
     cout << va.at(0).print() << endl;
     cout << "---------------------"<<endl;
     
@@ -286,6 +326,7 @@ void test013()
         if (itr->print() == 2 && flag == 1)
         {
             itr = va.insert(itr, 3);
+            // va.insert(itr, 3);
             flag = 0;
         }
         cout << itr->print() << " ";
@@ -294,7 +335,7 @@ void test013()
 }
 
 // test size capacity 内存成倍增长
-void test012()
+void test_memory_increase()
 {
     vector<int> vi;
     vi.push_back(1);
@@ -315,7 +356,7 @@ void test012()
 }
 
 // test erase && 涉及到迭代器失效的问题
-void test011()
+void test_erase_string()
 {
     vector<string> v;
     string a1("1");
@@ -334,7 +375,8 @@ void test011()
     cout << "==================" << endl;
 
     vector<string>::iterator itr;
-    itr = std::find(v.begin(),v.end(),"2");
+    // itr = std::find(v.begin(),v.end(),"2");
+    itr = std::find(v.begin(),v.end(),string("2")); // 应该传个对象。
     if(itr != v.end())
     {
         cout << *itr << endl;
@@ -348,7 +390,7 @@ void test011()
 }
 
 // test erase && 涉及到迭代器失效的问题
-void test010()
+void test_erase()
 {
     vector<A> v;
     A a1(1);
@@ -363,13 +405,15 @@ void test010()
     v.push_back(a5);    // size:5, capacity:8
 
     // vector<A> v = {A(1),A(2),A(3),A(4),A(5)}; // size:5, capacity:5
-    A &tmp = a2;
+    // A &tmp = a2;
     cout << v.size() << endl;
     cout << v.capacity() << endl;
     cout << "==================" << endl;
     
     vector<A>::iterator itr;
-    itr = std::find(v.begin(),v.end(),tmp); // 自定义类使用std::find 需要自定义 operator==()
+    // itr = std::find(v.begin(),v.end(),tmp); // 自定义类使用std::find 需要自定义 operator==()
+    itr = std::find(v.begin(),v.end(), A(2)); // 自定义类使用std::find 需要自定义 operator==()
+    // itr = std::find(v.begin(),v.end(), 2); // 自定义类使用std::find 需要自定义 operator==()
     if(itr != v.end())
     {
         cout << itr->print() << endl;
@@ -386,8 +430,8 @@ void test010()
     cout << v.capacity() << endl;   //8
 }
 
-// test shrink_to_fit
-void test009()
+// clear+shrink_to_fit：彻底清空容器，
+void test_vector_clear_shrink_to_fit()
 {
     vector<A> vi = {A(1),A(2),A(3),A(4),A(5)};
     cout << vi.size() << endl;  // 5
@@ -419,12 +463,26 @@ void test009()
     cout << vi.capacity() << endl; //0
 }
 
+void test_vector_clear()
+{
+    vector<A> v = {A(1),A(2),A(3),A(4),A(5)};
+
+    cout << v.size() << endl;   // 5
+    cout << v.capacity() << endl;   // 5
+    cout << "=================================" << endl;
+
+    v.clear();  // 0    Removes all elements from the vector (which are destroyed), leaving the container with a size of 0. 清空所有元素，size变为0，capacity不会变
+    cout << v.size() << endl;   // 0
+    cout << v.capacity() << endl;   // 5
+    cout << "==================" << endl;
+}
+
 // test shrink_to_fit
-int test008()
+int test_vector_shrink_to_fit01()
 {
     vector<int> vi = {1,2,3,4,5};
     cout << vi.size() << endl;      // 5
-    cout << vi.capacity() << endl;  //5
+    cout << vi.capacity() << endl;  // 5
     cout << "----------------------------------" << endl;
 
     vi.resize(10);  
@@ -453,22 +511,16 @@ int test008()
 // https://cplusplus.com/reference/vector/vector/shrink_to_fit/
 // "Requests the container to reduce its capacity to fit its size."
 // 减小容器的capacity为size
-void test007()
+void test_vector_shrink_to_fit()
 {
     vector<A> v = {A(1),A(2),A(3),A(4),A(5)};
-    // v.push_back(A(6));
 
     cout << v.size() << endl;   // 5
     cout << v.capacity() << endl;   // 5
-    cout << "==================" << endl;
+    cout << "=================================" << endl;
     
-    v.shrink_to_fit();  // 5
+    v.shrink_to_fit();  // 5    
     cout << v.size() << endl;   // 5
-    cout << v.capacity() << endl;   // 5
-    cout << "==================" << endl;
-
-    v.clear();  // 0    Removes all elements from the vector (which are destroyed), leaving the container with a size of 0. 清空所有元素，size变为0，capacity不会变
-    cout << v.size() << endl;   // 0
     cout << v.capacity() << endl;   // 5
     cout << "==================" << endl;
 
@@ -480,7 +532,7 @@ void test007()
 }
 
 // test resize,resize 缩小的时候size会变小，capacity不变
-void test006()
+void test_vector_resize()
 {
     vector<A>  v;
     v.resize(3); // resize会调用构造函数, 超过容量后还是会发生拷贝, 且内存成倍增长 3 * 2 = 6。
@@ -497,24 +549,32 @@ void test006()
     
     cout << "v.size:" << v.size() << endl;  // 7
     cout << "v.capacity: " << v.capacity() << endl; //12
-    cout<< "-----------------" <<endl;
+    cout<< "--------------------------" <<endl;
 
-    // cout<< "-----------------" <<endl;
-    //    vector<A> v1(v);
-    //    v1 = v;
-    //    v1.reserve(10);
-    //    v1.resize(10);
-    //    v1 = v;
-    //    v1.assign(v.begin(),v.end());
-    //    v1.emplace(v.begin(),v.end());
-    //    v1.emplace_back(v.begin(),v.end());
-    //    v.pop_back();
-    //    v.erase(v.begin());
-    //    v.erase(v.begin()+2,v.end() -1);
+    v.resize(3);    // 缩小调用析构函数，size为3，capacity不变。12
+    cout << "v.size:" << v.size() << endl;  // 3
+    cout << "v.capacity: " << v.capacity() << endl; //12
+    cout<< "--------------------------" <<endl;
+}
+
+// reverse扩充的是容量，不是追加空间，可以多次调用
+void test_vector_reserve_01()
+{
+    vector<A> v = {A(1),A(2),A(3),A(4),A(5)};
+
+    cout << v.size() << endl;   // 5
+    cout << v.capacity() << endl;   // 5
+    cout<< "-----------------" <<endl;
+    v.reserve(10);
+    cout << v.size() << endl;   // 5
+    cout << v.capacity() << endl;   // 10
+    v.reserve(20);
+    cout << v.size() << endl;   // 5
+    cout << v.capacity() << endl;   // 20
 }
 
 // test reverse
-void test_vector_reverse()
+void test_vector_reserve()
 {
     cout << "test_vector_reverse:" << endl;
 
@@ -567,36 +627,46 @@ void test_vector_reverse()
 }
 
 // vector.swap
-void test004()
+void test_vector_swap()
 {
+#if 1
     vector<A> v{A(1), A(2), A(3), A(4), A(5)};
     vector<A> v1;
 
+    // swap调用之后size为0，capacity为0
     v1.swap(v);
-    cout << "v.size:" << v.size() << endl;
-    cout << "v1.size:" << v1.size() << endl;
+    cout << "v.size:" << v.size()  << ", v.capacity:" << v.capacity() << endl;  // 0  0
+    cout << "v1.size:" << v1.size() << ", v1.capacity:" << v1.capacity() << endl;// 5  5
     
+    cout << "----------------------------" << endl;
+#endif 
+#if 0
+    //验证swap之后迭代器是否还能正常使用    error
+    vector<A> v{A(1), A(2), A(3), A(4), A(5)};
     vector<A> v2{A(7), A(8), A(9)};
-    for (vector<A>::iterator itr = v.begin(); itr != v.end(); ++itr)
+    for (vector<A>::iterator itr = v2.begin(); itr != v2.end(); ++itr)
     {
         cout << itr->print() << endl;
         v.swap(v2);
         cout << v.size() << "," << v2.size() << endl;
-        cout << (itr + 1)->print() << endl;
+        break;
+        // cout << (itr + 1)->print() << endl;
     }
     cout << "----------------------------" << endl;
-
+#endif
+#if 0
     vector<string> vs{"a", "b", "c", "d"};
     vector<string> vs1{"e", "f", "g", "h", "i", "k"};
-    for (vector<string>::iterator itr = vs.begin(); itr != vs.end(); ++itr)
+    for (vector<string>::iterator itr = vs.begin(); itr != vs.end(); ++itr) 
     {
         cout << *itr << endl;
-        vs.swap(vs1);
+        vs.swap(vs1);   // error
         cout << vs.size() << vs1.size() << endl;
         cout << *(itr + 1) << endl;
     }
     cout << "----------------------------" << endl;
-    
+#endif
+  
     string s1 = "abcd";
     string s2 = "efgh";
     s1.swap(s2);
@@ -606,7 +676,7 @@ void test004()
 }
 
 // vector.assign
-void test003()
+void test_vector_assign()
 {
     // initializer list constructor
     vector<A> v{A(1), A(2), A(3), A(4), A(5)};
@@ -644,7 +714,7 @@ void test003()
 }
 
 // vector容器的直接赋值操作
-void test002()
+void test_vector_init_assign()
 {
     // initializer list constructor
     vector<A> v{A(1), A(2), A(3), A(4), A(5)};
@@ -666,7 +736,7 @@ void test002()
 }
 
 // vector容器的定义与初始化
-void test001()
+void test_vector_init()
 {
     cout << "test001" << endl;
     // 1.default constructor
@@ -697,27 +767,32 @@ void test001()
 
 int main()
 {
-    // test001();
-    // test002();
-    // test003();
-    // test004();
-    // test_vector_reverse();
-    // test006();
-    // test007();
-    // test008();
-    // test009();
-    // test010();
-    // test011();
-    // test012();
-    // test013();
+    // test_vector_init();
+    // test_vector_init_assign();
+    // test_vector_assign();
+    // test_vector_swap();
+    // test_vector_reserve();
+    // test_vector_reserve_01();
+    // test_reserve02();
+    // test_vector_resize();
+    // test_vector_shrink_to_fit();
+    // test_vector_shrink_to_fit01();
+    // test_vector_clear();
+    // test_vector_clear_shrink_to_fit();
+    // test_erase();
+    // test_erase_string();
+    // test_memory_increase();
+    // test_insert();    
     // test_emplace_back();
-    // test015();
-    // test016();
-    // test017();
-    // test018();
-    // test019();
-    test20();
-
-
+    // test_emplace_copy();
+    // test_push_pointer();
+    // integration_test();
+    // test_two_dimensional_array();
+    // test_core_dump();
+    // test_push_shared_ptr();
+    // test_shared_ptr_save_vector();
+    // test_vector_remove();
+    test_vector_remove_erase();
+    
     return 0;
 }

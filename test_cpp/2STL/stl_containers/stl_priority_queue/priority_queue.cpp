@@ -29,15 +29,15 @@ using namespace std;
 //     bool m_reverse;
 // };
 
-
 class A
 {
 public:
     A(int a) : m_a(a) {}
-    bool operator<(const A &other) const   // 必须是const成员函数
-    { return this->m_a < other.m_a; }
-    bool operator>(const A& other) const { return this->m_a > other.m_a; }
-
+    bool operator<(const A &other) const // 必须是const成员函数
+    {
+        return this->m_a < other.m_a;
+    }
+    bool operator>(const A &other) const { return this->m_a > other.m_a; }
 
     int m_a;
 };
@@ -47,9 +47,11 @@ class B
 public:
     B(int b) : m_b(b) {}
 
-    bool operator<(const B &other) const   // 必须是const成员函数
-    { return this->m_b < other.m_b; }
-    friend bool operator>(const B& one, const B& other) { return !(one < other); }
+    bool operator<(const B &other) const // 必须是const成员函数
+    {
+        return this->m_b < other.m_b;
+    }
+    friend bool operator>(const B &one, const B &other) { return !(one < other); }
 
     int m_b;
 };
@@ -59,7 +61,7 @@ public:
     compare(bool reverse = false) : m_reverse(reverse) {}
     ~compare() {}
 
-    bool operator()(const B& one, const B& other)
+    bool operator()(const B &one, const B &other)
     {
         if (m_reverse)
         {
@@ -82,7 +84,7 @@ void test_priority_queue_withClass_functor()
     // std::priority_queue<B> pb;   // default:大顶堆
     // std::priority_queue<B, vector<B>, std::less<B>> pb;   // 大顶堆
     // std::priority_queue<B, vector<B>, std::greater<B>> pb;  // 小顶堆
-    std::priority_queue<B, vector<B>, std::greater<vector<B>::value_type> > pb;  // 小顶堆
+    std::priority_queue<B, vector<B>, std::greater<vector<B>::value_type>> pb; // 小顶堆
 
     // std::priority_queue<B, vector<B>, compare> pb;   // 大顶堆
     // std::priority_queue<B, vector<B>, compare> pb(compare(true));   // 小顶堆
@@ -102,7 +104,7 @@ void test_priority_queue_withClass_functor()
 void test_priority_queue_withClass()
 {
     // std::priority_queue<A> pa;   // default:大顶堆
-    std::priority_queue<A, vector<A>, std::less<A>> pa;   // 大顶堆
+    std::priority_queue<A, vector<A>, std::less<A>> pa; // 大顶堆
     // std::priority_queue<A, vector<A>, std::greater<A>> pa;  // 小顶堆
     // std::priority_queue<A, vector<A>, std::greater<vector<A>::value_type> > pa;  // 小顶堆
 
@@ -116,7 +118,6 @@ void test_priority_queue_withClass()
         pa.pop();
     }
     cout << endl;
-
 }
 
 void test_priority_queue()
@@ -127,6 +128,7 @@ void test_priority_queue()
     pqi.push(5);
     pqi.push(100);
 
+    // 5 10 100
     while (!pqi.empty())
     {
         cout << pqi.top() << " ";
@@ -137,9 +139,9 @@ void test_priority_queue()
 
 int main()
 {
-    // test_priority_queue();
+    test_priority_queue();
     // test_priority_queue_withClass();
-    test_priority_queue_withClass_functor();
+    // test_priority_queue_withClass_functor();
 
     return 0;
 }
