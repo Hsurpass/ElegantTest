@@ -10,26 +10,26 @@ public:
     {
         cout << "A()" << this << endl;
     }
-    A(int i) : _data(i)
+    A(int i) : a(i)
     {
-        cout << "A(int i):_data(i),i:" << i << " " << this << endl;
+        cout << "A(int i):a(i),i:" << i << " " << this << endl;
     }
     A(const A& other)
     {
-        cout << "A(const A& other),other._data:" << other._data << " " << this << " from " << &other << endl;
-        this->_data = other._data;
+        cout << "A(const A& other),other.a:" << other.a << " " << this << " from " << &other << endl;
+        this->a = other.a;
     }
 #if 1
-    A(A&& another):_data(another._data)
+    A(A&& another):a(another.a)
     {
-        cout << "A(A&& another), another._data:" << another._data << " " << this << " from " << &another << endl;
+        cout << "A(A&& another), another.a:" << another.a << " " << this << " from " << &another << endl;
     }
     A& operator=(A&& another)
     {
-        cout << "A& operator=(A&& another), another._data:" << another._data << " " << this << " from " << &another << endl;
+        cout << "A& operator=(A&& another), another.a:" << another.a << " " << this << " from " << &another << endl;
         if(this != &another)
         {
-            _data = another._data;
+            a = another.a;
         }
 
         return *this;
@@ -37,10 +37,10 @@ public:
 #endif
     A& operator=(const A& other)
     {
-        cout << "A& operator=(const A& other),other._data:" << other._data << " " << this << " from " << &other << endl;
+        cout << "A& operator=(const A& other),other.a:" << other.a << " " << this << " from " << &other << endl;
         if (this != &other)
         {
-            this->_data = other._data;
+            this->a = other.a;
         }
         return *this;
     }
@@ -49,10 +49,10 @@ public:
         cout << "~A()" << this << endl;
     }
 
-    bool operator==(const A& other)
+    bool operator==(const A& other) const
     {
-        cout << "bool operator==(const A& other), other._data:" << &other << "|" << other._data << " " << "this.data:" << this << "|" << this->_data << endl;
-        if(this->_data == other._data)
+        cout << "bool operator==(const A& other), other.a:" << &other << "|" << other.a << " " << "this.a:" << this << "|" << this->a << endl;
+        if(this->a == other.a)
         {
             return true;
         }
@@ -60,17 +60,28 @@ public:
         return false;
     }
 
-    bool operator<(const A& other)
+    bool operator<(const A& other) const
     {
-        cout << "bool operator<(const A& other), other._data:" << &other << "|" << other._data << " " << "this.data:" << this << "|" << this->_data << endl;
-        return _data < other._data;
+        cout << "bool operator<(const A& other), other.a:" << &other << "|" << other.a << " " << "this.a:" << this << "|" << this->a << endl;
+        return a < other.a;
+    }
+
+    bool operator>(const A& other) const
+    {
+        cout << "bool operator>(const A& other), other.a:" << &other << "|" << other.a << " " << "this.a:" << this << "|" << this->a << endl;
+        return other.a < a;
+    }
+
+    int geta() const
+    {
+        return a;
     }
 
     int print() const
     {
-        return _data;
+        return a;
     }
     
 private:
-    int _data;
+    int a;
 };

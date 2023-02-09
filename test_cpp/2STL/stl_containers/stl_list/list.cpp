@@ -19,6 +19,28 @@ bool operator()(const A& first, const A& second)
 }
 };
 
+void test_merge_unodered_list()
+{
+    std::list<A> l1, l2;
+
+    l1.emplace_back(5);
+    l1.emplace_back(3);
+    l1.emplace_back(1);
+
+    l2.emplace_back(2);
+    l2.emplace_back(4);
+    l2.emplace_back(6);
+
+    l1.merge(l2, Comp());
+    cout << "l1.size:" << l1.size() << endl;  // 6
+    cout << "l2.size:" << l2.size() << endl;  // 0
+    for(auto & x:l1)
+    {
+        cout << x.print() << " ";
+    }
+    cout << endl;   // 2 4 5 3 1 6 error
+}
+
 void test_merge()
 {
     std::list<A> first, second;
@@ -53,6 +75,104 @@ void test_merge()
     for (std::list<A>::iterator it = first.begin(); it != first.end(); ++it)
         std::cout << it->print() << " ";
     std::cout << '\n';
+}
+
+void test_list_assign_vector()
+{
+    list<A> l;
+    l.emplace_back(1);
+    l.emplace_back(2);
+    l.emplace_back(3);
+    l.emplace_back(4);
+    l.emplace_back(5);
+
+    cout << "------------------" << endl;
+    vector<A> v;
+    v.assign(l.begin(), l.end());
+    for(auto &x:v)
+    {
+        cout << x.print() << " ";
+    }
+    cout << endl;
+    cout << "------------------" << endl;
+    
+    list<A> l1;
+    l1.assign(v.begin(), v.end());
+    for(auto &x:l1)
+    {
+        cout << x.print() << " ";
+    }
+    cout << endl;
+
+}
+
+void test_assign()
+{
+    // initializer list constructor
+    list<A> v;
+    v.emplace_back(1);
+    v.emplace_back(2);
+    v.emplace_back(3);
+    v.emplace_back(4);
+    v.emplace_back(5);
+    cout << "------------------------" << endl;
+
+    list<A> v1;
+    list<A> v2;
+    v2.emplace_back(6);
+    v2.emplace_back(7);
+    v2.emplace_back(8);
+    cout << "------------------------" << endl;
+
+    list<A> v3;
+    v3.emplace_back(6);
+    v3.emplace_back(7);
+    v3.emplace_back(8);
+    v3.emplace_back(9);
+    v3.emplace_back(10);
+    v3.emplace_back(11);
+    v3.emplace_back(12);
+    cout << "------------------------" << endl;
+
+#if 0
+    // range assign
+    cout << "v1.assign:" << endl;
+    v1.assign(v.begin(), v.end()); // call copy constructor
+    cout << v.size() <<   endl;
+    cout << v1.size() <<  endl;     // 5 容量的大小也会变成右边操作值的大小
+    cout << "--------------------------------" << endl;
+#endif
+
+#if 0
+    cout << "v2.assign:" << endl;
+    v2.assign(v.begin(), v.end()); // call operator=() copy constructor
+    cout << v.size() <<   endl;
+    cout << v2.size() <<  endl;     // 5 容量的大小也会变成右边操作值的大小
+    cout << "--------------------------------" << endl;
+#endif
+
+#if 0
+    cout << "v3.assign:" << endl;
+    v3.assign(v.begin(), v.end()); // call operator=()
+    cout << v.size() <<  endl;   // 5 5
+    cout << v3.size() << endl;     // 5 6 容量的大小也会变成右边操作值的大小, 多余元素会被析构
+    
+    cout << "--------------------------------" << endl;
+#endif
+#if 0
+
+    list<const char *> v4{"a", "b", "c", "d"};
+    vector<string> v5;
+    v5.assign(v4.begin(), v4.end()); // call operator=() 容器可以不同，容器中的元素要相同。
+    cout << "print v5:" << endl;
+    print(v5);
+    cout << "--------------------------------" << endl;
+
+    // fill assign
+    vector<A> v6;
+    v6.assign(3, A(100)); // call copy-constructor
+#endif
+
 }
 
 void test_splice02()
@@ -368,7 +488,10 @@ int main()
     // test_unique();
     // test_splice01();
     // test_splice02();
-    test_merge();
+    // test_merge();
+    test_merge_unodered_list();
+    // test_assign();
+    // test_list_assign_vector();
 
     return 0;
 }

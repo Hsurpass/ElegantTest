@@ -20,15 +20,21 @@ public:
         _x = another._x;
         _y = another._y;
     }
-    T max()
-    {
-        return _x > _y ? _x : _y;
-    }
+    T max();
+    // {
+    //     return _x > _y ? _x : _y;
+    // }
 
 private:
     T _x;
     T _y;
 };
+
+template <typename T>
+T Compare<T>::max()
+{
+    return _x > _y ? _x : _y;
+}
 
 #if 1
 // class Compare    // error

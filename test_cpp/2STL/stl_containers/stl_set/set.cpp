@@ -3,114 +3,83 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include "../../../basicClass/A.h"
 
 using namespace std;
 using namespace placeholders;
 
 template <typename T>
-struct cmpInt
+void print(T &container)
 {
-    bool operator()(const T &x, const T &y)
-    {
-        return x.m_a < y.m_a;
-    }
-};
+    cout << "container.size:" << container.size() << endl;
 
-struct _cmpInt
-{
-    template <typename T>
-    bool operator()(const T &x, const T &y)
+    for (auto &x : container)
     {
-        return x.m_a < y.m_a;
+        cout << x.geta() << " ";
     }
-};
+    cout << endl;
+}
 
-template <typename T>
-struct cmpString
-{
-    bool operator()(const T &x, const T &y)
-    {
-        return x.m_b < y.m_b;
-    }
-};
-
-struct _cmpString
-{
-    template <typename T>
-    bool operator()(const T &x, const T &y)
-    {
-        return x.m_b < y.m_b;
-    }
-};
-
-class A
+template <typename T, bool reverse>
+class Comp
 {
 public:
-    int m_a;
-    string m_b;
+    // Comp() : m_reverse(reverse) {}
+    // ~Comp() {}
 
-public:
-    A(int a, string b) : m_a(a), m_b(b) {}
-    ~A(){}
+    bool operator()(const T& one, const T& other) const
+    {
+        cout << "bool operator()(const T& one, const T& other), reverse: " << reverse << endl;
+        if (reverse)
+        {
+            return one > other;
+        }
+        else
+        {
+            return one < other;
+        }
+    }
 
-#if 0
-    bool operator==(const A& another) const
-    {
-        return (this->m_a == another.m_a) && (this->m_b == another.m_b);
-    }
-#endif
-#if 1
-    bool operator==(const A& another) const
-    {
-        return (this->m_a == another.m_a);
-    }
-#endif
+// private:
+//     bool m_reverse;
 };
 
 void test_set_find_and_stdfind()
 {
-    // auto f = [](const A& x, const A& y) -> bool{
-    //     return x.m_a < y.m_a;
-    // };
-    // auto f1 = bind(f, _1, _2);
-    
-    // std::set<A, cmpInt<A> > sa;
-    // std::set<A, _cmpInt > sa;
-    // std::set<A, cmpString<A> > sa;
-    std::set<A, _cmpString > sa;
-    
-    sa.insert(A(3, "bb"));
-    sa.insert(A(2, "cc"));
-    sa.insert(A(1, "dd"));
-    sa.insert(A(4, "aa"));
+    std::set<A> sa;
+    // std::set<A, Comp<A, false>> sa;
+    // std::set<A ,greater<A> > sa;
+    // std::set<A, Comp<A, true>> sa;
 
-    for(auto &p:sa)
-    {
-        cout << p.m_a << "," << p.m_b << endl;
-    }
+    sa.emplace(3);
+    sa.emplace(2);
+    sa.emplace(1);
+    sa.emplace(4);
+
+    print(sa);
     cout << "-----------------------------" << endl;
     // std::find 和 set::find比较规则不一样
-    A aa(5, "bb");
-    auto itr = sa.find(aa); // set::find 使用_cmpString这个比较（set::find使用比较函数判断）
+    A aa(3);
+    auto itr = sa.find(aa); // set::find使用Comp这个比较, 也就是less<A>, less使用使用operator<判断）
     if(itr != sa.end())
     {
-        cout << "set::find found." << itr->m_a << "," << itr->m_b << endl;  // if _cmpString find 3,bb, if _cmpInt find 4,aa
+        cout << "set::find found." << itr->geta() << endl;  // if _cmpString find 3,bb, if _cmpInt find 4,aa
     }
     else
     {
-        cout << "set::find NOT FOUND." << itr->m_a << "," << itr->m_b << endl;
+        cout << "set::find NOT FOUND." << endl;
     }
 
-    // cout << "aa:" << aa.m_a << "," << aa.m_b << endl;
-    A a1(4, "ff");
+    cout << "---------------------------" << endl;
+    A a1(3);
     auto itr1 = std::find(sa.begin(), sa.end(), a1);    // std::find 使用类内的operator()==来比较
     if(itr1 != sa.end())
     {
-        cout << "std::find found." << itr1->m_a << "," << itr1->m_b << endl;
+        cout << "std::find found." << itr1->geta() << endl;
     }
     else
     {
-        cout << "std::find NOT FOUND." << itr1->m_a << "," << itr1->m_b << endl;    // not found
+        cout << "std::find NOT FOUND." << itr1->geta() << endl;    // not found
     }
 }
 
@@ -144,7 +113,8 @@ void test_set_insert_pair()
     s.insert(PAIRIS(3, "bb"));
     s.insert(PAIRIS(2, "cc"));
     s.insert(PAIRIS(1, "dd"));
-    s.insert(PAIRIS(4, "aa"));
+    s.emplace(4, "aa");
+    s.emplace(2, "ff");
 
     for (auto &x:s)
     {
@@ -152,7 +122,7 @@ void test_set_insert_pair()
     }
 
     PAIRIS aa(4, "aa");
-    auto itr = s.find(aa); // set::find 使用_cmpString这个比较（set::find使用比较函数判断）
+    auto itr = s.find(aa); // set::find使用operator<比较
     if(itr != s.end())
     {
         cout << "set::find found." << itr->first << "," << itr->second << endl;  // if _cmpString find 3,bb, if _cmpInt find 4,aa
@@ -190,9 +160,10 @@ void test_set_insert_pair_lowerBound()
         cout << "x:" << x.first << ", " << x.second << endl;
     }
 
-    PAIRIS p1(3, "ee");
+    // PAIRIS p1(3, "ee");
+    PAIRIS p1(3, "aa");
     auto itr = s.lower_bound(p1);
-    cout << itr->first << ", " << itr->second << endl;  // 4,aa
+    cout << itr->first << ", " << itr->second << endl;  // 4,aa 3,bb
 
     PAIRIS p2(4, "ee");
     itr = s.lower_bound(p2);
@@ -206,13 +177,92 @@ void test_set_insert_pair_lowerBound()
     }
 }
 
+void test_set_insert_pair_upperBound()
+{
+    typedef std::pair<int, string> PAIRIS;  // pair中定义了 operator<
+
+    std::set<PAIRIS> s;
+    s.insert(PAIRIS(3, "bb"));
+    s.insert(PAIRIS(2, "cc"));
+    s.insert(PAIRIS(1, "dd"));
+    s.insert(PAIRIS(4, "aa"));
+
+    for (auto &x:s)
+    {
+        cout << "x:" << x.first << ", " << x.second << endl;
+    }
+
+    PAIRIS p1(3, "ee");
+    auto itr = s.upper_bound(p1);
+    cout << itr->first << ", " << itr->second << endl;  // 4,aa
+
+    PAIRIS p2(4, "ee");
+    itr = s.upper_bound(p2);
+    if (itr == s.end())
+    {
+        cout << "itr == s.end()" << endl;   // itr == s.end()
+    }
+    else
+    {
+        cout << itr->first << ", " << itr->second << endl;  
+    }
+}
+
+void test_set_insert_pair_equalRange()
+{
+    typedef std::pair<int, string> PAIRIS;  // pair中定义了 operator<
+
+    std::set<PAIRIS> s;
+    s.insert(PAIRIS(3, "bb"));
+    s.insert(PAIRIS(2, "cc"));
+    s.insert(PAIRIS(1, "dd"));
+    s.insert(PAIRIS(4, "aa"));
+
+    for (auto &x:s)
+    {
+        cout << "x:" << x.first << ", " << x.second << endl;
+    }
+
+    // PAIRIS p1(3, "ee");
+    // PAIRIS p1(3, "aa");
+    PAIRIS p1(3, "bb");
+    auto itr = s.equal_range(p1);
+    cout << itr.first->first << ", " << itr.first->second << endl;  //  3,bb 3,bb
+    cout << itr.second->first << ", " << itr.second->second << endl;
+
+    PAIRIS p2(4, "ee");
+    itr = s.equal_range(p2);
+    if (itr.first == s.end())
+    {
+        if (itr.second == s.end())
+        {
+            cout << "itr == s.end()" << endl;  
+        }
+        else {
+            cout << "itr.first == s.end()" << itr.second->second << endl; 
+        }
+    }
+    else
+    {
+        if (itr.second == s.end())
+        {
+            cout << itr.first->first << ", itr.secone == s.end()" << endl;   // 4,aa itr == s.end()
+        }
+        else {
+            cout << itr.first->first << ", " << itr.second->second << endl;
+        }
+    }
+}
+
 int main()
 {
     // test_sizeof_set();
     // test_set_iteratorTraverse();
     // test_set_find_and_stdfind();
     // test_set_insert_pair();
-    test_set_insert_pair_lowerBound();
+    // test_set_insert_pair_lowerBound();
+    // test_set_insert_pair_upperBound();
+    test_set_insert_pair_equalRange();
 
     return 0;
 }

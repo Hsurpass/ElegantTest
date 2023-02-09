@@ -60,17 +60,21 @@ void test_allocate_and_deallocate()
 {
     int *p = NULL;
     std::allocator<int> alloc1;
-    p = alloc1.allocate(1);
+    p = alloc1.allocate(1); // 分配1个int
     *p = 123;
     cout << *p << endl;
     alloc1.deallocate(p, 1);
 
     __gnu_cxx::malloc_allocator<int> alloc2;
     p = alloc2.allocate(1);
+    *p = 123;
+    cout << *p << endl;
     alloc2.deallocate(p, 1);
 
     __gnu_cxx::new_allocator<int> alloc3;
     p = alloc3.allocate(1);
+    *p = 123;
+    cout << *p << endl;
     alloc3.deallocate(p, 1);
 
     __gnu_cxx::__pool_alloc<int> alloc4;
@@ -81,6 +85,8 @@ void test_allocate_and_deallocate()
 
     __gnu_cxx::__mt_alloc<int> alloc5;
     p = alloc5.allocate(1);
+    *p = 123;
+    cout << *p << endl;
     alloc5.deallocate(p, 1);
 
     __gnu_cxx::bitmap_allocator<int> alloc6;
