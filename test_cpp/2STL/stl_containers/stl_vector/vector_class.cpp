@@ -383,7 +383,7 @@ void test_erase_post_plus_plus()
         if (itr->print() == 5)
         {
             itr = va.erase(itr); // itr point to 3
-            // va.erase(itr++); // 迭代器失效 // itr point to 4
+            // va.erase(itr++); // 迭代器失效(不是期望的元素) // itr point to 4
         }
 
         if (itr != va.end()) {

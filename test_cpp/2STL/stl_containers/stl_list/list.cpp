@@ -432,19 +432,22 @@ void test_erase()
     {
         cout << itr->print() << endl;
         // v.erase(itr);
-        // itr = v.erase(itr); // erase 会造成迭代器失效，
+        itr = v.erase(itr); // erase 会造成迭代器失效，要把返回值接收
         cout << itr->print() << endl;
+        cout << "find" << endl;
     }
     else
     {
         cout << "find none" << endl;
     }
 
+    cout << "================================" << endl;
     for (auto itr = v.begin(); itr != v.end(); ++itr)
     {
         if (itr->print() == 2)
         {
-            itr = v.erase(itr);
+            // itr = v.erase(itr); //correct
+            v.erase(itr++); // correct
         }
         cout << itr->print() << " ";
     }
@@ -479,7 +482,7 @@ void test_resize()
 int main()
 {
     // test_resize();
-    // test_erase();
+    test_erase();
     // test_insert();
     // test_swap();
     // test_clear();
@@ -489,7 +492,7 @@ int main()
     // test_splice01();
     // test_splice02();
     // test_merge();
-    test_merge_unodered_list();
+    // test_merge_unodered_list();
     // test_assign();
     // test_list_assign_vector();
 
