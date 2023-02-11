@@ -22,11 +22,11 @@ public:
 #if 1
     A(A&& another):a(another.a)
     {
-        cout << "A(A&& another), another.a:" << another.a << " " << this << " from " << &another << endl;
+        cout << "A(A&& another), another.a:" << another.a << " ,move another:" << &another << " to this:" << this << endl;
     }
     A& operator=(A&& another)
     {
-        cout << "A& operator=(A&& another), another.a:" << another.a << " " << this << " from " << &another << endl;
+        cout << "A& operator=(A&& another), another.a:" << another.a << " ,move another:" << &another << " to this:" << this << endl;
         if(this != &another)
         {
             a = another.a;
@@ -69,7 +69,7 @@ public:
     bool operator>(const A& other) const
     {
         cout << "bool operator>(const A& other), other.a:" << &other << "|" << other.a << " " << "this.a:" << this << "|" << this->a << endl;
-        return other.a < a;
+        return other < a;
     }
 
     int geta() const
@@ -84,4 +84,9 @@ public:
     
 private:
     int a;
+};
+
+struct hash_A
+{
+    int operator()(const A &a) const { return a.geta() % 10; }
 };

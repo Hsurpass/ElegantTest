@@ -17,6 +17,12 @@ public:
         cout << "A()" << endl;
     }
 
+    A(double a)
+    {
+        cout << "A(int a)" << endl;
+        m_a = a;
+    }
+
     A(const B& b)
     {
         cout << "convert constructor" << endl;
@@ -35,6 +41,7 @@ public:
     {
         cout << "m_a:" << m_a << endl;
     }
+
     double m_a;
 };
 
@@ -54,6 +61,9 @@ void test_convert_constructor()
     cout << "&a1:" << &a1 << endl;
     cout << "&b1:" << &b1 << endl;
     a1.dis();
+
+    cout << "--------------------------------" << endl;
+    A a2 = 2;    // A(int a) 隐式构造
 }
 
 

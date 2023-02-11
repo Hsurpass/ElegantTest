@@ -3,26 +3,8 @@
 #include <algorithm>
 #include <functional>
 #include <time.h>
-
+#include "../../../../basicClass/A.h"
 using namespace std;
-
-class A
-{
-public:
-    A(int a) : m_a(a) {}
-
-    // bool operator==(const A& other) { return this->m_a == other.m_a; }
-    void dis() const { cout << m_a << endl; }
-    // private:
-    int m_a;
-};
-
-bool operator==(const A &one, const A &other) { return one.m_a == other.m_a; }
-
-struct hash_A
-{
-    int operator()(const A &a) const { return a.m_a; }
-};
 
 void test_unordered_set01()
 {
@@ -61,24 +43,26 @@ void test_unordered_set_with_class()
     ua.insert(A(2));
     ua.insert(A(3));
     ua.insert(A(1));
-    ua.insert(A(4));
+    ua.emplace(4);
+    ua.emplace(12);
+    
     cout << "ua.bucket_count:" << ua.bucket_count() << endl;
 
-    for (auto itr = ua.begin(); itr != ua.end(); ++itr)
-    {
-        itr->dis();
-    }
+    // for (auto itr = ua.begin(); itr != ua.end(); ++itr)
+    // {
+    //     itr->geta();
+    // }
 
-    cout << "------------------" << endl;
+    // cout << "------------------" << endl;
 
-    for (int i = 0; i < ua.bucket_count(); i++)
-    {
-        cout << "bucket[" << i << "] count:" << ua.bucket_size(i) << endl;
-        for (auto itr = ua.begin(i); itr != ua.end(i); ++itr)
-        {
-            itr->dis();
-        }
-    }
+    // for (int i = 0; i < ua.bucket_count(); i++)
+    // {
+    //     cout << "bucket[" << i << "] count:" << ua.bucket_size(i) << endl;
+    //     for (auto itr = ua.begin(i); itr != ua.end(i); ++itr)
+    //     {
+    //         itr->geta();
+    //     }
+    // }
 
     // auto itr = ua.find(A(2));
     // itr->dis();
