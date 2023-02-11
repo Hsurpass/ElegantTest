@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
-#include "../../../basicClass/A.h"
+#include "../../../../basicClass/A.h"
 
 using namespace std;
 using namespace placeholders;
@@ -297,11 +297,11 @@ void test_insert()
 void test_erase()
 {
     set<A> v;
-    v.emplace_back(1);
-    v.emplace_back(2);
-    v.emplace_back(3);
-    v.emplace_back(4);
-    v.emplace_back(5); 
+    v.emplace(1);
+    v.emplace(2);
+    v.emplace(3);
+    v.emplace(4);
+    v.emplace(5); 
 
     for (auto itr = v.begin(); itr != v.end(); ++itr)
     {
@@ -319,6 +319,80 @@ void test_erase()
 
 }
 
+void test_erase_the_last_one()
+{
+    set<A> v;
+    v.emplace(1);
+    v.emplace(2);
+    v.emplace(3);
+    v.emplace(4);
+    v.emplace(5); 
+
+#if 0
+    for (auto itr = v.begin(); itr != v.end(); ++itr)
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+                break;
+            }
+        }
+        cout << itr->print() << " ";
+    }
+    cout << endl;
+#endif
+#if 1
+    auto itr = v.begin();
+    while(itr != v.end())
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+            }
+        }
+        else
+        {
+            cout << itr->print() << " ";
+            ++itr;
+        }
+    }
+    cout << endl;
+#endif
+
+#if 0
+    for (auto itr = v.begin(); itr != v.end(); )
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+            }
+        }
+        else
+        {
+            cout << itr->print() << " ";
+            ++itr;
+        }
+    }
+    cout << endl;
+#endif
+
+    cout << "==================" << endl;
+    cout << v.size() << endl; // 4
+
+}
+
 int main()
 {
     // test_sizeof_set();
@@ -329,7 +403,8 @@ int main()
     // test_set_insert_pair_upperBound();
     // test_set_insert_pair_equalRange();
     // test_insert();
-    test_erase();
+    // test_erase();
+    test_erase_the_last_one();
 
     return 0;
 }

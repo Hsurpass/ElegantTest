@@ -9,19 +9,19 @@ using namespace std;
 class A
 {
 public:
-    A(int a):m_a(a) {}
+    A(int a) : m_a(a) {}
 
     // bool operator==(const A& other) { return this->m_a == other.m_a; }
     void dis() const { cout << m_a << endl; }
-// private:
+    // private:
     int m_a;
 };
 
-bool operator==(const A& one, const A& other) { return one.m_a == other.m_a; }
+bool operator==(const A &one, const A &other) { return one.m_a == other.m_a; }
 
 struct hash_A
 {
-    int operator()(const A& a) const { return a.m_a; }
+    int operator()(const A &a) const { return a.m_a; }
 };
 
 void test_unordered_set01()
@@ -64,14 +64,14 @@ void test_unordered_set_with_class()
     ua.insert(A(4));
     cout << "ua.bucket_count:" << ua.bucket_count() << endl;
 
-    for (auto itr = ua.begin(); itr != ua.end(); ++itr) 
+    for (auto itr = ua.begin(); itr != ua.end(); ++itr)
     {
         itr->dis();
     }
 
     cout << "------------------" << endl;
 
-    for(int i = 0;i < ua.bucket_count(); i++)
+    for (int i = 0; i < ua.bucket_count(); i++)
     {
         cout << "bucket[" << i << "] count:" << ua.bucket_size(i) << endl;
         for (auto itr = ua.begin(i); itr != ua.end(i); ++itr)

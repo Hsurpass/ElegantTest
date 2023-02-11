@@ -6,7 +6,7 @@
 #include <string>
 #include <memory>
 
-#include "../../../basicClass/A.h"
+#include "../../../../basicClass/A.h"
 
 using namespace std;
 
@@ -362,6 +362,80 @@ void test_memory_increase()
     vi.push_back(5);
     cout << vi.size() << endl;     // 5
     cout << vi.capacity() << endl; // 8
+}
+
+void test_erase_the_last_one()
+{
+    vector<A> v;
+    v.emplace_back(1);
+    v.emplace_back(2);
+    v.emplace_back(3);
+    v.emplace_back(4);
+    v.emplace_back(5); 
+
+#if 1
+    for (auto itr = v.begin(); itr != v.end(); ++itr)
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+                break;
+            }
+        }
+        cout << itr->print() << " ";
+    }
+    cout << endl;
+#endif
+#if 0
+    auto itr = v.begin();
+    while(itr != v.end())
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+            }
+        }
+        else
+        {
+            cout << itr->print() << " ";
+            ++itr;
+        }
+    }
+    cout << endl;
+#endif
+
+#if 0
+    for (auto itr = v.begin(); itr != v.end(); )
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+            }
+        }
+        else
+        {
+            cout << itr->print() << " ";
+            ++itr;
+        }
+    }
+    cout << endl;
+#endif
+
+    cout << "==================" << endl;
+    cout << v.size() << endl; // 4
+
 }
 
 void test_erase_post_plus_plus()
@@ -858,6 +932,7 @@ int main()
     // test_erase();
     // test_erase_string();
     // test_erase_post_plus_plus();
+    test_erase_the_last_one();
     // test_memory_increase();
     
     // test_insert();

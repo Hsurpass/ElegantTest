@@ -6,7 +6,7 @@
 #include <string>
 #include <memory>
 
-#include "../../../basicClass/A.h"
+#include "../../../../basicClass/A.h"
 
 using namespace std;
 
@@ -405,6 +405,80 @@ void test_insert()
     cout << endl;
 }
 
+void test_erase_the_last_one()
+{
+    list<A> v;
+    v.emplace_back(1);
+    v.emplace_back(2);
+    v.emplace_back(3);
+    v.emplace_back(4);
+    v.emplace_back(5); 
+
+#if 0
+    for (auto itr = v.begin(); itr != v.end(); ++itr)
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+                break;
+            }
+        }
+        cout << itr->print() << " ";
+    }
+    cout << endl;
+#endif
+#if 0
+    auto itr = v.begin();
+    while(itr != v.end())
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+            }
+        }
+        else
+        {
+            cout << itr->print() << " ";
+            ++itr;
+        }
+    }
+    cout << endl;
+#endif
+
+#if 1
+    for (auto itr = v.begin(); itr != v.end(); )
+    {
+        if (itr->print() == 5)  
+        {
+            cout << "start erase" << endl;
+            itr = v.erase(itr); //correct
+            if(itr == v.end())
+            {
+                cout << "itr == end" << endl;
+            }
+        }
+        else
+        {
+            cout << itr->print() << " ";
+            ++itr;
+        }
+    }
+    cout << endl;
+#endif
+
+    cout << "==================" << endl;
+    cout << v.size() << endl; // 4
+
+}
+
 // test erase && 涉及到迭代器失效的问题
 void test_erase()
 {
@@ -482,7 +556,8 @@ void test_resize()
 int main()
 {
     // test_resize();
-    test_erase();
+    // test_erase();
+    test_erase_the_last_one();
     // test_insert();
     // test_swap();
     // test_clear();
