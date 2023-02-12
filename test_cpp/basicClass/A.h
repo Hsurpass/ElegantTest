@@ -88,5 +88,9 @@ private:
 
 struct hash_A
 {
-    int operator()(const A &a) const { return a.geta() % 10; }
+    int operator()(const A &a) const 
+    {
+        cout << "hash_A operator()(const A &a) const" << endl;
+        return a.geta() % 10; 
+    }
 };

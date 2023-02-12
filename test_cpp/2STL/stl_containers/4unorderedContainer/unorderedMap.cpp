@@ -4,7 +4,7 @@
 #include <functional>
 #include <string.h>
 #include <string>
-#include "../../../../basicClass/A.h"
+#include "../../../basicClass/A.h"
 
 using namespace std;
 
@@ -171,8 +171,38 @@ void test_operator_square_bracket()
 
 void test_modify_max_load_factor()
 {
+    unordered_map<A, int, hash_A> hm;
 
+    hm.emplace(0,0);
+    hm.emplace(1,1);
+    hm.emplace(2,2);
+    hm.emplace(3,3);
+    hm.emplace(4,4);
+    hm.emplace(5,5);
+
+    cout << "element num:" << hm.size();    // 6
+    cout << "bucket count:" << hm.bucket_count() << endl; // 13
+    cout << "load_factor:" << hm.load_factor() << endl;
+    cout << "max_load_factor:" << hm.max_load_factor() << endl;
+
+    hm.max_load_factor(hm.max_load_factor()/2);
+    hm.emplace(6,6);
+    hm.emplace(7,7);
+    hm.emplace(8,8);
+
+    cout << "element num:" << hm.size();    // 6
+    cout << "bucket count:" << hm.bucket_count() << endl; // 13
+    cout << "load_factor:" << hm.load_factor() << endl;
+    cout << "max_load_factor:" << hm.max_load_factor() << endl;
+
+    cout << "bucket[0] size:" << hm.bucket_size(0) << endl; //1
+    cout << "bucket[1] size:" << hm.bucket_size(1) << endl; //1
+    cout << "bucket[2] size:" << hm.bucket_size(2) << endl; //1
+    cout << "bucket[3] size:" << hm.bucket_size(3) << endl; //1
+    cout << "bucket[4] size:" << hm.bucket_size(4) << endl; //1
+    cout << "bucket[5] size:" << hm.bucket_size(5) << endl; //0
 }
+
 void test_hashtable_linklist_to_rbtree()
 {
 
@@ -180,10 +210,51 @@ void test_hashtable_linklist_to_rbtree()
 
 void test_rehash()
 {
+    unordered_map<A, int, hash_A> hm;
+    //通过调用rehash来在哈希表中保留一定数量的桶，我们避免了容器扩展可能导致的多次rehash。
+    hm.rehash(20);
+
+    hm.emplace(0,0);
+    hm.emplace(1,1);
+    hm.emplace(2,2);
+    hm.emplace(3,3);
+    hm.emplace(4,4);
+    hm.emplace(5,5);
+    hm.emplace(6,6);
+    hm.emplace(7,7);
+    hm.emplace(8,8);
+    
+    cout << "element num:" << hm.size();    // 6
+    cout << "bucket count:" << hm.bucket_count() << endl; // 13
+    cout << "load_factor:" << hm.load_factor() << endl;
+    cout << "max_load_factor:" << hm.max_load_factor() << endl;
 
 }
+
 void test_equal_range()
 {
+    unordered_map<A, int, hash_A> hm;
+
+    hm.emplace(0,0);
+    hm.emplace(1,1);
+    hm.emplace(2,2);
+    hm.emplace(3,3);
+    hm.emplace(4,4);
+    hm.emplace(5,5);
+    hm.emplace(6,6);
+    hm.emplace(7,7);
+    hm.emplace(8,8);    
+
+    auto r = hm.equal_range(6);
+    // auto r = hm.equal_range(9);
+    if(r.first != hm.end())
+    {
+        cout << r.first->first.geta() << "," << r.first->second << endl;
+    }
+    if(r.second != hm.end())
+    {
+        cout << r.second->first.geta() << "," << r.second->second << endl;
+    }
 
 }
 
@@ -192,8 +263,11 @@ int main()
     // test_unordered_map_const_char();
     // test_insert_int_A();
     // test_insert_A_int();
-    test_reserve();
+    // test_reserve();
     // test_operator_square_bracket();
-
+    // test_modify_max_load_factor();  
+    // test_rehash();
+    test_equal_range();
+    
     return 0;
 }
