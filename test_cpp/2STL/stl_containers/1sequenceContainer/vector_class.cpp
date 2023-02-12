@@ -932,7 +932,7 @@ int main()
     // test_erase();
     // test_erase_string();
     // test_erase_post_plus_plus();
-    test_erase_the_last_one();
+    // test_erase_the_last_one();
     // test_memory_increase();
     
     // test_insert();
@@ -946,7 +946,7 @@ int main()
     // test_push_shared_ptr();
     // test_shared_ptr_save_vector();
     
-    // test_vector_remove();
+    test_vector_remove();
     // test_vector_remove_erase();
 
     return 0;
