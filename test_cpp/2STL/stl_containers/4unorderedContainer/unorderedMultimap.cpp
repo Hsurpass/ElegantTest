@@ -32,6 +32,49 @@ void test_unordered_multimap()
             cout << " " << itr->first << ":" << itr->second << endl;
     }
 }
+void test_erase()
+{
+    unordered_multimap<A, int, hash_A> hm;
+
+    hm.emplace(0, 0);
+    hm.emplace(1, 1);
+    hm.emplace(2, 2);
+    hm.emplace(3, 3);
+    hm.emplace(4, 4);
+    hm.emplace(5, 5);
+    hm.emplace(6, 6);
+    hm.emplace(7, 7);
+    hm.emplace(8, 8);
+    hm.emplace(6, 7);
+
+    cout << "element num:" << hm.size();                  // 10
+    cout << "bucket count:" << hm.bucket_count() << endl; // 13
+
+    // erasing by iterator
+    auto itr = hm.erase(hm.begin());    
+    cout << itr->first.geta() << " " << itr->second << endl;
+    cout << "element num:" << hm.size();                  // 9
+    cout << "bucket count:" << hm.bucket_count() << endl; // 13
+
+    // erasing by key
+    int eraseNum = hm.erase(6); 
+    cout << "eraseNum:" << eraseNum;    // 2
+    cout << "element num:" << hm.size();                  // 7
+    cout << "bucket count:" << hm.bucket_count() << endl; // 13
+
+    // erasing by range
+    auto it = hm.erase(hm.find(3), hm.end());
+    if(it == hm.end()) {cout << "it is end" << endl; }
+    else { cout << it->first.geta() << " " << it->second << endl; }
+    cout << "element num:" << hm.size();                  // 3
+    cout << "bucket count:" << hm.bucket_count() << endl; // 13
+
+    for(auto &x:hm)
+    {
+        cout << x.first.geta() << " " << x.second << endl;
+    }
+
+}
 
 void test_insert()
 {
@@ -132,8 +175,9 @@ int main()
 {
     // test_unordered_multimap();
     // test_insert();
-    test_equal_range();
+    // test_equal_range();
     // test_equal_range_with_string();
+    test_erase();
 
     return 0;
 }
