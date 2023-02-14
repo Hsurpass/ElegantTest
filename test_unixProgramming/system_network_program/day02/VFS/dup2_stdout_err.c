@@ -30,7 +30,7 @@ int main()
 
     puts("hello");      // close STDOUT_FILENO再写入 就会 dup2: Bad file descriptor
     printf("world\n");  // close STDERR_FILENO再写入 就会 dup2: Bad file descriptor
-    perror("dup2"); // close STDERR_FILENO 再写入 就会 dup2: Bad file descriptor
+    perror("dup2");     // close STDERR_FILENO再写入 就会 dup2: Bad file descriptor
 
     return 0;
 }

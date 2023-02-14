@@ -66,9 +66,9 @@ void testIPCEnv01()
 
 int main(int argc, char* argv[], char** env)
 {
-    // printEnv(env);
+    printEnv(env);
     // test1();
-    testIPCEnv01();
+    // testIPCEnv01();
 
     return 0;
 }
