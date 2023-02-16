@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+#include <signal.h>
 
 int test02()
 {
@@ -16,8 +17,20 @@ int test02()
     return 0;
 }
 
+void handle_sig(int sig)
+{
+    printf("pid = %d, sig=%d\n",getpid(), sig);     // 17
+}
+
+// 父进程退出前有暂停的子进程会怎样？
+// 父进程会检查所有暂停的子进程，并发送一个SIGHUP信号导致子进程退出
 int test01()
 {
+    // signal(SIGHUP, handle_sig);
+    // for (int i = 1;i <=31; i++)
+    // {
+    //     signal(i, handle_sig);
+    // }
     pid_t pid = fork();
     if (pid > 0)
     {
@@ -25,7 +38,8 @@ int test01()
         int status;
         while(1)
         {
-            childpid = waitpid(-1, &status, WUNTRACED | WCONTINUED);
+            // childpid = waitpid(-1, &status, WUNTRACED | WCONTINUED);
+            childpid = waitpid(-1, &status, WNOHANG | WUNTRACED | WCONTINUED);
             if (childpid == 0)
             {
                 printf("parent process, parent pid = %d, reutrnChildId = %d, status = %d\n", getpid(), childpid, status);
@@ -38,16 +52,17 @@ int test01()
                 if(WIFEXITED(status))
                 {
                     printf("parent process, parent pid = %d, child pid =%d,exit code = %d\n", getpid(), childpid, WEXITSTATUS(status));
-                    break;
+                    break; // 注意这个break
                 }
                 else if(WIFSIGNALED(status))
                 {   
                     printf("parent process, parent pid = %d, child process [%d] killed by signal %d\n", getpid(), childpid, WTERMSIG(status) );
-                    break;
+                    break;  // 注意这个break
                 }
-                else if (WIFSTOPPED(status))
+                else if (WIFSTOPPED(status))// kill -19
                 {
                     printf("parent process, parent pid = %d, child process [%d] stopped by signal %d\n", getpid(), childpid, WSTOPSIG(status));
+                    // break; //父进程会检查所有暂停的子进程，并发送一个SIGHUP信号导致子进程退出
                 }
                 else if (WIFCONTINUED(status))
                 {

@@ -29,7 +29,8 @@ int test01()
         // }
         sleep(12);
         int status;
-        pid_t childpid = wait(&status);
+        // pid_t childpid = wait(&status);
+        pid_t childpid = wait(NULL);
 
         printf("child pid = %d,status = %d\n", childpid, status);
         if (WIFEXITED(status))
@@ -51,7 +52,8 @@ int test01()
             sleep(1);
         }
 
-        exit(-1);
+        // exit(-1);
+        exit(100);
     }
     else
     {

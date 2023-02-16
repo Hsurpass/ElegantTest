@@ -3,9 +3,19 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <signal.h>
+
+void handle_sig(int sig)
+{
+    printf("pid = %d, sig=%d\n",getpid(), sig);     // 17
+}
 
 void testOrphanProcess()
 {
+    for (int i = 1;i <=31; i++)
+    {
+        signal(i, handle_sig);
+    }
     pid_t pid = fork();
 
     if (pid > 0)

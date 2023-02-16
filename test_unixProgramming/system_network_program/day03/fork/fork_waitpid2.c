@@ -44,18 +44,18 @@ int test01()
                 if (WIFEXITED(status))
                 {
                     printf("parent process, parent pid = %d, child pid =%d,exit code = %d\n", getpid(), childpid, WEXITSTATUS(status));
-                    break;
+                    break;// 注意这个break
                 }
-                else if (WIFSIGNALED(status))
+                else if (WIFSIGNALED(status))//kill -9 childpid
                 {
                     printf("parent process, parent pid = %d, child process [%d] killed by signal %d\n", getpid(), childpid, WTERMSIG(status));
-                    break;
+                    break;// 注意这个break
                 }
-                else if (WIFSTOPPED(status))
+                else if (WIFSTOPPED(status))//kill -19 childpid //kill -20 childpid
                 {
                     printf("parent process, parent pid = %d, child process [%d] stopped by signal %d\n", getpid(), childpid, WSTOPSIG(status));
                 }
-                else if (WIFCONTINUED(status))
+                else if (WIFCONTINUED(status))//kill -18 childpid
                 {
                     printf("parent process, parent pid = %d, child process [%d] continued by signal 18 %d, %d, %d\n", getpid(), childpid, WEXITSTATUS(status), WTERMSIG(status), WSTOPSIG(status));
                 }
