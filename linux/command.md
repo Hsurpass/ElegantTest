@@ -129,6 +129,21 @@ efgh
 head -n 10 xx.txt
 ```
 
+# lsb_release
+
+LSB是Linux Standard Base的缩写， **lsb_release命令** 用来显示Linux发行版的相关信息。
+
+# lsof
+
+list open files：列出当前系统打开文件的工具。
+
+```bash
+lsof -i:8000	#查看8000端口占用的情况
+```
+
+
+
+
 
 # man
 
@@ -233,6 +248,50 @@ nc -p 12345 SERVERHOST PORT
 ```bash
 nc -l 12345
 ```
+
+# netstat
+
+用于显示网络相关的信息
+
+参数：
+
+-a或--all：显示所有连线中的Socket。
+
+-l或--listening：显示监控中的服务器的Socket。
+
+-n或--numeric：直接使用IP地址，而不通过域名服务器。
+
+-p或--programs：显示正在使用Socket的程序识别码和程序名称。
+
+-t或--tcp：显示TCP传输协议的连线状况。
+
+-u或--udp：显示UDP传输协议的连线状况。
+
+```bash
+netstat -al
+netstat -anp | grep 8000 #查看8000端口的占用情况
+```
+
+https://www.runoob.com/linux/linux-comm-netstat.html
+
+
+
+# pstack
+
+  ```bash
+  sudo pstack pid  #线程栈结构的查看
+  ```
+
+# pstree
+
+  ```bash
+  pstree -p pid #查看当前线程和子线程的关系
+  ```
+
+  ```bash
+  pstree -a #显示所有进程的所有详细信息，遇到相同的进程名可以压缩显示
+  ```
+
 
 
 # scp
@@ -349,8 +408,21 @@ https://linux.cn/article-11367-1.html
 - -XX, 与-X相同，不过还打印以太网帧的头部信息。
 
 ```bash
-tcpdump -nt -i eth0 port 12345 -w tmp.pcap
+tcpdump -nt -i eth0 host 192.168.1.1 port 12345 -w tmp.pcap #捕获主机12345端口经过网卡eth0的所有数据包，并输出到tmp.pcap文件
+tcpdump tcp port 22 #捕获在22端口上tcp协议的包
+tcpdump arp 
+tcpdump -i eth0 tcp port 22 and host 192.168.56.210  #捕获主机192.168.56.210在网卡eth0上接收和发出的tcp协议的数据包：
 ```
+
+https://zhuanlan.zhihu.com/p/349692865
+
+# telnet
+
+检查一个端口是否处于打开。
+
+`telnet www.baidu.com 80`
+
+
 
 
 
@@ -369,33 +441,13 @@ time + 可执行程序：可以统计程序的运行时间
 
 
 # whatis
-## 可以使用 `whatis` 查看某个命令都有哪些功能。
+## 查看某个命令的功能。
 
   ```bash
   whatis sleep
   ```
 
   ![image-20210516110024368](image/image-20210516110024368.png)
-
-# 网络命令
-
-## pstree
-
-  ```bash
-  pstree -p pid #查看当前线程和子线程的关系
-  ```
-
-  ```bash
-  pstree -a #显示所有进程的所有详细信息，遇到相同的进程名可以压缩显示
-  ```
-
-
-
-## pstack
-
-  ```bash
-  sudo pstack pid  #线程栈结构的查看
-  ```
 
 
 
