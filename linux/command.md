@@ -261,7 +261,7 @@ nc -l 12345
 
 -n或--numeric：直接使用IP地址，而不通过域名服务器。
 
--p或--programs：显示正在使用Socket的程序识别码和程序名称。
+-p或--programs：**显示**正在使用Socket的程序PID和程序名称。
 
 -t或--tcp：显示TCP传输协议的连线状况。
 
