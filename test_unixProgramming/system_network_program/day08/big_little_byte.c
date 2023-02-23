@@ -17,9 +17,17 @@ void test_big_or_little_endian()
     printf("little address = %x\n", bigOrLittleEndian.oneByte);  // 78
 }
 
+void test_big_or_little_endian01()
+{
+    int a = 0x12345678;
+
+    printf("little address = %x\n", *(char*)&(a));  // 78 低地址放低字节：小端序
+}
+
 int main()
 {
-    test_big_or_little_endian();
+    // test_big_or_little_endian();
+    test_big_or_little_endian01();
     
     return 0;
 }
