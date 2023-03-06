@@ -34,12 +34,12 @@ void visit(Graph *g, int index, int *visited)
     visited[index] = 1;
 }
 
-void DFS_recursive(Graph *g, int index, int *visited)
+void DFS_recursive(Graph *g, int start, int *visited)
 {
-    visit(g, index, visited);   // 1.访问当前结点，并标记当前结点为已访问
+    visit(g, start, visited);   // 1.访问当前结点，并标记当前结点为已访问
     for (int i = 0; i < N; i++) // 2.找到一个与当前结点相邻且未被访问的结点
     {
-        if (g->matrix[index][i] == 1 && visited[i] == 0)
+        if (g->matrix[start][i] == 1 && visited[i] == 0)
         {
             DFS_recursive(g, i, visited); // 把邻接点作为当前结点并进行递归操作。
         }
