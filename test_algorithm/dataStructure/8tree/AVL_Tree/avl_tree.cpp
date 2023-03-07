@@ -20,6 +20,16 @@ AvlTreeNode* createNewNode(int data)
     return newNode;
 }
 
+void destroyAVLTree(AvlTreeNode* root)
+{
+    if(root)
+    {
+        destroyAVLTree(root->left);
+        destroyAVLTree(root->right);
+        free(root);
+    }
+}
+
 int avlTreeHeight(AvlTreeNode* root)
 {
     if(!root)
@@ -117,7 +127,7 @@ AvlTreeNode* leftRotation(AvlTreeNode* root)
     最小不平衡子树的根节点是11(BF=2), 以14这个节点进行右旋, 以11这个节点进行左旋
     返回调整完的根节点
                 10                         10                           10
-              /     \        14 右旋     /     \            11 右旋    /    \
+              /     \        14 右旋     /     \            11 左旋    /    \
              8       11       --->      8      11           ----->    8     15
             /          \               /         \                   /     /  \
            6            14            6          15                 6     11   14
@@ -137,10 +147,10 @@ AvlTreeNode* rightLeftRotation(AvlTreeNode* root)
     最小不平衡子树的根节点是8(BF=2), 先以5这个节点进行左旋, 再以8这个节点进行右旋
     返回调整完的根节点
                 10                        10                    10
-              /     \       5 左旋      /     \               /     \   
-            8        11     ---->      8      11  ----->     6      11
-           /                          /                    /   \
-          5                          6                    5     8
+              /     \       5 左旋      /     \    8右旋      /     \   
+            8        11     ---->      8      11  ----->    6      11
+           /                          /                   /   \
+          5                          6                   5     8
            \                        /
             6                      5           
 */
@@ -335,6 +345,8 @@ void deleteAvlNodeLL()
     putchar(10);
     inOrderTraverseAvl(root);   // 8 10 20
     putchar(10);
+
+    destroyAVLTree(root);
 }
 
 void deleteAvlNodeLR()
@@ -355,6 +367,8 @@ void deleteAvlNodeLR()
     putchar(10);
     inOrderTraverseAvl(root);   // 8 10 15 20
     putchar(10);
+
+    destroyAVLTree(root);
 }
 
 void deleteAvlNodeRR()
@@ -375,6 +389,8 @@ void deleteAvlNodeRR()
     putchar(10);
     inOrderTraverseAvl(root);   // 20 25 30 40
     putchar(10);
+
+    destroyAVLTree(root);
 }
 
 void deleteAvlNodeRL()
@@ -394,6 +410,8 @@ void deleteAvlNodeRL()
     putchar(10);
     inOrderTraverseAvl(root);   // 20 25 30
     putchar(10);
+
+    destroyAVLTree(root);
 }
 
 
@@ -450,6 +468,7 @@ int main()
     // deleteAvlNodeRR();
     deleteAvlNodeRL();
     
+    destroyAVLTree(root);
     return 0;
 }
 

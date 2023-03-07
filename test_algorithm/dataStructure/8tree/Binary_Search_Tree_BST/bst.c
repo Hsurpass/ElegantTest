@@ -88,7 +88,7 @@ TreeNode* insertBST_recursive_NEW(TreeNode *root, int data)
     {
         root->_left = insertBST_recursive_NEW(root->_left, data);
     }
-    else
+    else    // >=
     {
         root->_right = insertBST_recursive_NEW(root->_right, data);
     }
@@ -242,6 +242,17 @@ TreeNode* deleteNodeOfBST_recursive(TreeNode* root, int val)
     return root;
 }
 
+void destroyBst(TreeNode* root)
+{
+    if (root)
+    {
+        destroyBst(root->_left);
+        destroyBst(root->_right);
+        free(root);
+    }
+    
+}
+
 void preOrderTraverseBst(TreeNode *root)
 {
     if (root)
@@ -343,5 +354,7 @@ int main()
     inOrderTraverseBst(t);
     putchar(10);
 
+    destroyBst(root);
+    
     return 0;
 }

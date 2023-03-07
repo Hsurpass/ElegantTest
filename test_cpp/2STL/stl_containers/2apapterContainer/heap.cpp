@@ -77,15 +77,19 @@ void test_heap02()
     int myints[] = {10, 20, 30, 5, 15};
     std::vector<int> v(myints, myints + 5);
 
-    std::make_heap(v.begin(), v.end());
+    std::make_heap(v.begin(), v.end()); //建堆
     std::cout << "initial max heap   : " << v.front() << '\n';  // 30
+    printVector(v);
 
     std::pop_heap(v.begin(), v.end());
+    printVector(v);
     v.pop_back();
     std::cout << "max heap after pop : " << v.front() << '\n';  // 20
 
     v.push_back(99);
+    printVector(v);
     std::push_heap(v.begin(), v.end());
+    printVector(v);
     std::cout << "max heap after push: " << v.front() << '\n';  // 99
 
     std::sort_heap(v.begin(), v.end());     // 5 10 15 20 99
