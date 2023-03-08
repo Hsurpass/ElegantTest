@@ -20,29 +20,6 @@ void print(T &container)
     cout << endl;
 }
 
-template <typename T, bool reverse>
-class Comp
-{
-public:
-    // Comp() : m_reverse(reverse) {}
-    // ~Comp() {}
-
-    bool operator()(const T &one, const T &other) const
-    {
-        cout << "bool operator()(const T& one, const T& other), reverse: " << reverse << endl;
-        if (reverse)
-        {
-            return one > other;
-        }
-        else
-        {
-            return one < other;
-        }
-    }
-
-    // private:
-    //     bool m_reverse;
-};
 
 void test_set_find_and_stdfind()
 {

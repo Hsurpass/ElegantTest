@@ -72,6 +72,19 @@ void test_heap01()
     // printVector(vi); // 1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 100
 }
 
+
+/*
+    建堆：(n-1)/2 --> (5-1)/2 = 2 -->从2号结点开始调整直到根节点
+    0  1  2  3  4
+    10 20 30 5 15
+            10       buildheap       30     popheap         15              20
+        20      30  ---------->   20    10 --------->    20    10  -->    15   10
+      5   15                     5  15                  5  30            5  30
+
+            20      pushheap     20             99 
+         15    10   ------->   99  10   -->   20   10
+        5  99                 5  15         5  15
+*/
 void test_heap02()
 {
     int myints[] = {10, 20, 30, 5, 15};
@@ -79,17 +92,17 @@ void test_heap02()
 
     std::make_heap(v.begin(), v.end()); //建堆
     std::cout << "initial max heap   : " << v.front() << '\n';  // 30
-    printVector(v);
+    printVector(v); // 30 20 10 5 15
 
     std::pop_heap(v.begin(), v.end());
-    printVector(v);
+    printVector(v); // 20 15 10 5 30
     v.pop_back();
     std::cout << "max heap after pop : " << v.front() << '\n';  // 20
 
     v.push_back(99);
-    printVector(v);
+    printVector(v); // 20 15 10 5 99
     std::push_heap(v.begin(), v.end());
-    printVector(v);
+    printVector(v); // 99 20 10 5 15
     std::cout << "max heap after push: " << v.front() << '\n';  // 99
 
     std::sort_heap(v.begin(), v.end());     // 5 10 15 20 99
@@ -103,6 +116,6 @@ void test_heap02()
 
 int main()
 {
-    // test_heap01();
-    test_heap02();
+    test_heap01();
+    // test_heap02();
 }

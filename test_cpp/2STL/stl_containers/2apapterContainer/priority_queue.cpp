@@ -4,42 +4,31 @@
 #include <algorithm>
 #include <functional>
 
+#include "../../../basicClass/A.h"
+
 using namespace std;
 
-// template <typename T>
-// class comp
-// {
-// public:
-//     comp(bool reverse = false) : m_reverse(reverse) {}
-//     ~comp();
-
-//     bool operator()(const T& one, const T& other)
-//     {
-//         if (m_reverse)
-//         {
-//             return one > other;
-//         }
-//         else
-//         {
-//             return one < other;
-//         }
-//     }
-
-// private:
-//     bool m_reverse;
-// };
-
-class A
+template <typename T>
+class comp
 {
 public:
-    A(int a) : m_a(a) {}
-    bool operator<(const A &other) const // 必须是const成员函数
-    {
-        return this->m_a < other.m_a;
-    }
-    bool operator>(const A &other) const { return this->m_a > other.m_a; }
+    comp(bool reverse = false) : m_reverse(reverse) {}
+    ~comp() {}
 
-    int m_a;
+    bool operator()(const T& one, const T& other)
+    {
+        if (m_reverse)
+        {
+            return one > other;
+        }
+        else
+        {
+            return one < other;
+        }
+    }
+
+private:
+    bool m_reverse;
 };
 
 class B
@@ -55,39 +44,41 @@ public:
 
     int m_b;
 };
-class compare
-{
-public:
-    compare(bool reverse = false) : m_reverse(reverse) {}
-    ~compare() {}
 
-    bool operator()(const B &one, const B &other)
-    {
-        if (m_reverse)
-        {
-            // return one.m_b > other.m_b;
-            return one > other;
-        }
-        else
-        {
-            // return one.m_b < other.m_b;
-            return one < other;
-        }
-    }
+// class compare
+// {
+// public:
+//     compare(bool reverse = false) : m_reverse(reverse) {}
+//     ~compare() {}
 
-private:
-    bool m_reverse;
-};
+//     bool operator()(const B &one, const B &other)
+//     {
+//         if (m_reverse)
+//         {
+//             // return one.m_b > other.m_b;
+//             return one > other;
+//         }
+//         else
+//         {
+//             // return one.m_b < other.m_b;
+//             return one < other;
+//         }
+//     }
+
+// private:
+//     bool m_reverse;
+// };
 
 void test_priority_queue_withClass_functor()
 {
     // std::priority_queue<B> pb;   // default:大顶堆
     // std::priority_queue<B, vector<B>, std::less<B>> pb;   // 大顶堆
     // std::priority_queue<B, vector<B>, std::greater<B>> pb;  // 小顶堆
-    std::priority_queue<B, vector<B>, std::greater<vector<B>::value_type>> pb; // 小顶堆
+    // std::priority_queue<B, vector<B>, std::greater<vector<B>::value_type>> pb; // 小顶堆
 
     // std::priority_queue<B, vector<B>, compare> pb;   // 大顶堆
     // std::priority_queue<B, vector<B>, compare> pb(compare(true));   // 小顶堆
+    std::priority_queue<B, vector<B>, comp<B>> pb(comp<B>(true));   // 小顶堆
 
     pb.emplace(100);
     pb.emplace(500);
@@ -104,8 +95,8 @@ void test_priority_queue_withClass_functor()
 void test_priority_queue_withClass()
 {
     // std::priority_queue<A> pa;   // default:大顶堆
-    std::priority_queue<A, vector<A>, std::less<A>> pa; // 大顶堆
-    // std::priority_queue<A, vector<A>, std::greater<A>> pa;  // 小顶堆
+    // std::priority_queue<A, vector<A>, std::less<A>> pa; // 大顶堆
+    std::priority_queue<A, vector<A>, std::greater<A>> pa;  // 小顶堆
     // std::priority_queue<A, vector<A>, std::greater<vector<A>::value_type> > pa;  // 小顶堆
 
     pa.emplace(10);
@@ -114,7 +105,7 @@ void test_priority_queue_withClass()
 
     while (!pa.empty())
     {
-        cout << pa.top().m_a << " ";
+        cout << pa.top().geta() << " ";
         pa.pop();
     }
     cout << endl;
@@ -122,8 +113,8 @@ void test_priority_queue_withClass()
 
 void test_priority_queue()
 {
-    // priority_queue<int> pqi;
-    priority_queue<int, std::vector<int>, std::greater<int>> pqi;
+    // priority_queue<int> pqi; // 大顶堆
+    priority_queue<int, std::vector<int>, std::greater<int>> pqi;   // 小顶堆
     pqi.push(10);
     pqi.push(5);
     pqi.push(100);
@@ -139,9 +130,9 @@ void test_priority_queue()
 
 int main()
 {
-    test_priority_queue();
+    // test_priority_queue();
     // test_priority_queue_withClass();
-    // test_priority_queue_withClass_functor();
+    test_priority_queue_withClass_functor();
 
     return 0;
 }

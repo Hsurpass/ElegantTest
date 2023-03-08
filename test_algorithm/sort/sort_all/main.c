@@ -97,14 +97,14 @@ int main()
     // quickSort(arr, 0, 9);
     // printArr(arr, n);
 
-    // heapSort(arr, n);
-    // printArr(arr, n);
+    heapSort(arr, n);
+    printArr(arr, n);
 
     // test_mergeTwoOrderedArray();
     // test_merge_twoOrderedPart_in_array();
     // test_mergeSort();
 
-    test_qsort_and_binary_search();
+    // test_qsort_and_binary_search();
 
     return 0;
 }
