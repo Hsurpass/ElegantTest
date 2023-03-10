@@ -83,6 +83,7 @@ public:
     }
 
     void dijkstraAlgo(const vector<vector<uint32_t>> &graph, std::vector<Node> &nodes);
+    void dijkstraAlgo_01(const vector<vector<uint32_t>> &graph, std::vector<Node> &nodes);
 
     void printPath(string nodeName);
 };
@@ -147,6 +148,43 @@ void dijkstra::dijkstraAlgo(const vector<vector<uint32_t>> &graph, std::vector<N
     }
 }
 
+void dijkstra::dijkstraAlgo_01(const vector<vector<uint32_t>> &graph, std::vector<Node> &nodes)
+{
+    while (!openSet.empty())
+    {
+        Node minNode(openSet.top());
+        nodes[minNode.index].visited = true;
+        closeSet[minNode.name] = &nodes[minNode.index];
+        cout << "minNode.index:" << minNode.index << endl;
+        openSet.pop();
+
+        for (int i = 0; i < graph.size(); i++)
+        {
+            if(debugEnabled())
+            {
+                printf("minNode.cost + graph[minNode.index][%d]: %d, nodes[%d].cost:%d\n", i, minNode.cost + graph[minNode.index][i], i, nodes[i].cost);
+                // sleep(1);
+            }
+
+            if (!nodes[i].visited && (minNode.cost + graph[minNode.index][i]) < nodes[i].cost)
+            {
+                nodes[i].cost = minNode.cost + graph[minNode.index][i];
+                nodes[i].parent = &nodes[minNode.index];
+            }
+        }
+
+        std::priority_queue<Node, vector<Node>, std::greater<Node>> openSetTmp;
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            if (!nodes[i].visited)
+            {
+                openSetTmp.push(nodes[i]);
+            }
+        }
+        openSet.swap(openSetTmp);
+    }
+}
+
 void initGraph(vector<vector<uint32_t>> &graph)
 {
     for (size_t i = 0; i < 6; i++)
@@ -176,6 +214,7 @@ void initNode(std::vector<Node> &nodes)
         node.name = 'A' + i;
         node.index = i;
         node.visited = false;
+        node.cost = INT8_MAX;
     }
 }
 
@@ -192,10 +231,11 @@ void test_dijkstra()
     dijkstra dij;
     dij.enableDebug(true);
     dij.setOrigin("A", nodes);
-    dij.dijkstraAlgo(graph, nodes);
+    // dij.dijkstraAlgo(graph, nodes);
+    dij.dijkstraAlgo_01(graph, nodes);
     
-    // dij.printPath("F");  // A->B->D->C->E->F
-    dij.printPath("E");  // A->B->D->C->E
+    dij.printPath("F");  // A->B->D->C->E->F
+    // dij.printPath("E");  // A->B->D->C->E
     // dij.printPath("D");  // A->B->D
     // dij.printPath("C");  // A->B->D->C
     // dij.printPath("B");  // A->B
