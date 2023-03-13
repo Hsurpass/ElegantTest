@@ -103,7 +103,7 @@ void downAdjust(T *arr, int i, int len)
     if (largest != i) // 递归结束条件
     {
         swap(arr, i, largest);
-        downAdjust<int, reverse>(arr, largest, len);
+        downAdjust<T, reverse>(arr, largest, len);
     }
 }
 
@@ -112,7 +112,7 @@ void buildHeap(T *arr, int n)
 {
     for (int i = (n - 1) / 2; i >= 0; --i)
     {
-        downAdjust<int, reverse>(arr, i, n);
+        downAdjust<T, reverse>(arr, i, n);
     }
 }
 
@@ -121,9 +121,9 @@ void buildHeap(T *arr, int n)
 template<typename T, bool reverse>
 void popHeap(T *arr, int n)
 {
-    swap(arr, 0, n);       // 堆顶元素和最后一个元素交换
-    downAdjust<int, reverse>(arr, 0, n); // 从堆顶开始调整堆
-    // downAdjust_iterate<int, reverse>(arr, 0, n); // 从堆顶开始调整堆
+    swap(arr, 0, n-1);       // 堆顶元素和最后一个元素交换
+    downAdjust<T, reverse>(arr, 0, n-1); // 从堆顶开始调整堆
+    // downAdjust_iterate<T, reverse>(arr, 0, n); // 从堆顶开始调整堆
 }
 
 // 节点上浮
@@ -153,7 +153,7 @@ void upAdjust(T* arr, int child)
 template<typename T, bool reverse>
 void pushHeap(T* arr, int n)
 {
-    upAdjust<int, reverse>(arr, n-1);
+    upAdjust<T, reverse>(arr, n-1);
 }
 
 template<typename T, bool reverse>
@@ -163,12 +163,12 @@ void heapSort(T *arr, int n)
     // 从最后一个非叶子结点开始调整，调整倒数第二个非叶子结点，调整倒数第三个非叶子结点 ... 直到根节点。
     // 一颗含有n个结点的完全二叉树，如果从0开始编号，那么编号**大于**(n-1)/2的结点均没有孩子结点(即叶子结点)，(n-1)/2号结点为最后一个非叶子结点。
     // 建堆的过程其实也是结点下沉的过程。
-    buildHeap<int, reverse>(arr, n);
+    buildHeap<T, reverse>(arr, n);
 
-    for (int i = n - 1; i > 0; i--)
+    for (int i = n; i > 0; i--)
     {
         // 交换堆顶和末尾的节点，再重新调整堆
-        popHeap<int, reverse>(arr, i);
+        popHeap<T, reverse>(arr, i);
     }
 }
 
@@ -185,52 +185,3 @@ void test_heapsort()
     printArr(arr, n);
 }
 
-/*
-    建堆：(n-1)/2 --> (5-1)/2 = 2 -->从2号结点开始调整直到根节点
-    0  1  2  3  4
-    10 20 30 5 15
-            10       buildheap       30     popheap         15              20
-        20      30  ---------->   20    10 --------->    20    10  -->    15   10
-      5   15                     5  15                  5  30            5  30
-
-            20      pushheap     20             99 
-         15    10   ------->   99  10   -->   20   10
-        5  99                 5  15         5  15
-*/
-void test_heap02()
-{
-    int myints[5] = {10, 20, 30, 5, 15};
-    std::vector<int> v(myints, myints + 5);
-    int n = v.size();
-
-    buildHeap<int, false>(&v[0], n); //建堆
-    std::cout << "initial max heap   : " << v.front() << '\n';  // 30
-    printVector(v); // 30 20 10 5 15
-
-    popHeap<int, false>(&v[0], n-1);
-    printVector(v); // 20 15 10 5 30
-    v.pop_back();
-    std::cout << "max heap after pop : " << v.front() << '\n';  // 20
-
-    v.push_back(99);
-    printVector(v); // 20 15 10 5 99
-    pushHeap<int, false>(&v[0], n);
-    printVector(v); // 99 20 10 5 15
-    std::cout << "max heap after push: " << v.front() << '\n';  // 99
-
-    heapSort<int, false>(&v[0], n);     // 5 10 15 20 99
-
-    std::cout << "final sorted range :";
-    for (unsigned i = 0; i < v.size(); i++)
-        std::cout << ' ' << v[i];
-
-    std::cout << '\n';
-}
-
-int main()
-{
-    // test_heapsort();
-    test_heap02();
-
-    return 0;
-}

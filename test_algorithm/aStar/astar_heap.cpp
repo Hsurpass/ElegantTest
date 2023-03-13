@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <set>
 
+#include "../../test_cpp/2STL/stl_containers/2apapterContainer/my_heap_template.h"
 using namespace std;
 
 #define ROW 10
@@ -74,9 +75,8 @@ public:
     Point m_start;
     Point m_end;
     vector<vector<Node *>> m_aStarMap;
-    std::priority_queue<Node, vector<Node>, std::greater<Node>> m_openList; // 小顶堆
+    vector<Node> m_openList;
     vector<Node *> m_path;
-    std::set<int> m_indices;
 };
 
 Astar::~Astar()
@@ -142,7 +142,7 @@ void Astar::initMap(int matrix[ROW][COL])
 
     for (int i = 0; i < ROW; i++)
     {
-        for(int j = 0; j < COL; j++)
+        for (int j = 0; j < COL; j++)
         {
             printf("%d ", m_aStarMap[i][j]->type);
         }
@@ -177,13 +177,28 @@ void Astar::getOneNeighborNode(int x, int y, int g, Node *curr, Node *end)
 
     if (neighborNode->type == NodeType_open)
     {
-        // 如果经过经过当前节点到达邻接点的G值 比 现在的G值小，则更新F和G值，并重新设置父节点 
-        if((curr->g + g) < neighborNode->g)
+        // 如果经过经过当前节点到达邻接点的G值 比 现在的G值小，则更新F和G值，并重新设置父节点
+        if ((curr->g + g) < neighborNode->g)
         {
             neighborNode->g = curr->g + g;
             neighborNode->f = neighborNode->g + neighborNode->h;
             neighborNode->parent = curr;
-        }   
+        }
+
+        // 调整结点(上浮或下沉)
+        int openListCount = m_openList.size();
+        for (int i = 0; i < openListCount; ++i)
+        {
+            if (m_openList[i].p.x == neighborNode->p.x && m_openList[i].p.y == neighborNode->p.y)
+            {
+                m_openList[i].g = curr->g + g;
+                m_openList[i].f = neighborNode->g + neighborNode->h;
+                m_openList[i].parent = curr;
+
+                upAdjust<Node, true>(&m_openList[0], i);
+                downAdjust<Node, true>(&m_openList[0], i, openListCount);
+            }
+        }
     }
     else
     {
@@ -193,8 +208,8 @@ void Astar::getOneNeighborNode(int x, int y, int g, Node *curr, Node *end)
         neighborNode->type = NodeType_open;
         neighborNode->parent = curr;
 
-        m_openList.push(*neighborNode);
-        m_indices.emplace(neighborNode->index);
+        m_openList.emplace_back(*neighborNode);
+        pushHeap<Node, true>(&m_openList[0], m_openList.size());
     }
 }
 
@@ -212,17 +227,17 @@ bool Astar::findPath()
     }
 
     // 1.把起点放到优先队列中
-    m_openList.push(*startNode);
-    m_indices.emplace(startNode->index);
+    m_openList.emplace_back(*startNode);
+    pushHeap<Node, true>(&m_openList[0], m_openList.size());
 
     while (!m_openList.empty()) // openlist 为空说明没找到路径，跳出循环
     {
         // 2.从openlist中选择F值最小的节点，设置为当前节点，并把它放到closelist中
-        const Node &tmpNode = m_openList.top();
+        popHeap<Node, true>(&m_openList[0], m_openList.size());
+        const Node &tmpNode = m_openList.back();
         Node *currNode = m_aStarMap[tmpNode.p.x][tmpNode.p.y];
         currNode->type = NodeType_close;
-        m_openList.pop();
-        m_indices.erase(currNode->index);
+        m_openList.pop_back();
 
         // 找到终点了，跳出循环
         if (currNode->p.x == m_end.x && currNode->p.y == m_end.y)
@@ -258,16 +273,6 @@ bool Astar::findPath()
 
         // 右下
         getOneNeighborNode(currNode->p.x + 1, currNode->p.y + 1, 14, currNode, endNode);
-
-        // 重新调整堆
-        std::priority_queue<Node, vector<Node>, std::greater<Node>> tmpList; // 小顶堆
-        for (auto itr = m_indices.begin(); itr != m_indices.end(); ++itr)
-        {
-            int i = *itr / 10;
-            int j = *itr % 10;
-            tmpList.push(*m_aStarMap[i][j]);
-        }
-        m_openList.swap(tmpList);
     }
 
     cout << "not find path" << endl;
@@ -294,19 +299,18 @@ void Astar::printPath()
 
     for (int i = 0; i < ROW; i++)
     {
-        for(int j = 0; j < COL; j++)
+        for (int j = 0; j < COL; j++)
         {
             printf("%d ", m_aStarMap[i][j]->type);
         }
         cout << endl;
     }
-    
 }
 
 int main()
 {
     int matrix[ROW][COL] = {
-             /*0  1  2  3  4  5  6  7  8  9*/
+        /*0  1  2  3  4  5  6  7  8  9*/
         /*0*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         /*1*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         /*2*/ {0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
@@ -320,9 +324,9 @@ int main()
 
     Astar astar;
     astar.initMap(matrix);
-    astar.setStart({5, 0});
+    // astar.setStart({5, 0});
     // astar.setStart({9, 9});
-    // astar.setStart({3, 1});
+    astar.setStart({3, 1});
     // astar.setEnd({4, 4});
     astar.setEnd({9, 9});
 
