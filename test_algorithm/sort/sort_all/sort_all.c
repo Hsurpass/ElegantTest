@@ -391,5 +391,6 @@ int binarySearch_recursive(int *arr, int low, int high, int find)
             return binarySearch_recursive(arr, mid + 1, high, find);
         }
     }
-    return -1;
+    return low;
+    // return -1;
 }
