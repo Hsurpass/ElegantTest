@@ -5,7 +5,7 @@
 /*
     最好时间复杂度：O(n), 最坏、平均时间复杂度:O(n2). 稳定性:不稳定。
     逻辑：
-        1.相邻数组两两比较。如果大于就交换。
+        1.相邻元素两两比较。如果大于就交换。
         2.外层循环需要循环n-1次。
         3.内层循环需要循环n-1-i次。(每一趟比较完，要减去末尾元素)
         4.直至不能两两比较。
@@ -15,7 +15,7 @@ void bubbleSort(int *arr, int n)
     int flag = 1;
     for (int i = 0; i < n - 1; i++)
     {
-        flag = 1; //冒泡的改进，若在一趟中没有发生逆序，则该序列已有序
+        flag = 1; // 冒泡的改进，若在一趟中没有发生逆序，则该序列已有序
         for (int j = 0; j < n - 1 - i; j++)
         {
             if (arr[j] > arr[j + 1])
@@ -37,7 +37,7 @@ void bubbleSort(int *arr, int n)
     最好时间复杂度：O(n), 最坏、平均时间复杂度:O(n2). 稳定性:稳定。
     实现逻辑:
         将第一个元素作为已排序序列，第2~n个元素作为未排序序列。
-        从未排序序列中每次取一个和排序序列中的元素相比较，如果比要插入的元素大则往后移，知道找到要插入的位置。
+        从未排序序列中每次取第一个元素和排序序列中的元素从后往前比较，如果比要插入的元素大则往后移，直到找到要插入的位置。
 */
 void insertSort(int *arr, int n)
 {
@@ -45,15 +45,15 @@ void insertSort(int *arr, int n)
     for (i = 1; i < n; i++)
     {
         t = arr[i];                                    // 要插入的元素
-        for (j = i; j - 1 >= 0 && arr[j - 1] > t; j--) // 如果前一个元素比要插入元素大，则往后移
+        for (j = i; j - 1 >= 0 && arr[j - 1] > t; j--) // 如果前一个元素比要插入元素大，则往后移，空出插入位置
         {
-            //            if(t < arr[j-1])
-            //            {
+            // if(t < arr[j-1])
+            // {
             arr[j] = arr[j - 1];
-            //            }
-            //            else {
-            //                break;
-            //            }
+            // }
+            // else {
+            //      break;
+            // }
         }
         arr[j] = t; // 插入
     }
@@ -88,6 +88,7 @@ void shellSort(int *arr, int n)
 }
 
 /*
+    无序区选择一个最小值和无序区中的第一个元素交换，然后无序区长度减1，有序区长度增1。
     最好、最坏、平均时间复杂度都为O(n2). 稳定性:不稳定
     实现逻辑:
         第一趟: 在1~n的范围内查找最小元素，和第一个元素(0)交换
@@ -98,20 +99,20 @@ void selectSort(int *arr, int n)
 {
     for (int i = 0; i < n - 1; i++)
     {
-        int k = i;                      // 初始值
+        int min = i;                    // 初始值
         for (int j = i + 1; j < n; j++) // 查找最小值
         {
-            if (arr[j] < arr[k])
+            if (arr[j] < arr[min])
             {
-                k = j;
+                min = j;
             }
         }
 
         if (k != i) // 交换最小值
         {
-            arr[i] ^= arr[k];
-            arr[k] ^= arr[i];
-            arr[i] ^= arr[k];
+            arr[i] ^= arr[min];
+            arr[min] ^= arr[i];
+            arr[i] ^= arr[min];
         }
     }
 }
@@ -119,6 +120,9 @@ void selectSort(int *arr, int n)
 /*
     最好、平均时间复杂度都为O(logn), 最坏为O(n2). 稳定性:不稳定
     最差情况是：每次选基准值都是最小值或者最大值。
+    基准值的选取：
+        1.一般选择数组中的第一个元素，适用于随机序列，对有序序列效果不太理想。
+        2.三数取中：选择数组的第一个、中间一个和最后一个，然后选取数据值居中的那个元素。
     实现逻辑:
         1.先在数组中选中一个基准值。
         2.分组，把小于等于基准值的都放到左边，把大于基准值的都放到右边。
@@ -131,12 +135,13 @@ int partitionIndex(int *arr, int low, int high)
     while (l < h) // 相等的时候把pivot赋值
     {
         // 一定要有l<h这个条件，否则相遇之后还会h--，l++而造成交换元素
-        while (/**/ l < h && /**/ arr[h] >= pivot) //大而移动，小而赋值
+        // 一定要有等号，数据交换完后l、h要前进一步，否则不停的交换元素陷入死循环。
+        while (/**/ l < h && /**/ arr[h] >= pivot) // 大而移动，小而赋值
         {
             h--;
         }
         arr[l] = arr[h];
-        while (/**/ l < h && /**/ arr[l] <= pivot) //小而移动，大而赋值
+        while (/**/ l < h && /**/ arr[l] <= pivot) // 小而移动，大而赋值
         {
             l++;
         }
@@ -290,17 +295,17 @@ void swap(int *arr, int i, int j)
 
 void downAdjust(int *arr, int i, int len)
 {
-    int left = 2 * i + 1;   // 左孩子
-    int right = 2 * i + 2;  // 右孩子
-    int largest = i;    // 要交换的下标
+    int left = 2 * i + 1;  // 左孩子
+    int right = 2 * i + 2; // 右孩子
+    int largest = i;       // 要交换的下标
 
     // 大顶堆：下沉：根节点和左右孩子比较，选择**较大**的那个进行交换。
     // left<len 的作用是防止数组越界，因为2i+1、2i+2的节点有可能超过了数组长度
-    if (left < len && arr[left] > arr[largest]) 
+    if (left < len && arr[left] > arr[largest])
     {
         largest = left;
     }
-    if (right < len && arr[right] > arr[largest])   // 左右孩子都要比较，选较小的那个
+    if (right < len && arr[right] > arr[largest]) // 左右孩子都要比较，选较小的那个
     {
         largest = right;
     }
@@ -312,7 +317,7 @@ void downAdjust(int *arr, int i, int len)
     }
 }
 
-void buildHeap(int* arr, int n)
+void buildHeap(int *arr, int n)
 {
     for (int i = (n - 1) / 2; i >= 0; --i)
     {
@@ -332,7 +337,7 @@ void heapSort(int *arr, int n)
     // 交换堆顶和末尾的节点，再重新构造堆
     for (int i = len - 1; i > 0; i--)
     {
-        swap(arr, 0, i);    // 堆顶元素和最后一个元素交换
+        swap(arr, 0, i); // 堆顶元素和最后一个元素交换
         // --len;
         downAdjust(arr, 0, i); // 从堆顶开始调整堆
     }
@@ -370,7 +375,7 @@ int binarySearch_iteration(int *arr, int low, int high, int find)
 int binarySearch_recursive(int *arr, int low, int high, int find)
 {
     int mid = 0;
-    if (low <= high)    // 递归结束条件
+    if (low <= high) // 递归结束条件
     {
         mid = (low + high) / 2;
         if (arr[mid] == find)

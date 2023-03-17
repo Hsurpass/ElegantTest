@@ -2,6 +2,7 @@
 #include <vector>
 #include <math.h>
 #include <stdio.h>
+#include <unordered_map>
 
 using namespace std;
 
@@ -175,6 +176,82 @@ void printClusters(Point *points, int num_points)
     }
 }
 
+int calClusterCount(Point *points, int size)
+{
+    int clusterCount = 0;
+    vector<int> noise;
+    unordered_multimap<int, int> clusterIndices;
+    for (int i = 0; i < size; i++)
+    {
+        if (points[i].m_clusterID == -1)
+        {
+            noise.emplace_back(i);
+            continue;
+        }
+        clusterIndices.emplace(points[i].m_clusterID, i);
+    }
+
+    cout << "size:" << clusterIndices.size() << endl;
+    cout << "bucketcount:" << clusterIndices.bucket_count() << endl;
+    for (int i = 0; i < clusterIndices.size(); i++)
+    {
+        printf("[%d]count: %ld\n", i, clusterIndices.count(i));
+        if (clusterIndices.count(i) > 0)
+            clusterCount += 1;
+    }
+
+    clusterCount += noise.size();
+    cout << "clusterCount:" << clusterCount << endl;
+
+    return clusterCount;
+}
+
+double calMaxEps(Point *points, int size)
+{
+    double maxEps = 0;
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            double tmp = calDistance(points[i], points[j]);
+            if (tmp > maxEps)
+            {
+                maxEps = tmp;
+            }
+        }
+    }
+    return maxEps;
+}
+
+bool dynamic_adjust_dbscan(int expectedClusterCount, Point *points, int size, double eps, int minPts)
+{
+    int maxAdjustcount = 5;
+    double maxEps = calMaxEps(points, size);
+    double minEps = 0;
+    double currEps = eps;
+
+    dbscan(points, size, currEps, minPts);
+    int clusterCount = calClusterCount(points, size);
+    while (clusterCount != expectedClusterCount && (maxAdjustcount-- > 0))
+    {
+        if (clusterCount < expectedClusterCount) // 如果聚成的簇的个数比期望的少，说明圈画大了，需要减小eps
+        {
+            maxEps = currEps;
+            currEps = (minEps + currEps) / 2;
+        }
+        else if (clusterCount > expectedClusterCount) // 如果聚成的簇的个数比期望的多，说明圈画小了，需要增大eps
+        {
+            minEps = currEps;
+            currEps = (maxEps + currEps) / 2;
+        }
+
+        dbscan(points, size, currEps, minPts);
+        clusterCount = calClusterCount(points, size);
+    }
+
+    return true;
+}
+
 void test_dbscan()
 {
     Point p1(1, 2);
@@ -207,8 +284,12 @@ void test_dbscan()
     points[12] = p13;
 
     dbscan(points, 13, 3, 3);
+    // 动态调整簇的个数，minpts要尽量调的小些，然后不断去调整eps。还是有可能调整不出来想要的簇的个数的。
+    // dynamic_adjust_dbscan(5, points, 13, 3, 1);
 
     printClusters(points, 13);
+
+    calClusterCount(points, 13);
 }
 
 int main()
