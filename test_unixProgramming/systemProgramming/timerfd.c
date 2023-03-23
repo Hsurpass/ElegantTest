@@ -9,11 +9,12 @@
 #include <sys/time.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <errno.h>
 
 /*
 reference:
+    https://blog.csdn.net/yusiguyuan/article/details/22936707
     https://www.jianshu.com/p/cf98f7f55962
-    https://zhuanlan.zhihu.com/p/40572954
     https://zhuanlan.zhihu.com/p/40572954
 
 */
@@ -93,6 +94,9 @@ int test_timerfd_CLOCK_MONOTONIC(struct itimerspec* new_value, int arriveTime)
     return fd;
 }
 
+// ./a.out 第一次到期时间 间隔时间 循环read次数
+// ./a.out 3 1 5
+// it_value被设置了就是周期性定时器
 int main(int argc, char* argv[])
 {
     struct itimerspec new_value;
@@ -113,15 +117,15 @@ int main(int argc, char* argv[])
     }
     else
     {
-        new_value.it_interval.tv_sec = atoi(argv[2]);
+        new_value.it_interval.tv_sec = atoi(argv[2]);   // 间隔时间
         max_exp                      = atoi(argv[3]);
     }
     new_value.it_interval.tv_nsec = 0;
 
-#if 0
+#if 1
     fd = test_timerfd_CLOCK_REALTIME(&new_value, atoi(argv[1]));
 #endif
-#if 1
+#if 0
     fd = test_timerfd_CLOCK_MONOTONIC(&new_value, atoi(argv[1]));
 #endif
     print_elapsed_time();
@@ -130,14 +134,40 @@ int main(int argc, char* argv[])
     for (tot_exp = 0; tot_exp < max_exp;)
     {
         s = read(fd, &exp, sizeof(uint64_t));
+        // print_elapsed_time();
+        // printf("read: %" PRIu64 "; total=%" PRIu64 "\n", exp, tot_exp);
         if (s != sizeof(uint64_t))
             handle_error("read");
 
         tot_exp += exp;
         print_elapsed_time();
         printf("read: %" PRIu64 "; total=%" PRIu64 "\n", exp, tot_exp);
+
+        if (tot_exp == 3)   // 循环3次，停止定时器
+        {
+            memset(&new_value, 0, sizeof(new_value));
+            int r;
+#if 1
+            r = timerfd_settime(fd, TFD_TIMER_ABSTIME, &new_value, NULL);
+#endif
+#if 0     
+            r = timerfd_settime(fd, 0, &new_value, NULL);
+#endif
+            if (r == -1)
+            {    
+                printf("stop timer, r=%d\n", r);
+                perror("timerfd_settime");
+                handle_error("timerfd_settime"); 
+            }
+            else
+            {
+                printf("stop timer, r=%d\n", r);
+                perror("timerfd_settime");
+                handle_error("timerfd_settime"); 
+            }
+        }
     }
 
-    exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS); // 退出当前进程，回收定时器。
 }
 

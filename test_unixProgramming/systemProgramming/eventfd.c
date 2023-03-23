@@ -10,6 +10,7 @@ referenece:
     https://www.jianshu.com/p/f0bd843befbc
     https://www.cnblogs.com/kekukele/p/12531824.html
     https://zhuanlan.zhihu.com/p/393748176
+    https://zhuanlan.zhihu.com/p/424198922
 
 可读可写事件”这是个有趣的问题，我们可以去发散下，对比思考下 socket fd，文件 fd：
     socket fd：可以写入发送数据，那么触发可写事件，网卡数据来了，可以读，触发可读事件；
