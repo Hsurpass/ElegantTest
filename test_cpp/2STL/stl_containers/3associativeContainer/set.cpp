@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
-#include "../../../../basicClass/A.h"
+#include "../../../basicClass/A.h"
 
 using namespace std;
 using namespace placeholders;
@@ -98,7 +98,8 @@ void test_set_insert_pair()
         cout << "x:" << x.first << ", " << x.second << endl;
     }
 
-    PAIRIS aa(4, "aa");
+    // PAIRIS aa(4, "aa");
+    PAIRIS aa(2, "cc");
     auto itr = s.find(aa); // set::find使用operator<比较
     if (itr != s.end())
     {
@@ -375,13 +376,13 @@ int main()
     // test_sizeof_set();
     // test_set_iteratorTraverse();
     // test_set_find_and_stdfind();
-    // test_set_insert_pair();
+    test_set_insert_pair();
     // test_set_insert_pair_lowerBound();
     // test_set_insert_pair_upperBound();
     // test_set_insert_pair_equalRange();
     // test_insert();
     // test_erase();
-    test_erase_the_last_one();
+    // test_erase_the_last_one();
 
     return 0;
 }
