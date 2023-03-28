@@ -6,7 +6,7 @@
 #include <string>
 #include <memory>
 
-#include "../../../../basicClass/A.h"
+#include "../../../basicClass/A.h"
 
 using namespace std;
 
@@ -59,10 +59,11 @@ void test_vector_remove()
     va.emplace_back(5);
     va.emplace_back(6);
     va.emplace_back(2);
-    cout << "size:" << va.size() << ", capacity:" << va.capacity() << endl;
+    cout << "size:" << va.size() << ", capacity:" << va.capacity() << endl; // 8 10
 
     cout << "----------------------" << endl;
     auto itr = std::remove(va.begin(), va.end(), A(2)); // 应该传个临时对象
+    cout << "----------------------" << endl;
     for (auto i = va.begin(); i != itr; ++i)
     {
         cout << i->print() << " ";
@@ -672,6 +673,15 @@ void test_vector_resize()
     cout << "v.size:" << v.size() << endl;          // 3
     cout << "v.capacity: " << v.capacity() << endl; // 12
     cout << "--------------------------" << endl;
+
+    v.resize(12);
+    cout << "v.size:" << v.size() << endl;          // 12
+    cout << "v.capacity: " << v.capacity() << endl; // 12
+
+    cout << "--------------------------" << endl;
+    v.resize(13);
+    cout << "v.size:" << v.size() << endl;          // 13
+    cout << "v.capacity: " << v.capacity() << endl; // 24 翻倍了
 }
 
 // reverse扩充的是容量，不是追加空间，可以多次调用
@@ -910,19 +920,20 @@ void test_vector_init()
     vector<A> v8{A(1), A(2), A(3), A(4), A(5)};    // 调用5次拷贝构造函数
     vector<A> v9 = {A(1), A(2), A(3), A(4), A(5)}; // 调用5次拷贝构造函数
     vector<A> v10({A(1), A(2), A(3), A(4), A(5)}); // 调用5次拷贝构造函数
+    vector<A> v11({1, 2, 3, 4, 5}); // 调用5次拷贝构造函数
 }
 
 int main()
 {
     // test_vector_init();
     // test_vector_init_assign();
-    test_vector_assign();
+    // test_vector_assign();
     // test_vector_swap();
 
     // test_vector_reserve();
     // test_vector_reserve_01();
     // test_reserve02();
-    // test_vector_resize();
+    test_vector_resize();
 
     // test_vector_shrink_to_fit();
     // test_vector_shrink_to_fit01();
@@ -946,7 +957,7 @@ int main()
     // test_push_shared_ptr();
     // test_shared_ptr_save_vector();
     
-    test_vector_remove();
+    // test_vector_remove();
     // test_vector_remove_erase();
 
     return 0;
