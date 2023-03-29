@@ -695,9 +695,10 @@ void test_vector_reserve_01()
     v.reserve(10);
     cout << v.size() << endl;     // 5
     cout << v.capacity() << endl; // 10
-    v.reserve(20);
-    cout << v.size() << endl;     // 5
-    cout << v.capacity() << endl; // 20
+    cout << "-----------------" << endl;
+    // v.reserve(20);
+    // cout << v.size() << endl;     // 5
+    // cout << v.capacity() << endl; // 20
 }
 
 // test reverse
@@ -931,9 +932,9 @@ int main()
     // test_vector_swap();
 
     // test_vector_reserve();
-    // test_vector_reserve_01();
+    test_vector_reserve_01();
     // test_reserve02();
-    test_vector_resize();
+    // test_vector_resize();
 
     // test_vector_shrink_to_fit();
     // test_vector_shrink_to_fit01();
