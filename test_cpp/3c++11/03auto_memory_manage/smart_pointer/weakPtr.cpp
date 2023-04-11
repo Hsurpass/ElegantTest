@@ -171,6 +171,33 @@ void test_weak_ptr_constructor()
 
 }
 
+void test_weak_ptr_weak_count()
+{
+    weak_ptr<A> wpa;
+
+    {
+        shared_ptr<A> spa = make_shared<A>();
+        wpa = spa;  // weak_count=1 use_count=1
+        if(wpa.expired())
+        {
+            cout << "spa is expired" << endl;
+        }
+    }// weak_count=1 use_count=0    // 使用make_shared构造的shared_ptr, 离开作用域时，只是调用析构，但是内存还没被释放。
+    cout << "----------------------" << endl;
+    if(wpa.expired())
+    {
+        cout << "spa is expired" << endl;
+        shared_ptr<A> spa1 = wpa.lock();
+        if (spa1)
+        {
+            cout << "spa1 is true" << endl;
+        }
+        else{
+            cout << "spa1 is null" << endl;
+        }
+    }
+}
+
 int main()
 {
     // test_circular_reference();
@@ -179,7 +206,8 @@ int main()
     // test_weak_ptr_reset();
     // test_weak_ptr_lock();
     // test_weak_ptr_reset_lock_expired();
-    test_weak_ptr_lock_nullptr();
+    // test_weak_ptr_lock_nullptr();
+    test_weak_ptr_weak_count();   
 
     return 0;
 }
