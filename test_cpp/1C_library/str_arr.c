@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 void test_str_pointer_and_arr()
 {
@@ -20,8 +21,48 @@ void test_str_pointer_and_arr()
 
 }
 
+char* func(char* t)
+{
+    char* p = t;
+    return (p + strlen(p)/2);
+}
+
+void test_str_pointer()
+{
+    char* str = " abcdefghi";
+    str = func(str);
+    puts(str);  //efghi
+}
+
+void test_yu()
+{
+    int x = 98765;
+    int count=0;
+    while(x)
+    {
+        x = x&(x-1);
+        ++count;
+    }
+    printf("count:%d, x:%d\n", count, x);   // 8 0
+    
+    int i = 0;
+    printf("i:%d\n", i++);  // 0
+    printf("i:%d\n", i);  // 1
+
+    i = 5;
+    if(i-- < 5)
+    {
+        printf("i:%d\n", i);
+    }
+    else
+    {
+        printf("i:%d\n", i++);  // 4
+    }
+}
+
 int main()
 {
-    test_str_pointer_and_arr();
-
+    // test_str_pointer_and_arr();
+    // test_str_pointer();
+    test_yu();
 }

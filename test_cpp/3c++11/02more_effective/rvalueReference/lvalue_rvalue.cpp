@@ -74,7 +74,7 @@ Copy getObjectNROV()
 
 Copy getObject()
 {
-    return Copy();
+    return Copy();  //RVO
 }
 
 const Copy getConstObject()
@@ -84,7 +84,7 @@ const Copy getConstObject()
 
 Copy getLocalObject()
 {
-    Copy c(11);
+    Copy c(11); //NRVO
     return c;
 }
 
@@ -95,6 +95,12 @@ Copy &&getXvalueObject()
     return Copy();
 }
 
+Copy&& getlvalueObject()
+{
+    Copy c(12);
+    // return c; //左值不能绑定到右值上。error: cannot bind rvalue reference of type ‘Copy&&’ to lvalue of type ‘Copy’
+    return std::move(c);
+}
 
 
 /************************从 const T& 到 &&*****************************/
@@ -173,8 +179,8 @@ void test_rvalue()
     {
         // 1.关闭RVO, 如果只实现了copy constructor, 先把返回值拷贝给临时对象，再把临时对象拷贝给c
         // 2.关闭RVO, 如果实现了move constructor, 则先把返回值移动给临时对象，再把临时对象移动给c
-        // Copy c = getObject();
-        Copy c = getLocalObject();
+        Copy c = getObject();
+        // Copy c = getLocalObject();
         // Copy c = getObjectNROV();
 
         c.dis();                
@@ -182,7 +188,7 @@ void test_rvalue()
     }
 #endif
     cout << "****************************************" << endl;
-#if 1
+#if 0
     {
         // 1.关闭RVO, 对于常量左值引用，如果只实现了copy constructor, 则直接把返回值拷贝给临时对象, c1是临时对象的引用。
         // 2.关闭RVO, 对于常量左值引用，如果实现了move constructor, 则直接把返回值移动给临时对象, c1是临时对象的引用。
@@ -199,7 +205,7 @@ void test_rvalue()
     }
 #endif
     cout << "****************************************" << endl;
-#if 1
+#if 0
     {
         // 关闭RVO，对于右值引用，如果实现了move constructor, 则直接把返回值移动给临时对象, c2是临时对象的右值引用。
         Copy &&c2 = getObject();  
@@ -281,18 +287,27 @@ void test_return_val_move_or_copy()
 
 /**********************************************************/
 
+void return_rvalue_reference()
+{
+    Copy c = getlvalueObject(); // error Segmentation fault
+    // Copy&& c = getlvalueObject();// error Segmentation fault
+    c.dis();
+}
+
 int main()
 {
     // test_lvalue();
     cout << "----------------------" << endl;
-    // test_rvalue();
+    test_rvalue();
     cout << "----------------------" << endl;
     // test_xvalue();
     // test_move_constructor();
 
-    fromConstTRefToRefref();
+    // fromConstTRefToRefref();
 
     // test_return_val_move_or_copy();
+
+    // return_rvalue_reference();
 
     return 0;
 }
