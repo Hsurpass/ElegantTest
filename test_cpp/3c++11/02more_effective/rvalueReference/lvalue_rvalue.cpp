@@ -77,12 +77,18 @@ Copy getObject()
     return Copy();  //RVO
 }
 
-const Copy getConstObject()
+const Copy getObjectConst()
 {
-    return Copy();
+    return Copy();  // RVO
 }
 
 Copy getLocalObject()
+{
+    Copy c(11); //NRVO
+    return c;
+}
+
+const Copy getLocalObjectConst()
 {
     Copy c(11); //NRVO
     return c;
@@ -154,17 +160,17 @@ void test_lvalue()
     cout << "&v1:" << &v1 << endl;
 }
 
-void test_rvalue()
+void test_rvalue01()
 {
     int a = 10;
     int b = 100;
     int &b1 = b;
     int &&a1 = std::move(a);
-    // int& b1 = std::move(b);  // error
+    // int& b1 = std::move(b);  // error 不能把右值绑定到左值上
 
     cout << "a1:" << a1 << endl;    //10
     cout << "a:" << a << endl;      //10
-    cout << "&a1:" << &a1 << endl;  //0x7ffc029ea5a0
+    cout << "&a1:" << &a1 << endl;  //0x7ffc029ea5a0    编译器将已命名的右值引用视为左值
     cout << "&a:" << &a << endl;    //0x7ffc029ea5a0
     a1 = 100;
     cout << "a1:" << a1 << endl;    //100
@@ -174,13 +180,19 @@ void test_rvalue()
 
     cout << "&b:" << &b << endl;    //0x7ffc029ea5a0
     cout << "&b1:" << &b1 << endl;  //0x7ffc029ea5a0
+}
+
+void test_rvalue02(){
     // c++编译器默认是开启RVO的，-fno-elide-constructors关闭RVO
 #if 1
     {
         // 1.关闭RVO, 如果只实现了copy constructor, 先把返回值拷贝给临时对象，再把临时对象拷贝给c
         // 2.关闭RVO, 如果实现了move constructor, 则先把返回值移动给临时对象，再把临时对象移动给c
-        Copy c = getObject();
-        // Copy c = getLocalObject();
+        // Copy c = getObject();   // 开启RVO，只调用依次构造函数，RVO底层原理：直接在接收对象(等号左边)的地址上构造
+        // const Copy c = getObjectConst();// 同上 开启NRVO，只调用依次构造函数.
+        // Copy c = getLocalObject();   // 同上 开启NRVO，只调用依次构造函数.
+        Copy c = std::move(getLocalObjectConst());  // 同上 开启RVO，只调用依次构造函数，
+
         // Copy c = getObjectNROV();
 
         c.dis();                
@@ -298,8 +310,10 @@ int main()
 {
     // test_lvalue();
     cout << "----------------------" << endl;
-    test_rvalue();
+    // test_rvalue01();
     cout << "----------------------" << endl;
+    test_rvalue02();
+
     // test_xvalue();
     // test_move_constructor();
 
