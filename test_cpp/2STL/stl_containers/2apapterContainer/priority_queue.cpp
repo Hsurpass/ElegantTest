@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <functional>
 
@@ -97,6 +98,8 @@ void test_priority_queue_withClass()
     // std::priority_queue<A> pa;   // default:大顶堆
     // std::priority_queue<A, vector<A>, std::less<A>> pa; // 大顶堆
     std::priority_queue<A, vector<A>, std::greater<A>> pa;  // 小顶堆
+    // std::priority_queue<A, list<A>, std::greater<A>> pa;  // 小顶堆  error list不能随机访问，也不能end-start
+
     // std::priority_queue<A, vector<A>, std::greater<vector<A>::value_type> > pa;  // 小顶堆
 
     pa.emplace(10);
@@ -131,8 +134,8 @@ void test_priority_queue()
 int main()
 {
     // test_priority_queue();
-    // test_priority_queue_withClass();
-    test_priority_queue_withClass_functor();
+    test_priority_queue_withClass();
+    // test_priority_queue_withClass_functor();
 
     return 0;
 }
