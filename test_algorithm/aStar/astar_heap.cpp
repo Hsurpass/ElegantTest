@@ -195,6 +195,7 @@ void Astar::getOneNeighborNode(int x, int y, int g, Node *curr, Node *end)
                 m_openList[i].f = neighborNode->g + neighborNode->h;
                 m_openList[i].parent = curr;
 
+                //更改节点value之后，只会发生一种情况，往上调整或者往下调整，即下面两行代码只会有一行有效执行
                 upAdjust<Node, true>(&m_openList[0], i);
                 downAdjust<Node, true>(&m_openList[0], i, openListCount);
             }
