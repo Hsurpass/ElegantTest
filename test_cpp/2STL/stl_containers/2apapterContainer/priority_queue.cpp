@@ -16,7 +16,7 @@ public:
     comp(bool reverse = false) : m_reverse(reverse) {}
     ~comp() {}
 
-    bool operator()(const T& one, const T& other)
+    bool operator()(const T &one, const T &other)
     {
         if (m_reverse)
         {
@@ -79,7 +79,7 @@ void test_priority_queue_withClass_functor()
 
     // std::priority_queue<B, vector<B>, compare> pb;   // 大顶堆
     // std::priority_queue<B, vector<B>, compare> pb(compare(true));   // 小顶堆
-    std::priority_queue<B, vector<B>, comp<B>> pb(comp<B>(true));   // 小顶堆
+    std::priority_queue<B, vector<B>, comp<B>> pb(comp<B>(true)); // 小顶堆
 
     pb.emplace(100);
     pb.emplace(500);
@@ -97,7 +97,7 @@ void test_priority_queue_withClass()
 {
     // std::priority_queue<A> pa;   // default:大顶堆
     // std::priority_queue<A, vector<A>, std::less<A>> pa; // 大顶堆
-    std::priority_queue<A, vector<A>, std::greater<A>> pa;  // 小顶堆
+    std::priority_queue<A, vector<A>, std::greater<A>> pa; // 小顶堆
     // std::priority_queue<A, list<A>, std::greater<A>> pa;  // 小顶堆  error list不能随机访问，也不能end-start
 
     // std::priority_queue<A, vector<A>, std::greater<vector<A>::value_type> > pa;  // 小顶堆
@@ -117,7 +117,7 @@ void test_priority_queue_withClass()
 void test_priority_queue()
 {
     // priority_queue<int> pqi; // 大顶堆
-    priority_queue<int, std::vector<int>, std::greater<int>> pqi;   // 小顶堆
+    priority_queue<int, std::vector<int>, std::greater<int>> pqi; // 小顶堆
     pqi.push(10);
     pqi.push(5);
     pqi.push(100);
@@ -131,11 +131,35 @@ void test_priority_queue()
     cout << endl;
 }
 
+void test_adjust_heap()
+{
+    vector<int> v = {3, 1, 10, 5, 7};
+    priority_queue<int, std::vector<int>, std::greater<int>> pqi(v.begin(), v.end()); // 小顶堆
+    v.push_back(0);
+    make_heap(v.begin(), v.end());
+    v[1] = 2;
+    pqi.push(3);
+
+    while (!pqi.empty())
+    {
+        cout << pqi.top() << " ";
+        pqi.pop();
+    }
+    cout << endl;
+    for(auto &i:v)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
+}
+
 int main()
 {
     // test_priority_queue();
-    test_priority_queue_withClass();
+    // test_priority_queue_withClass();
     // test_priority_queue_withClass_functor();
+
+    test_adjust_heap();
 
     return 0;
 }
