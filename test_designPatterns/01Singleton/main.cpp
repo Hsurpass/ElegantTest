@@ -15,6 +15,8 @@ public:
     }
     static void destroyInstance()
     {
+        /*饿汉式通常是在main函数开始时就初始化了，那它的释放通常不会再线程里释放，
+        而是在main函数结束前释放，没有竞争的关系，所以可以不用加锁。*/
         if(m_ins)
         {   
             delete m_ins;
@@ -27,12 +29,15 @@ public:
     }
 private:
     static EagerSingleton *m_ins;
-    EagerSingleton() {}
-    EagerSingleton(const EagerSingleton &another) {}
-    ~EagerSingleton() {}
+    EagerSingleton(){}
+    ~EagerSingleton(){}
+    EagerSingleton(const EagerSingleton &another);
+    EagerSingleton& operator=(const EagerSingleton &another);
 };
 // 静态成员的初始化程序被认为是类定义的一部分，因此它可以访问私有成员。
 EagerSingleton* EagerSingleton::m_ins = new EagerSingleton();
+
+
 
 // 懒汉式 调用的时候在初始化
 class Singleton
@@ -50,8 +55,9 @@ public:
         }
         return _ins;
     }
-    static void releaseInstance()
+    static void destroyInstance()
     {
+        lock_guard<std::mutex> lock(m_mtx);
         if (_ins != nullptr)
         {
             delete _ins;
@@ -64,14 +70,46 @@ public:
     }
 
 private:
+    // static volatile Singleton *_ins;
     static Singleton *_ins;
+
     Singleton() {}
-    Singleton(const Singleton &another) {}
     ~Singleton() {}
+    Singleton(const Singleton &another);
+    Singleton& operator=(const Singleton &another);
+
     static std::mutex m_mtx;
 };
 Singleton *Singleton::_ins = NULL;
+// volatile Singleton *Singleton::_ins = NULL;
 std::mutex Singleton::m_mtx;
+
+
+// 局部静态变量的懒汉式
+class Singleton_localStatic
+{
+public:
+    static Singleton_localStatic *getInstance()
+    {
+        // 局部静态成员变量的初始化时是线程安全的，只有一个线程能执行初始化，其他线程会在此阻塞。
+        // 全局的就更不用说了，全局变量是在程序一运行就进行初始化了。
+        static Singleton_localStatic instance;
+        return &instance;
+    }
+
+    void run()
+    {
+        cout << "test singleton" << endl;
+    }
+
+private:
+
+    Singleton_localStatic() {}      // 禁止外部构造
+    ~Singleton_localStatic() {}     // 禁止外部析构
+    Singleton_localStatic(const Singleton_localStatic &another);    // 禁止外部复制
+    Singleton_localStatic& operator=(const Singleton_localStatic &another); // 禁止外部赋值
+};
+
 
 void test_lazy_singleton()
 {
@@ -84,6 +122,7 @@ void test_lazy_singleton()
     p1->run();
     p2->run();
 
+    p1->destroyInstance();
     // Singleton a(*p1);
     // Singleton a = *p1;
     // Singleton a;
@@ -96,6 +135,8 @@ void test_eager_singleton()
     assert(p1 == p2);
     p1->run();
     p2->run();
+
+    p1->destroyInstance();
 }
 
 class A 
