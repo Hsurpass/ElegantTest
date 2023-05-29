@@ -42,7 +42,7 @@ void task2()
 #endif
 #if 1
     std::lock(mutex1, mutex2);
-    std::unique_lock<std::mutex> lock1(mutex1, std::adopt_lock);
+    std::lock_guard<std::mutex> lock1(mutex1, std::adopt_lock);
     std::unique_lock<std::mutex> lock2(mutex2, std::adopt_lock);
 #endif
     cout << "task2 lock mutex1 mutex2" << endl;

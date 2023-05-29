@@ -36,10 +36,16 @@ void printThreadId()
 void test_condition_variable01()
 {
     std::vector<std::thread> tg;
-    tg.reserve(5);
-    for (size_t i = 0; i < 5; i++)
+    int N = 1;
+    tg.reserve(N);
+    for (size_t i = 0; i < N; i++)
     {
         tg.emplace_back(printThreadId);
+    }
+
+    for(auto &i:tg)
+    {
+        i.detach(); // cv是全局变量，即使detach后还是能接收到信号的。
     }
 
     this_thread::sleep_for(chrono::seconds(3));
@@ -54,9 +60,15 @@ void test_condition_variable01()
     {
         if (p.joinable())
         {
+            cout << "joinable" << endl;
             p.join();
         }
+        else
+        {
+            cout << "not joinable" << endl;
+        }
     }
+    this_thread::sleep_for(chrono::seconds(2));
 }
 
 void printId()
@@ -116,8 +128,8 @@ void test_condition_variable_spuriousWakeUp()
 
 int main()
 {
-    // test_condition_variable01();
-    test_condition_variable_spuriousWakeUp();
+    test_condition_variable01();
+    // test_condition_variable_spuriousWakeUp();
 
     return 0;
 }

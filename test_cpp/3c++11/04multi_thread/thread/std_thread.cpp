@@ -24,6 +24,7 @@ void threadFunc()
 void test_thread_crash()
 {
     std::thread t(threadFunc);
+    t.detach();
 
     // while (1)
     // {
@@ -52,17 +53,17 @@ int main()
     cout << "main thread id: " << this_thread::get_id() << endl;
 
     // thread对象在线程函数运行期间必须是有效的，否则栈推出的时候会崩溃
-    // test_thread_crash();     // core dump
+    test_thread_crash();     // core dump
 
-    test_thread_get_id();
+    // test_thread_get_id();
 
 
-    
+    this_thread::sleep_for(chrono::seconds(2));
 
-    while (1)
-    {
-        sleep(1);
-    }
+    // while (1)
+    // {
+    //     sleep(1);
+    // }
 
     return 0;
 }
