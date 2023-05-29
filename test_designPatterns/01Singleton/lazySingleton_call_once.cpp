@@ -33,6 +33,7 @@ private:
     static void destroy()
     {
         delete instance;
+        instance = nullptr;
     }
 
     Singleton_callonce() { cout << "Singleton_callonce::Singleton_callonce()" << endl; }      // 禁止外部构造
@@ -55,8 +56,8 @@ void func(int i)
 
     ins->run();
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    Singleton_callonce::destroyInstance();
+    // std::this_thread::sleep_for(std::chrono::seconds(3));
+    // Singleton_callonce::destroyInstance();
 }
 
 void test_lazy_singleton_with_callOnce_multithread()
@@ -73,6 +74,7 @@ void test_lazy_singleton_with_callOnce_multithread()
     {
         i.join();
     }
+    Singleton_callonce::destroyInstance();
     
 }
 
