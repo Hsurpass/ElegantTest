@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include <vector>
 #include "../../../basicClass/A.h"
 
 using namespace std;
@@ -371,18 +372,42 @@ void test_erase_the_last_one()
 
 }
 
+void test_set_vector_vector()
+{
+    vector<int> v1 = {1, 2, 3};
+    vector<int> v2 = {1, 2, 3, 4};
+    vector<int> v3 = {1, 2, 3, 4, 5};
+    vector<int> v4 = {1, 2, 3};
+    vector<int> v5 = {1, 2, 3};
+    vector<vector<int>> v = {v1, v2, v3, v4, v5};
+
+    set<vector<int>> s(v.begin(), v.end());
+    cout << s.size() << endl;
+
+    for (auto &i : s) {
+        for (auto j : i) {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+
+
+}
+
 int main()
 {
     // test_sizeof_set();
     // test_set_iteratorTraverse();
     // test_set_find_and_stdfind();
-    test_set_insert_pair();
+    // test_set_insert_pair();
     // test_set_insert_pair_lowerBound();
     // test_set_insert_pair_upperBound();
     // test_set_insert_pair_equalRange();
     // test_insert();
     // test_erase();
     // test_erase_the_last_one();
+    test_set_vector_vector();
+
 
     return 0;
 }
