@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-
+// clang-format off
 /*
 "..." 表示这个位置可以有多个参数，参数的类型和个数不是固定的。
 va_start： 用来初始化 va_list 参数表
@@ -16,22 +16,21 @@ type 为变量类型，例如 int, double 或 char * 等。类型作为函数的
 va_end: 释放 va_start 初始化参数表占用的资源。在 va_start 之后，当初始化的参数表使用完之后，必须调用 va_end，否则可能会出现程序执行异常。
     void va_end (va_list ap);
 */
-void test_va_list(int n, ...)
-{
+
+// clang-format on
+void test_va_list(int n, ...) {
     va_list vl;
     va_start(vl, n);
-    
-    for (int i = 0; i < n; i++)
-    {
+
+    for (int i = 0; i < n; i++) {
         printf("val:%f\n", va_arg(vl, double));
     }
     va_end(vl);
-    
+
     va_end(vl);
 }
 
-int main()
-{
+int main() {
     test_va_list(4, 2.1, 3.1, 4.1, "abc");
 
     return 0;
