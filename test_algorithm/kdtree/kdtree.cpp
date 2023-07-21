@@ -25,12 +25,14 @@ using namespace std;
 const int k = 2; // K-dimensional
 
 // 定义数据结构Point，即二维坐标点
-struct Point {
+struct Point
+{
     int x[k];
 };
 
 // 定义数据结构Node，即kd-tree的节点
-struct Node {
+struct Node
+{
     Point p;
     Node *left, *right;
 };
@@ -39,24 +41,35 @@ struct Node {
 int depth;
 
 // 以x轴为基准对点进行排序
-bool cmpX(const Point &a, const Point &b) { return a.x[0] < b.x[0]; }
+bool cmpX(const Point& a, const Point& b)
+{
+    return a.x[0] < b.x[0];
+}
 
 // 以y轴为基准对点进行排序
-bool cmpY(const Point &a, const Point &b) { return a.x[1] < b.x[1]; }
+bool cmpY(const Point& a, const Point& b)
+{
+    return a.x[1] < b.x[1];
+}
 
 // 以z轴为基准对点进行排序
-bool cmpZ(const Point &a, const Point &b) { return a.x[2] < b.x[2]; }
+bool cmpZ(const Point& a, const Point& b)
+{
+    return a.x[2] < b.x[2];
+}
 
 // 创建节点
-Node *newNode(Point pt) {
-    Node *node = new Node;
+Node* newNode(Point pt)
+{
+    Node* node = new Node;
     node->p = pt;
     node->left = node->right = nullptr;
     return node;
 }
 
 // 构建kd-tree
-Node *buildKdTree(vector<Point> &points, int start, int end) {
+Node* buildKdTree(vector<Point>& points, int start, int end)
+{
     if (start >= end)
         return nullptr;
 
@@ -65,27 +78,23 @@ Node *buildKdTree(vector<Point> &points, int start, int end) {
 
     // 对当前维度排列
     switch (depth) {
-        // case 0: sort(points.begin() + start, points.begin() + end, cmpX);
-        // break; case 1: sort(points.begin() + start, points.begin() + end,
-        // cmpY); break; case 2: sort(points.begin() + start, points.begin() +
-        // end, cmpZ); break;
+    // case 0: sort(points.begin() + start, points.begin() + end, cmpX); break;
+    // case 1: sort(points.begin() + start, points.begin() + end, cmpY); break;
+    // case 2: sort(points.begin() + start, points.begin() + end, cmpZ); break;
 
     case 0:
-        std::nth_element(points.begin() + start, points.begin() + mid,
-                         points.begin() + end, cmpX);
+        std::nth_element(points.begin() + start, points.begin() + mid, points.begin() + end, cmpX);
         break;
     case 1:
-        std::nth_element(points.begin() + start, points.begin() + mid,
-                         points.begin() + end, cmpY);
+        std::nth_element(points.begin() + start, points.begin() + mid, points.begin() + end, cmpY);
         break;
     case 2:
-        std::nth_element(points.begin() + start, points.begin() + mid,
-                         points.begin() + end, cmpZ);
+        std::nth_element(points.begin() + start, points.begin() + mid, points.begin() + end, cmpZ);
         break;
     }
 
     // 创建新节点
-    Node *node = newNode(points[mid]);
+    Node* node = newNode(points[mid]);
 
     // 递归处理左右子树
     depth = (depth + 1) % k; // 循环切换维度
@@ -96,7 +105,8 @@ Node *buildKdTree(vector<Point> &points, int start, int end) {
 }
 
 // 计算两点距离的平方
-int distSquare(Point p1, Point p2) {
+int distSquare(Point p1, Point p2)
+{
     int d = 0;
     for (int i = 0; i < k; i++) {
         int diff = p1.x[i] - p2.x[i];
@@ -107,7 +117,8 @@ int distSquare(Point p1, Point p2) {
 
 // 搜索kd-tree的nearest neighbor
 // pt: 查询点，root: kd-tree根节点，best: 当前最近点，d: 当前最近距离的平方
-void nearestNeighborSearch(Node *root, Point pt, Point &best, int &d) {
+void nearestNeighborSearch(Node* root, Point pt, Point& best, int& d)
+{
     if (root == nullptr)
         return;
 
@@ -125,24 +136,21 @@ void nearestNeighborSearch(Node *root, Point pt, Point &best, int &d) {
     switch (depth) {
     case 0:
         dl = (root->left != nullptr) ? (root->left->p.x[0] - pt.x[0]) : INT_MAX;
-        dr = (root->right != nullptr) ? (root->right->p.x[0] - pt.x[0])
-                                      : INT_MAX;
+        dr = (root->right != nullptr) ? (root->right->p.x[0] - pt.x[0]) : INT_MAX;
         break;
     case 1:
         dl = (root->left != nullptr) ? (root->left->p.x[1] - pt.x[1]) : INT_MAX;
-        dr = (root->right != nullptr) ? (root->right->p.x[1] - pt.x[1])
-                                      : INT_MAX;
+        dr = (root->right != nullptr) ? (root->right->p.x[1] - pt.x[1]) : INT_MAX;
         break;
     case 2:
         dl = (root->left != nullptr) ? (root->left->p.x[2] - pt.x[2]) : INT_MAX;
-        dr = (root->right != nullptr) ? (root->right->p.x[2] - pt.x[2])
-                                      : INT_MAX;
+        dr = (root->right != nullptr) ? (root->right->p.x[2] - pt.x[2]) : INT_MAX;
         break;
     }
 
     // 递归搜索子树
-    Node *first = (dl < dr) ? root->left : root->right;
-    Node *second = (dl < dr) ? root->right : root->left;
+    Node* first = (dl < dr) ? root->left : root->right;
+    Node* second = (dl < dr) ? root->right : root->left;
     nearestNeighborSearch(first, pt, best, d);
 
     // 如果第二个子树可能存在更近的点，再递归搜索它
@@ -151,7 +159,8 @@ void nearestNeighborSearch(Node *root, Point pt, Point &best, int &d) {
     }
 }
 
-void inorder_traversal(Node *root) {
+void inorder_traversal(Node* root)
+{
     if (!root)
         return;
 
@@ -164,11 +173,12 @@ void inorder_traversal(Node *root) {
     inorder_traversal(root->right);
 }
 
-int main() {
+int main()
+{
     // 构建kd-tree
     // vector<Point> points = {{-1, 2}, {1, 1}, {4, 2}, {2, 3}, {3, 5}};
     vector<Point> points = {{2, 3}, {4, 7}, {5, 4}, {7, 2}, {8, 1}, {9, 6}};
-    Node *root = buildKdTree(points, 0, points.size());
+    Node* root = buildKdTree(points, 0, points.size());
     inorder_traversal(root);
 
     // 搜索最近点
@@ -177,8 +187,7 @@ int main() {
     int distance = INT_MAX;
     depth = 0;
     nearestNeighborSearch(root, query, nearest, distance);
-    cout << "The nearest neighbor to query point is: (" << nearest.x[0] << ","
-         << nearest.x[1] << ")" << endl;
+    cout << "The nearest neighbor to query point is: (" << nearest.x[0] << "," << nearest.x[1] << ")" << endl;
 
     // 释放内存
     delete root;
