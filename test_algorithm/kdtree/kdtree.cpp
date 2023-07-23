@@ -22,7 +22,9 @@ kd-tree一般用于多维空间关键数据的搜索和最近邻的查询。
 using namespace std;
 
 #define INT_MAX std::numeric_limits<int>::max()
-const int k = 2; // K-dimensional
+const int k = 1; // K-dimensional
+// const int k = 2; // K-dimensional
+// const int k = 3; // K-dimensional
 
 // 定义数据结构Point，即二维坐标点
 struct Point
@@ -159,6 +161,20 @@ void nearestNeighborSearch(Node* root, Point pt, Point& best, int& d)
     }
 }
 
+void preorder_traversal(Node* root)
+{
+    if (!root)
+        return;
+
+    cout << "(";
+    for (int i = 0; i < k; i++) {
+        cout << root->p.x[i] << ",";
+    }
+    cout << ")";
+    preorder_traversal(root->left);
+    preorder_traversal(root->right);
+}
+
 void inorder_traversal(Node* root)
 {
     if (!root)
@@ -169,11 +185,30 @@ void inorder_traversal(Node* root)
     for (int i = 0; i < k; i++) {
         cout << root->p.x[i] << ",";
     }
-    cout << ")" << endl;
+    cout << ")";
     inorder_traversal(root->right);
 }
 
-int main()
+/*
+    1 2 3 4 5 6 8
+                4
+            2       6 
+          1   3    5  8  
+*/
+void test_one_dimensional_kd_tree()
+{
+    // 构建kd-tree
+    vector<Point> points = {{1}, {3}, {5}, {2}, {4}, {6}, {8}};
+    Node* root = buildKdTree(points, 0, points.size());
+    preorder_traversal(root);   // 4 2 1 3 6 5 8
+    putchar(10);
+    cout << "-----------------------------------" << endl;
+    inorder_traversal(root);    // 1 2 3 4 5 6 8
+    putchar(10);
+}
+
+#if 0
+void test_two_dimensional_kd_tree()
 {
     // 构建kd-tree
     // vector<Point> points = {{-1, 2}, {1, 1}, {4, 2}, {2, 3}, {3, 5}};
@@ -191,5 +226,14 @@ int main()
 
     // 释放内存
     delete root;
+}
+#endif
+
+int main()
+{
+    test_one_dimensional_kd_tree();
+    // test_two_dimensional_kd_tree();
+    // test_three_dimensional_kd_tree();
+
     return 0;
 }
