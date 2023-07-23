@@ -7,7 +7,7 @@ typedef struct AvlTreeNode
     AvlTreeNode* left;
     AvlTreeNode* right;
     int height;
-}AvlTreeNode;
+} AvlTreeNode;
 
 AvlTreeNode* createNewNode(int data)
 {
@@ -22,8 +22,7 @@ AvlTreeNode* createNewNode(int data)
 
 void destroyAVLTree(AvlTreeNode* root)
 {
-    if(root)
-    {
+    if (root) {
         destroyAVLTree(root->left);
         destroyAVLTree(root->right);
         free(root);
@@ -32,12 +31,12 @@ void destroyAVLTree(AvlTreeNode* root)
 
 int avlTreeHeight(AvlTreeNode* root)
 {
-    if(!root)
+    if (!root)
         return 0;
 
     int leftHeight = avlTreeHeight(root->left);
     int rightHeight = avlTreeHeight(root->right);
-    
+
     return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
 }
 
@@ -51,7 +50,6 @@ int getBalanceFactor(AvlTreeNode* root)
 
     return leftH - rightH;
 }
-
 
 /*
     插入元素放在左子树的左节点(LL), 右旋
@@ -170,39 +168,32 @@ AvlTreeNode* leftRightRotation(AvlTreeNode* root)
 */
 AvlTreeNode* insertAvlTreeNode_recursive(AvlTreeNode* root, int newVal)
 {
-    if(root == NULL)
-    {
+    if (root == NULL) {
         return createNewNode(newVal);
     }
-    else if(newVal < root->data)
-    {
+    else if (newVal < root->data) {
         root->left = insertAvlTreeNode_recursive(root->left, newVal);
-        
-        if (getBalanceFactor(root) == 2 )
-        {
+
+        if (getBalanceFactor(root) == 2) {
             if (newVal < root->left->data)  // LL 左子树左节点 右旋
             {
                 root = rightRotation(root);
             }
-            else if(newVal > root->left->data)  // LR 左子树右节点 左右旋
+            else if (newVal > root->left->data)  // LR 左子树右节点 左右旋
             {
                 root = leftRightRotation(root);
             }
-            
         }
-        
     }
-    else
-    {
+    else {
         root->right = insertAvlTreeNode_recursive(root->right, newVal);
 
-        if (getBalanceFactor(root) == -2 )
-        {
+        if (getBalanceFactor(root) == -2) {
             if (newVal < root->right->data)  // RL 右子树左节点 右左旋
             {
                 root = rightLeftRotation(root);
             }
-            else if(newVal > root->right->data)  // RR 右子树右节点 左旋
+            else if (newVal > root->right->data)  // RR 右子树右节点 左旋
             {
                 root = leftRotation(root);
             }
@@ -218,9 +209,8 @@ AvlTreeNode* getMinNodeOfRightTree(AvlTreeNode* root)
 {
     if (!root)
         return root;
-    
-    while (root->left)
-    {
+
+    while (root->left) {
         root = root->left;
     }
     return root;
@@ -236,25 +226,22 @@ AvlTreeNode* getMinNodeOfRightTree(AvlTreeNode* root)
 */
 AvlTreeNode* deleteNodeOfAvlTree_revursive(AvlTreeNode* root, int key)
 {
-    if(!root)
+    if (!root)
         return root;
-    
-    if(key < root->data)
-    {
+
+    if (key < root->data) {
         root->left = deleteNodeOfAvlTree_revursive(root->left, key);
     }
-    else if(key > root->data)
-    {
+    else if (key > root->data) {
         root->right = deleteNodeOfAvlTree_revursive(root->right, key);
     }
-    else
-    {
+    else {
         if (root->left == NULL) // 只有一个节点或者无节点
         {
             AvlTreeNode* rightNode = root->right;
             return rightNode;
         }
-        else if(root->right == NULL)    // 只有一个节点或者无节点
+        else if (root->right == NULL)    // 只有一个节点或者无节点
         {
             AvlTreeNode* leftNode = root->left;
             return leftNode;
@@ -270,58 +257,51 @@ AvlTreeNode* deleteNodeOfAvlTree_revursive(AvlTreeNode* root, int key)
     root->height = avlTreeHeight(root); // 更新当前节点的树的高度
     int balanceFactor = getBalanceFactor(root);
 
-    if(balanceFactor == 2)  // 左子树比右子树高
+    if (balanceFactor == 2)  // 左子树比右子树高
     {
-        if (getBalanceFactor(root->left) >= 0 )   // root的左子树的的根节点的左子树插入元素导致失衡
+        if (getBalanceFactor(root->left) >= 0) // root的左子树的的根节点的左子树插入元素导致失衡
         {
             return rightRotation(root);
         }
-        else if (getBalanceFactor(root->left) < 0)
-        {
+        else if (getBalanceFactor(root->left) < 0) {
             return leftRightRotation(root);
         }
     }
-    else if (balanceFactor == -2)   // 右子树比左子树高
+    else if (balanceFactor == -2) // 右子树比左子树高
     {
-         if (getBalanceFactor(root->right) > 0 )   // root的左子树的的根节点的左子树插入元素导致失衡
+        if (getBalanceFactor(root->right) > 0) // root的左子树的的根节点的左子树插入元素导致失衡
         {
             return rightLeftRotation(root);
         }
-        else if (getBalanceFactor(root->left) <= 0)
-        {
+        else if (getBalanceFactor(root->left) <= 0) {
             return leftRotation(root);
         }
     }
-    
-    
+
     return root;
 }
 
-void preOrderTraverseAvl(AvlTreeNode *root)
+void preOrderTraverseAvl(AvlTreeNode* root)
 {
-    if (root)
-    {
+    if (root) {
         printf("%d ", root->data);
         preOrderTraverseAvl(root->left);
         preOrderTraverseAvl(root->right);
     }
-
 }
 
-void inOrderTraverseAvl(AvlTreeNode *root)
+void inOrderTraverseAvl(AvlTreeNode* root)
 {
-    if (root)
-    {
+    if (root) {
         inOrderTraverseAvl(root->left);
         printf("%d ", root->data);
         inOrderTraverseAvl(root->right);
     }
 }
 
-void postOrderTraverseAvl(AvlTreeNode *root)
+void postOrderTraverseAvl(AvlTreeNode* root)
 {
-    if (root)
-    {
+    if (root) {
         postOrderTraverseAvl(root->left);
         postOrderTraverseAvl(root->right);
         printf("%d ", root->data);
@@ -335,15 +315,15 @@ void deleteAvlNodeLL()
     root = insertAvlTreeNode_recursive(root, 20);
     root = insertAvlTreeNode_recursive(root, 30);
     root = insertAvlTreeNode_recursive(root, 8);
-    preOrderTraverseAvl(root);  // 20 10 8 30
+    preOrderTraverseAvl(root); // 20 10 8 30
     putchar(10);
-    inOrderTraverseAvl(root);   // 8 10 20 30
+    inOrderTraverseAvl(root); // 8 10 20 30
     putchar(10);
 
     root = deleteNodeOfAvlTree_revursive(root, 30);
-    preOrderTraverseAvl(root);  // 10 8 20
+    preOrderTraverseAvl(root); // 10 8 20
     putchar(10);
-    inOrderTraverseAvl(root);   // 8 10 20
+    inOrderTraverseAvl(root); // 8 10 20
     putchar(10);
 
     destroyAVLTree(root);
@@ -357,15 +337,15 @@ void deleteAvlNodeLR()
     root = insertAvlTreeNode_recursive(root, 8);
     root = insertAvlTreeNode_recursive(root, 30);
     root = insertAvlTreeNode_recursive(root, 15);
-    preOrderTraverseAvl(root);  // 20 10 8 15 30
+    preOrderTraverseAvl(root); // 20 10 8 15 30
     putchar(10);
-    inOrderTraverseAvl(root);   // 8 10 15 20 30
+    inOrderTraverseAvl(root); // 8 10 15 20 30
     putchar(10);
 
     root = deleteNodeOfAvlTree_revursive(root, 30);
-    preOrderTraverseAvl(root);  // 10 8 20 15
+    preOrderTraverseAvl(root); // 10 8 20 15
     putchar(10);
-    inOrderTraverseAvl(root);   // 8 10 15 20
+    inOrderTraverseAvl(root); // 8 10 15 20
     putchar(10);
 
     destroyAVLTree(root);
@@ -379,15 +359,15 @@ void deleteAvlNodeRR()
     root = insertAvlTreeNode_recursive(root, 30);
     root = insertAvlTreeNode_recursive(root, 25);
     root = insertAvlTreeNode_recursive(root, 40);
-    preOrderTraverseAvl(root);  // 20 10 30 25 40
+    preOrderTraverseAvl(root); // 20 10 30 25 40
     putchar(10);
-    inOrderTraverseAvl(root);   // 10 20 25 30 40
+    inOrderTraverseAvl(root); // 10 20 25 30 40
     putchar(10);
 
     root = deleteNodeOfAvlTree_revursive(root, 10);
-    preOrderTraverseAvl(root);  // 30 20 25 40
+    preOrderTraverseAvl(root); // 30 20 25 40
     putchar(10);
-    inOrderTraverseAvl(root);   // 20 25 30 40
+    inOrderTraverseAvl(root); // 20 25 30 40
     putchar(10);
 
     destroyAVLTree(root);
@@ -400,20 +380,19 @@ void deleteAvlNodeRL()
     root = insertAvlTreeNode_recursive(root, 10);
     root = insertAvlTreeNode_recursive(root, 30);
     root = insertAvlTreeNode_recursive(root, 25);
-    preOrderTraverseAvl(root);  // 20 10 30 25
+    preOrderTraverseAvl(root); // 20 10 30 25
     putchar(10);
-    inOrderTraverseAvl(root);   // 10 20 25 30
+    inOrderTraverseAvl(root); // 10 20 25 30
     putchar(10);
 
     root = deleteNodeOfAvlTree_revursive(root, 10);
-    preOrderTraverseAvl(root);  // 25 20 30
+    preOrderTraverseAvl(root); // 25 20 30
     putchar(10);
-    inOrderTraverseAvl(root);   // 20 25 30
+    inOrderTraverseAvl(root); // 20 25 30
     putchar(10);
 
     destroyAVLTree(root);
 }
-
 
 /*
     1.root就是最小不平衡子树的根节点  2.注意是右子树不是右节点
@@ -431,7 +410,7 @@ void deleteAvlNodeRL()
                                                                                                                          /                                        \       
                                                                                                                         35                                        60        
 */
-int main()
+void test_avl_tree1()
 {
     AvlTreeNode* root = NULL;
     root = insertAvlTreeNode_recursive(root, 10);
@@ -447,9 +426,9 @@ int main()
     root = insertAvlTreeNode_recursive(root, 40);
     root = insertAvlTreeNode_recursive(root, 35);
 
-    preOrderTraverseAvl(root);  // 10 8 6 9 40 30 20 35 50 60
+    preOrderTraverseAvl(root); // 10 8 6 9 40 30 20 35 50 60
     putchar(10);
-    inOrderTraverseAvl(root);   // 6 8 9 10 20 30 35 40 50 60
+    inOrderTraverseAvl(root); // 6 8 9 10 20 30 35 40 50 60
     putchar(10);
     postOrderTraverseAvl(root); // 6 9 8 20 35 30 60 50 40 10
     putchar(10);
@@ -458,17 +437,40 @@ int main()
     root = deleteNodeOfAvlTree_revursive(root, 35);
     root = deleteNodeOfAvlTree_revursive(root, 30);
 
-    preOrderTraverseAvl(root);  // 10 8 6 9 50 40 60
+    preOrderTraverseAvl(root); // 10 8 6 9 50 40 60
     putchar(10);
-    inOrderTraverseAvl(root);   // 6 8 9 10 40 50 60
+    inOrderTraverseAvl(root); // 6 8 9 10 40 50 60
     putchar(10);
 
     // deleteAvlNodeLL();
     // deleteAvlNodeLR();
     // deleteAvlNodeRR();
     deleteAvlNodeRL();
-    
+
     destroyAVLTree(root);
-    return 0;
 }
 
+void test_avl_tree2()
+{
+    AvlTreeNode* root = NULL;
+    root = insertAvlTreeNode_recursive(root, 1);
+    root = insertAvlTreeNode_recursive(root, 3);
+    root = insertAvlTreeNode_recursive(root, 5);
+    root = insertAvlTreeNode_recursive(root, 2);
+    root = insertAvlTreeNode_recursive(root, 4);
+    root = insertAvlTreeNode_recursive(root, 6);
+    root = insertAvlTreeNode_recursive(root, 8);
+
+    preOrderTraverseAvl(root); // 3 1 2 5 4 6 8 
+    putchar(10);
+    inOrderTraverseAvl(root);  // 1 2 3 4 5 6 8 
+    putchar(10);
+}
+
+int main()
+{
+    // test_avl_tree1();
+    test_avl_tree2();
+
+    return 0;
+}
