@@ -17,15 +17,19 @@ kd-tree一般用于多维空间关键数据的搜索和最近邻的查询。
 #include <algorithm>
 #include <iostream>
 #include <limits>
+#include <utility>
 #include <vector>
+#include <map>
+#include <unordered_map>
+#include <math.h>
 
 using namespace std;
 
 #define INT_MAX std::numeric_limits<int>::max()
 #define FLOAT_MAX std::numeric_limits<float>::max()
 
-const int k = 1; // K-dimensional
-// const int k = 2; // K-dimensional
+// const int k = 1; // K-dimensional
+const int k = 2; // K-dimensional
 // const int k = 3; // K-dimensional
 
 // 定义数据结构Point，即二维坐标点
@@ -119,7 +123,12 @@ float distSquare(Point p1, Point p2)
     return d;
 }
 
-// 搜索kd-tree的nearest neighbor
+// 存储N个最近的点
+vector<Point> nearPoints;
+// map<float, Point> nearPts;
+vector<std::pair<float, Point>> nearPts;
+
+ // 搜索kd-tree的nearest neighbor
 // pt: 查询点，root: kd-tree根节点，best: 当前最近点，d: 当前最近距离的平方
 void nearestNeighborSearch(Node* root, Point pt, Point& best, float& bestDis)
 {
@@ -128,11 +137,13 @@ void nearestNeighborSearch(Node* root, Point pt, Point& best, float& bestDis)
 
     // 计算当前节点到查询点的距离
     float ds = distSquare(root->p, pt);
-
+    nearPts.emplace_back(ds, root->p);
     // 如果当前节点更近，更新最近点和距离
     if (ds < bestDis) {
         bestDis = ds;
         best = root->p;
+
+        nearPoints.emplace_back(best);
     }
 
     // 计算当前节点分割平面与查询点的距离
@@ -154,6 +165,8 @@ void nearestNeighborSearch(Node* root, Point pt, Point& best, float& bestDis)
 
     depth = (depth + 1) % k; // 循环切换维度
 
+    dl = fabs(dl);
+    dr = fabs(dr);
     // 递归搜索子树
     Node* first = (dl < dr) ? root->left : root->right;
     Node* second = (dl < dr) ? root->right : root->left;
@@ -200,6 +213,7 @@ void inorder_traversal(Node* root)
             2       6 
           1   3    5  8  
 */
+#if 0
 void test_one_dimensional_kd_tree()
 {
     // 构建kd-tree
@@ -214,19 +228,36 @@ void test_one_dimensional_kd_tree()
     // 搜索最近点
     // Point query = {7.5};
     // Point query = {6.5};
-    // Point query = {5.5};
-    Point query = {4.5};
+    Point query = {5.5};
+    // Point query = {4.5};
 
     Point nearest = root->p;
     float distance = std::numeric_limits<float>::max();
     depth = 0;
     nearestNeighborSearch(root, query, nearest, distance);
     cout << "The nearest neighbor to query point is: (" << nearest.x[0] << ")" << endl;
+    for (auto& point : nearPoints) {
+        for (int i = 0; i < k; i++) {
+            cout << "(" << point.x[i] << ",";
+        }
+        cout << ")";
+    }
+    cout << endl;
+
+    for (auto& pt : nearPts) {
+        cout << "dis:" << pt.first << "; ";
+        for (int i = 0; i < k; i++) {
+            cout << "(" << pt.second.x[i] << ",";
+        }
+        cout << ")" << endl;
+    }
+    cout << endl;
 
     delete root;
 }
+#endif
 
-#if 0
+#if 1
 void test_two_dimensional_kd_tree()
 {
     // 构建kd-tree
@@ -234,14 +265,27 @@ void test_two_dimensional_kd_tree()
     vector<Point> points = {{2, 3}, {4, 7}, {5, 4}, {7, 2}, {8, 1}, {9, 6}};
     Node* root = buildKdTree(points, 0, points.size());
     inorder_traversal(root);
+    putchar(10);
 
     // 搜索最近点
-    Point query = {2, 2};
+    // Point query = {2, 2};
+    // Point query = {4.1, 4.1};
+    // Point query = {2.1, 3.1};
+    Point query = {2, 4.5};
+
     Point nearest = root->p;
-    int distance = FLOAT_MAX;
+    float distance = FLOAT_MAX;
     depth = 0;
     nearestNeighborSearch(root, query, nearest, distance);
     cout << "The nearest neighbor to query point is: (" << nearest.x[0] << "," << nearest.x[1] << ")" << endl;
+
+    for (auto& pt : nearPts) {
+        cout << "dis:" << pt.first << "; (";
+        for (int i = 0; i < k; i++) {
+            cout << pt.second.x[i] << ",";
+        }
+        cout << ")" << endl;
+    }
 
     // 释放内存
     delete root;
@@ -250,8 +294,8 @@ void test_two_dimensional_kd_tree()
 
 int main()
 {
-    test_one_dimensional_kd_tree();
-    // test_two_dimensional_kd_tree();
+    // test_one_dimensional_kd_tree();
+    test_two_dimensional_kd_tree();
     // test_three_dimensional_kd_tree();
 
     return 0;
