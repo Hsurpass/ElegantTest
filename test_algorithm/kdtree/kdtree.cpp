@@ -264,7 +264,7 @@ void test_two_dimensional_kd_tree()
     // vector<Point> points = {{-1, 2}, {1, 1}, {4, 2}, {2, 3}, {3, 5}};
     vector<Point> points = {{2, 3}, {4, 7}, {5, 4}, {7, 2}, {8, 1}, {9, 6}};
     Node* root = buildKdTree(points, 0, points.size());
-    inorder_traversal(root);
+    inorder_traversal(root);    // (2,3), (5,4), (4,7), (7,2), (8,1), (9,6)
     putchar(10);
 
     // 搜索最近点
