@@ -1,3 +1,4 @@
+#include <cmath>
 #include <initializer_list>
 #include <iostream>
 #include <array>
@@ -7,6 +8,8 @@
 #include <limits>
 
 using namespace std;
+
+#define FLOAT_MAX std::numeric_limits<float>::max()
 
 #if 0
 class Point : public std::array<float, 2>
@@ -30,8 +33,8 @@ public:
     {}
     Point(initializer_list<float> pts) : vector(pts)
     {}
-    static const int DIM = 2;
-    // static const int DIM = 1;
+    // static const int DIM = 2;
+    static const int DIM = 1;
     // int idx;
 };
 #endif
@@ -159,6 +162,38 @@ public:
         return root_;
     }
 
+    float Distance(const PointType& pt1, const PointType& pt2) const
+    {
+        float dis = 0;
+        for (int i = 0; i < PointType::DIM; i++) {
+            dis += (pt1[i] - pt2[i]) * (pt1[i] - pt2[i]);
+        }
+        return sqrt(dis);
+    }
+
+    void NNSearch_Recursive(const PointType& query, const Node* root, int& nearest, float& min_dis) const
+    {
+        if (root == nullptr)
+            return;
+
+        const PointType& splitNode = points_[root->idx];
+        float dis = Distance(query, splitNode);
+        if (dis < min_dis) {
+            min_dis = dis;
+            nearest = root->idx;
+        }
+
+        int axis = root->axis;
+        int dir = query[axis] < splitNode[axis] ? 0 : 1;
+        NNSearch_Recursive(query, root->next[dir], nearest, min_dis);
+
+        // 回溯搜索右子树是否有更近的节点
+        float diff = fabs(query[axis] - splitNode[axis]);
+        if (diff < min_dis) {
+            NNSearch_Recursive(query, root->next[!dir], nearest, min_dis);
+        }
+    }
+
     void preorder_traversal(Node* root);
     void inorder_traversal(Node* root);
 };
@@ -199,7 +234,7 @@ void KDTree<PointType>::inorder_traversal(Node* root)
             2       6 
           1   3    5  8  
 */
-#if 0
+#if 1
 void test_one_dimensional_kd_tree()
 {
     // 构建kd-tree
@@ -215,14 +250,14 @@ void test_one_dimensional_kd_tree()
     // 搜索最近点
     // Point query = {7.5};
     // Point query = {6.5};
-    Point query = {5.5};
-    // Point query = {4.5};
+    // Point query = {5.5};
+    Point query = {4.5};
 
-    // Point nearest = root->p;
-    // float distance = std::numeric_limits<float>::max();
-    // depth = 0;
-    // nearestNeighborSearch(root, query, nearest, distance);
-    // cout << "The nearest neighbor to query point is: (" << nearest.x[0] << ")" << endl;
+    int nearest;
+    float distance = std::numeric_limits<float>::max();
+    kdtree.NNSearch_Recursive(query, root, nearest, distance);
+    cout << "The nearest neighbor to query point is idx:" << nearest << "(" << kdtree.points_[nearest][0] << ")"
+         << endl;
     // for (auto& point : nearPoints) {
     //     for (int i = 0; i < k; i++) {
     //         cout << "(" << point.x[i] << ",";
@@ -244,7 +279,7 @@ void test_one_dimensional_kd_tree()
 }
 #endif
 
-#if 1
+#if 0
 void test_two_dimensional_kd_tree()
 {
     // 构建kd-tree
@@ -276,14 +311,14 @@ void test_two_dimensional_kd_tree()
     // 搜索最近点
     // Point query = {2, 2};
     // Point query = {4.1, 4.1};
-    // Point query = {2.1, 3.1};
+    Point query = {2.1, 3.1};
     // Point query = {2, 4.5};
 
-    // Point nearest;
-    // float distance = FLOAT_MAX;
-    // depth = 0;
-    // nearestNeighborSearch(root, query, nearest, distance);
-    // cout << "The nearest neighbor to query point is: (" << nearest.x[0] << "," << nearest.x[1] << ")" << endl;
+    int nearest;
+    float distance = FLOAT_MAX;
+    kdtree.NNSearch_Recursive(query, root, nearest, distance);
+    cout << "The nearest neighbor to query point is idx:" << nearest << " (" << kdtree.points_[nearest][0] << ","
+         << kdtree.points_[nearest][1] << ")" << endl;
 
     // for (auto& pt : nearPts) {
     //     cout << "dis:" << pt.first << "; (";
@@ -294,7 +329,7 @@ void test_two_dimensional_kd_tree()
     // }
 
     // 释放内存
-    // kdtree.Clear();
+    kdtree.Clear();
 }
 #endif
 
@@ -308,7 +343,7 @@ int main()
     // }
     // cout << endl;
 
-    // test_one_dimensional_kd_tree();
-    test_two_dimensional_kd_tree();
+    test_one_dimensional_kd_tree();
+    // test_two_dimensional_kd_tree();
     return 0;
 }

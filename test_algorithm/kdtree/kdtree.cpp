@@ -277,7 +277,7 @@ void test_two_dimensional_kd_tree()
     float distance = FLOAT_MAX;
     depth = 0;
     nearestNeighborSearch(root, query, nearest, distance);
-    cout << "The nearest neighbor to query point is: (" << nearest.x[0] << "," << nearest.x[1] << ")" << endl;
+    cout << "The nearest neighbor to query point is: (" << nearest.x[0] << "," << nearest.x[1] << ")" << endl; // (2,3)
 
     for (auto& pt : nearPts) {
         cout << "dis:" << pt.first << "; (";
