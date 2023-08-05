@@ -92,7 +92,7 @@ void test_class_copy_reference()
     cout << a1._b.m_b << endl;
     
     int aa_ = 60;
-    a1.setreference(aa_);   // 类内引用的指向是可以被改变的。
+    a1.setreference(aa_);   // 这个只是改变类内引用所指向对象的值，而不是改变引用的指向。
     cout << a1.m_a << endl;
     cout << a1._b.m_b << endl;
     a1.m_a = 500;
