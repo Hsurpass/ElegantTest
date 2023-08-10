@@ -10,14 +10,13 @@ using namespace std;
 class LazySingleton
 {
 public:
-    static LazySingleton *getInstance()
+    static LazySingleton* getInstance()
     {
         // 这里使用double check.好处是，只有判断指针为空的时候才加锁，
         // 避免每次调用 GetInstance的方法都加锁，锁的开销毕竟还是有点大的。
-        if (_ins == nullptr) 
-        {
+        if (_ins == nullptr) {
             lock_guard<std::mutex> lock(m_mtx);
-            if (_ins == nullptr)    //二次判断防止多线程竞争
+            if (_ins == nullptr)    //二次判断防止多线程重复调用构造函数
             {
                 _ins = new LazySingleton;
             }
@@ -28,8 +27,7 @@ public:
     static void destroyInstance()
     {
         lock_guard<std::mutex> lock(m_mtx);
-        if (_ins != nullptr)
-        {
+        if (_ins != nullptr) {
             delete _ins;
             _ins = NULL;
         }
@@ -40,27 +38,31 @@ public:
     }
 
 private:
-    static volatile LazySingleton *_ins;
+    static volatile LazySingleton* _ins;
     // static LazySingleton *_ins;
 
-    LazySingleton() { cout << "LazySingleton::LazySingleton()" << endl; }
-    ~LazySingleton() { cout << "LazySingleton::~LazySingleton()" << endl; }
-    LazySingleton(const LazySingleton &another);
-    LazySingleton& operator=(const LazySingleton &another);
+    LazySingleton()
+    {
+        cout << "LazySingleton::LazySingleton()" << endl;
+    }
+    ~LazySingleton()
+    {
+        cout << "LazySingleton::~LazySingleton()" << endl;
+    }
+    LazySingleton(const LazySingleton& another);
+    LazySingleton& operator=(const LazySingleton& another);
 
     static std::mutex m_mtx;
 };
 // LazySingleton *LazySingleton::_ins = NULL;
-volatile LazySingleton *LazySingleton::_ins = NULL;
+volatile LazySingleton* LazySingleton::_ins = NULL;
 std::mutex LazySingleton::m_mtx;
-
 
 void test_lazy_singleton()
 {
-    LazySingleton *p1 = LazySingleton::getInstance();
-    LazySingleton *p2 = LazySingleton::getInstance();
-    if (p1 == p2)
-    {
+    LazySingleton* p1 = LazySingleton::getInstance();
+    LazySingleton* p2 = LazySingleton::getInstance();
+    if (p1 == p2) {
         cout << "p1 == p2" << endl;
     }
     p1->run();
@@ -71,7 +73,6 @@ void test_lazy_singleton()
     // LazySingleton a = *p1;
     // LazySingleton a;
 }
-
 
 void func(int i)
 {
@@ -88,25 +89,22 @@ void test_lazy_singleton_multithread()
     cout << "main: " << this_thread::get_id() << endl;
     thread t[5];
 
-    for(int i = 0; i < 5; i++)
-    {
-        t[i] = std::thread(func, i); 
+    for (int i = 0; i < 5; i++) {
+        t[i] = std::thread(func, i);
     }
 
-    for (auto &i:t)
-    {
+    for (auto& i : t) {
         i.join();
     }
-    
 }
 
-
-class A 
+class A
 {
 public:
     static std::shared_ptr<A> instance;
 private:
-    A(){}
+    A()
+    {}
 };
 // make_shared是在类外部定义的，因此无法访问私有构造函数。
 // shared_ptr<A> A::instance = make_shared<A>();

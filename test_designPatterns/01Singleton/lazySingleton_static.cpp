@@ -9,7 +9,7 @@ using namespace std;
 class Singleton_localStatic
 {
 public:
-    static Singleton_localStatic *getInstance()
+    static Singleton_localStatic* getInstance()
     {
         // 局部静态成员变量的初始化时是线程安全的，只有一个线程能执行初始化，其他线程会在此阻塞。
         // 全局的就更不用说了，全局变量是在程序一运行就进行初始化了。
@@ -26,10 +26,16 @@ public:
 
 private:
 
-    Singleton_localStatic() { cout << "Singleton_localStatic::Singleton_localStatic()" << endl; }      // 禁止外部构造
-    ~Singleton_localStatic() {cout << "Singleton_localStatic::~Singleton_localStatic()" << endl; }     // 禁止外部析构
-    Singleton_localStatic(const Singleton_localStatic &another);    // 禁止外部复制
-    Singleton_localStatic& operator=(const Singleton_localStatic &another); // 禁止外部赋值
+    Singleton_localStatic()
+    {
+        cout << "Singleton_localStatic::Singleton_localStatic()" << endl;
+    } // 禁止外部构造
+    ~Singleton_localStatic()
+    {
+        cout << "Singleton_localStatic::~Singleton_localStatic()" << endl;
+    } // 禁止外部析构
+    Singleton_localStatic(const Singleton_localStatic& another); // 禁止外部复制
+    Singleton_localStatic& operator=(const Singleton_localStatic& another); // 禁止外部赋值
 };
 
 void func(int i)
@@ -46,16 +52,13 @@ void test_lazy_singleton_with_static_multithread()
     cout << "main: " << this_thread::get_id() << endl;
     thread t[5];
 
-    for(int i = 0; i < 5; i++)
-    {
-        t[i] = std::thread(func, i); 
+    for (int i = 0; i < 5; i++) {
+        t[i] = std::thread(func, i);
     }
 
-    for (auto &i:t)
-    {
+    for (auto& i : t) {
         i.join();
     }
-    
 }
 
 int main()
