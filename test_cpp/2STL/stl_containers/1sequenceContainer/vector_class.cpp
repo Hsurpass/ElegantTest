@@ -86,8 +86,8 @@ void test_emplace_copy()
     // va.emplace_back(A(200));
 
     va.emplace_back(100);
-    va.emplace_back(200);
-    va.emplace_back(200);
+    // va.emplace_back(200);
+    // va.emplace_back(200);
 
     cout << "size:" << va.size() << ", capacity:" << va.capacity() << endl;
 }
@@ -932,7 +932,7 @@ int main()
     // test_vector_swap();
 
     // test_vector_reserve();
-    test_vector_reserve_01();
+    // test_vector_reserve_01();
     // test_reserve02();
     // test_vector_resize();
 
@@ -949,7 +949,7 @@ int main()
     
     // test_insert();
     // test_emplace_back();
-    // test_emplace_copy();
+    test_emplace_copy();
    
     // test_push_pointer();
     // integration_test();
