@@ -28,8 +28,8 @@ using namespace std;
 #define INT_MAX std::numeric_limits<int>::max()
 #define FLOAT_MAX std::numeric_limits<float>::max()
 
-// const int k = 1; // K-dimensional
-const int k = 2; // K-dimensional
+const int k = 1; // K-dimensional
+// const int k = 2; // K-dimensional
 // const int k = 3; // K-dimensional
 
 // 定义数据结构Point，即二维坐标点
@@ -43,6 +43,11 @@ struct Node
 {
     Point p;
     Node *left, *right;
+
+    Node() : left(nullptr), right(nullptr)
+    {}
+    Node(Point pt, Node* l = nullptr, Node* r = nullptr) : p(pt), left(l), right(r)
+    {}
 };
 
 // 分割平面的对应维度
@@ -179,6 +184,49 @@ void nearestNeighborSearch(Node* root, Point pt, Point& best, float& bestDis)
     }
 }
 
+Node* insert(Node* root, Point& pt)
+{
+    if (root == nullptr) {
+        Node* node = new Node(pt);
+        return node;
+    }
+    else if (pt.x[depth] < root->p.x[depth]) {
+        depth = (depth + 1) % k;
+        root->left = insert(root->left, pt);
+    }
+    else {
+        depth = (depth + 1) % k;
+        root->right = insert(root->right, pt);
+    }
+
+    return root;
+}
+
+Node* kdtree_insert(Node* root, Point pt)
+{
+    if (root == nullptr) {
+        root = new Node(pt);
+        return root;
+    }
+
+    depth = 0;
+    insert(root, pt);
+
+    return root;
+}
+
+void destroy_kdtree(Node* root)
+{
+    if (root == nullptr)
+        return;
+
+    destroy_kdtree(root->left);
+    destroy_kdtree(root->right);
+
+    delete root;
+    root = nullptr;
+}
+
 void preorder_traversal(Node* root)
 {
     if (!root)
@@ -253,11 +301,49 @@ void test_one_dimensional_kd_tree()
     }
     cout << endl;
 
-    delete root;
+    destroy_kdtree(root);
 }
 #endif
 
-#if 1
+/*
+    1 2 3 4 5 6 8
+                4
+            2       6 
+          1   3    5  8  
+*/
+void test_one_dimension_insert()
+{
+    Node* root = nullptr;
+    Point pt;
+    pt.x[0] = 1;
+    root = kdtree_insert(root, pt);
+    pt.x[0] = 2;
+    root = kdtree_insert(root, pt);
+    pt.x[0] = 3;
+    root = kdtree_insert(root, pt);
+    pt.x[0] = 4;
+    root = kdtree_insert(root, pt);
+    pt.x[0] = 5;
+    root = kdtree_insert(root, pt);
+    pt.x[0] = 6;
+    root = kdtree_insert(root, pt);
+    pt.x[0] = 7;
+    root = kdtree_insert(root, pt);
+    pt.x[0] = 8;
+    root = kdtree_insert(root, pt);
+
+    // cout << root->p.x[0] << endl;
+
+    preorder_traversal(root);   // 1 2 3 4 5 6 8
+    putchar(10);
+    cout << "-----------------------------------" << endl;
+    inorder_traversal(root);    // 1 2 3 4 5 6 8
+    putchar(10);
+
+    destroy_kdtree(root);
+}
+
+#if 0
 void test_two_dimensional_kd_tree()
 {
     // 构建kd-tree
@@ -288,15 +374,16 @@ void test_two_dimensional_kd_tree()
     }
 
     // 释放内存
-    delete root;
+    destroy_kdtree(root);
 }
 #endif
 
 int main()
 {
     // test_one_dimensional_kd_tree();
-    test_two_dimensional_kd_tree();
-    // test_three_dimensional_kd_tree();
+    test_one_dimension_insert();
+
+        // test_two_dimensional_kd_tree();
 
     return 0;
 }
