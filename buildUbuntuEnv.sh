@@ -1,7 +1,13 @@
 sudo apt update
 
-sudo apt install build-essential gcc g++ 
-# sudo apt git cmake gdb cgdb vim
+sudo apt install build-essential gcc g++ autoconf libtool pkg-config
+sudo apt gdb vim git cmake
+
+# sudo spt install cgdb
+
+# clang and LLVM C++ lib is only required for sanitizer builds
+# sudo apt-get install clang libc++-dev
+
 sudo apt install man-db manpages-posix
 sudo apt install manpages-dev manpages-posix-dev
 
