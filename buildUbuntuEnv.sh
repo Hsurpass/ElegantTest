@@ -11,6 +11,8 @@ sudo apt gdb vim git cmake
 sudo apt install man-db manpages-posix
 sudo apt install manpages-dev manpages-posix-dev
 
+sudo apt install libsystemd libsystemd-dev
+
 # 搜狗输入法
 # https://shurufa.sogou.com/linux/guide
 # flameshot
