@@ -5,7 +5,7 @@ package main
 import "fmt"
 
 func test_array() {
-	var v [][4]int
+	var v [][4]int // 二维数组
 
 	row1 := [4]int{1, 2, 3, 4}
 	var row2 = [4]int{5, 6, 7, 8}
@@ -15,6 +15,15 @@ func test_array() {
 	fmt.Println(v[0])
 	fmt.Println(v[1])
 
+	// 遍历二维数组
+	for idx, v := range v {
+		fmt.Println(idx, v)
+	}
+
+	for range v {
+		
+	}
+
 	v1 := [][]int{}
 	row3 := []int{1, 2, 3, 4}
 	var row4 = []int{5, 6, 7, 8}
@@ -23,6 +32,15 @@ func test_array() {
 	fmt.Println(v1)
 	fmt.Println(v1[0])
 	fmt.Println(v1[1])
+
+	// 遍历二维数组
+	for i, vi := range v1 {
+		fmt.Printf("idx %d:\n", i)
+		for j, vj := range vi {
+			fmt.Printf(" %d, %d\n", j, vj)
+		}
+	}
+
 }
 
 func test_operator() {
@@ -174,15 +192,15 @@ func test_fmt() {
 
 func main() {
 	test_fmt()
-	fmt.Println("---------------------------")
+	fmt.Println("------test_localvar---------------------")
 	test_localvar()
-	fmt.Println("---------------------------")
+	fmt.Println("------test_globalvar---------------------")
 	test_globalvar()
-	fmt.Println("---------------------------")
+	fmt.Println("------test_---------------------")
 	test_()
-	fmt.Println("---------------------------")
+	fmt.Println("------test_iota---------------------")
 	test_iota()
-	fmt.Println("---------------------------")
+	fmt.Println("------test_array---------------------")
 	test_array()
 
 	test_operator()
