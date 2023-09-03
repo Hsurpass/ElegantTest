@@ -21,7 +21,7 @@ func test_array() {
 	}
 
 	for range v {
-		
+
 	}
 
 	v1 := [][]int{}
@@ -44,11 +44,12 @@ func test_array() {
 }
 
 func test_operator() {
-	// var x int32 = 1
-	// const pi float32 = 3.14
+	var x int32 = 2
+	const pi float32 = 3.14
+	pii := 3.14
 
-	// fmt.Println(x + pi) // 不同的类型不能运算
-	// fmt.Println(pi / x)
+	fmt.Println(float32(x) + pi) // 不同的类型不能运算, 必须显示的强制类型转换
+	fmt.Println(int32(pii) / x)  //
 }
 
 // iota，特殊常量，可以认为是一个可以被编译器修改的常量。
