@@ -46,8 +46,31 @@ func test_crud_map() {
 	fmt.Printf("k2:%v, v2:%v\n", k2, v2) // 1 true
 }
 
+type Vertex struct {
+	a, b int
+}
+
+func test_map_struct() {
+	m := make(map[string]Vertex)
+	m["ABC"] = Vertex{1, 2}
+	
+	m1 := map[string]Vertex{
+		"def": Vertex{3,4},
+	}
+
+	m2 := map[string]Vertex{
+		"ghi":{5,6},
+	}
+	fmt.Println(m)
+	fmt.Println(m1)
+	fmt.Println(m2)
+
+}
+
 func main() {
 	test_map_init()
 	fmt.Println("-------------------------------")
 	test_crud_map()
+	fmt.Println("-------------------------------")
+	test_map_struct()
 }

@@ -6,6 +6,15 @@ import (
 	"math"
 )
 
+/*
+与 fmt.Stringer 类似，error 类型是一个内建接口：
+
+	type error interface {
+	    Error() string
+	}
+
+（与 fmt.Stringer 类似，fmt 包在打印值时也会满足 error。）
+*/
 func Sqrt(f float64) (float64, error) {
 	if f < 0 {
 		return 0, errors.New("math: square root of negative number")

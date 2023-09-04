@@ -31,6 +31,30 @@ func test_struct() {
 
 }
 
+// 带接收者参数 (b BOOK) 的函数作为结构体的方法，可以直接调用, 不用传参
+func (b BOOK) printTitle() {
+	fmt.Println(b.title)
+}
+func (b *BOOK) printSubject() {
+	fmt.Println(b.subject)
+}
+
+// 普通函数 需要传参
+func printAuthor(b BOOK) {
+	fmt.Println(b.author)
+}
+func test_func_call() {
+	b := BOOK{"a", "b", "c", 10}
+
+	b.printTitle()
+	b.printSubject() // 值和指针都能调用接收者方法
+	b1 := &b
+	b1.printTitle() // 值和指针都能调用接收者方法
+
+	printAuthor(b)
+}
+
 func main() {
 	test_struct()
+	test_func_call()
 }

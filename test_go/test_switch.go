@@ -3,9 +3,9 @@ package main
 import "fmt"
 
 // type-switch 来判断某个 interface 变量中实际存储的变量类型
-func test_type_switch() {
-	var x interface {
-	}
+func test_type_switch(x interface{}) {
+	// var x interface {
+	// }
 
 	switch i := x.(type) {
 	case nil:
@@ -48,6 +48,12 @@ func test_fallthrough() {
 }
 
 func main() {
-	test_type_switch()
+	var i interface{}
+	test_type_switch(i)
+	test_type_switch(20)
+	test_type_switch("hello")
+	test_type_switch(true)
+	test_type_switch(20.08)
+
 	test_fallthrough()
 }
