@@ -89,10 +89,25 @@ func printSlice(x []int) {
 	fmt.Printf("len=%d cap=%d slice=%v\n", len(x), cap(x), x)
 }
 
+func test_byte_slice() {
+	s := []byte("This is a sample Page.")
+	s1 := []byte{1, 2, 3, 4}
+	s2 := []byte{1, 2, 3, 4}
+
+	fmt.Println(s)
+	fmt.Println(s1)
+	fmt.Println(s2)
+}
+
 func main() {
 	test_slice_init()
 	fmt.Println("-----------------------------")
+
 	test_slice_nil()
 	fmt.Println("-----------------------------")
+
 	test_copy_append()
+	fmt.Println("-----------------------------")
+
+	test_byte_slice()
 }
