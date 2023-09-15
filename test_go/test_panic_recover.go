@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func test_panic_nest() {
 	fmt.Println("start main")
@@ -65,7 +68,28 @@ func f() {
 	fmt.Println("内层异常后语句") //recover捕获的一级或者完全不捕获这里开始下面代码不会再执行
 }
 
+func test_recover_2() {
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("协程发生错误:", r)
+			}
+		}()
+
+		fmt.Println("协程挂起")
+		time.Sleep(2 * time.Second)
+		panic("出现错误") // 引发恐慌
+		time.Sleep(1 * time.Second)
+		fmt.Println("协程恢复")
+	}()
+
+	fmt.Println("主程序继续执行")
+	time.Sleep(3 * time.Second)
+	fmt.Println("主程序执行完毕")
+}
+
 func main() {
 	// test_panic_nest()
-	test_recover()
+	// test_recover()
+	test_recover_2()
 }
