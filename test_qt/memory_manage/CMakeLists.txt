@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(memory_manage VERSION 0.1 LANGUAGES CXX)
 
-set(CMAKE_PREFIX_PATH "${QT624_msvc2019_64}")
+#set(CMAKE_PREFIX_PATH "${QT624_msvc2019_64}")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
