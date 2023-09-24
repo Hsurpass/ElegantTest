@@ -30,6 +30,18 @@ select * from company;
 --查询company表中所有记录中的部分字段。
 select id, name, salary from company;
 
+-- 查询company表中有多少条记录
+select COUNT(*) from company;
+select COUNT(*) as company_count from company;    -- as的作用：命名
+
+-- 查询当前系统的日期和时间  GMT时间
+select current_timestamp;
+-- 查询本地时间
+select datetime('now', 'localtime');
+
+-- select语句还能做运算
+select (10 + 6) as sum;
+
 --比较运算符
 select * from company where salary > 50000;
 select * from company where salary = 20000;
@@ -69,7 +81,20 @@ select * from company where exists (
     select age from company where salary > 90000); -- 子查询语句结果为真，外查询返回全部结果
 select * from company where not exists (
     select age from company where salary > 90000); -- 子查询语句结果为真，not exists(子查询)为假，则外查询不会返回结果
-select * from company where age > (select age from company where salary > 65000) --子查询结果为salary>65000的年龄的记录，外查询返回所有年龄大于子查询字段值的记录。
+select * from company where age > (select age from company where salary > 65000); --子查询结果为salary>65000的年龄的记录，外查询返回所有年龄大于子查询字段值的记录。
 
+-- UPDATE
+update company set address='Texas' where id = 6;
+select * from company;
+update company set address='Texas', salary=35000 where id = 6;
 
---DROP TABLE DEPARTMENT
+-- DELETE
+delete from company where id = '1'; --删除一行
+delete from company; --删除整个表
+
+-- LIMIT 和 OFFSET
+select * from company limit 4;    --从第一条记录开始只输出4条记录
+select * from company limit 3 offset 2; --从第3条记录(偏移2条)开始输出3条记录
+
+-- DROP
+DROP TABLE DEPARTMENT;
