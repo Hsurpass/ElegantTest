@@ -82,7 +82,8 @@ select * from company where exists (
 select * from company where not exists (
     select age from company where salary > 90000); -- 子查询语句结果为真，not exists(子查询)为假，则外查询不会返回结果
 select * from company where age > (select age from company where salary > 65000); --子查询结果为salary>65000的年龄的记录，外查询返回所有年龄大于子查询字段值的记录。
-
+select exists(select *from company where age=40); --age=40的记录不存在
+select exists(select *from company where age=25); --age=25的记录不存在，输出1
 -- UPDATE
 update company set address='Texas' where id = 6;
 select * from company;
@@ -95,6 +96,83 @@ delete from company; --删除整个表
 -- LIMIT 和 OFFSET
 select * from company limit 4;    --从第一条记录开始只输出4条记录
 select * from company limit 3 offset 2; --从第3条记录(偏移2条)开始输出3条记录
+select * from company limit 2, 3; --从第3条记录(偏移2条)开始输出3条记录, 第一个数字是偏移量(offset)，第二个数字是限制输出条数。
+
+-- ORDER BY
+select * from company order by salary;    --基于salary字段的值进行升序排序
+select * from company order by salary DESC; --基于salary字段的值进行降序排序
+select * from company order by age;    --基于age字段的值进行升序排序
+select * from company order by age, salary desc; --基于age字段的值进行升序排序, 然后基于salary进行降序排序
+
+-- GROUP BY
+select * from company;
+select * from company group by name;    --根据名字进行分组
+select NAME, SUM(SALARY) from company group by name; --根据名字进行分组
+select NAME, SUM(SALARY) from company group by address; --根据地址进行分组, 然后对同组的salary进行求和
+select NAME, SUM(SALARY) from company group by address order by SUM(salary); --根据地址进行分组, 然后对同组的salary进行求和， 然后按照SUM(salary)排序
+select NAME, SUM(SALARY) AS sum_salary from company group by address order by sum_salary DESC, name; --根据地址进行分组, 然后对同组的salary进行求和， 然后按照SUM(salary)降序,name升序排序。
+
+--having
+insert into company values(8,Paul,24,Houston,20000.0);
+insert into company values(9,James,44,Norway, 5000.0);
+insert into company values(10,James,45,Texas,5000.0);
+
+select * from company group by name having count(name) < 2; --先根据name进行分组，计算每组的数量，然后输出数量小于2的记录。
+select * from company group by address having count(address) >= 2;--先根据address进行分组，计算每组的数量，然后输出数量大于2的记录。
+
+select count(name) from company;      --查找name字段有多少条记录
+select count(address) from company;   --查找address字段有多少条记录
+
+--COUNT
+select count(NAME) FROM COMPANY;
+select count(*) FROM COMPANY;
+
+--AVG
+select AVG(salary) FROM COMPANY;
+
+-- DISTINCT
+select distinct address from company;
+select distinct salary from company;
+
+--union 并集
+select * from company order by age;
+select * from company order by salary;
+
+select * from company where age>=25 
+union
+select * from company where salary>30000;-- 将年龄>=25的结果 或者salary>30000的结果合并到一个结果集中。
+-- 等同于：
+select * from company where age>=25 or salary>30000;
+
+select * from company where age>=25 
+union all
+select * from company where salary>30000;
+
+-- intersect 交集
+select * from company where age>=25 
+intersect
+select * from company where salary>30000;--查找年龄>=25 并且salary>30000的结果
+--等同于：
+select *from company where age>=25 and salary>30000;
+
+-- except 差集
+select * from company where age>=25 
+except
+select * from company where salary>30000; --查找属于age>=25结果集，但不属于salary>30000结果集的记录。
+
+select * from company where salary>30000
+except
+select * from company where age>=25; --查找属于salary>30000结果集，但不属于age>=25结果集的记录。
+
+-- 子查询
+select * from company;
+select * from company where salary > (select AVG(salary) from company); --查找大于平均工资的记录
+select ROUND(AVG(salary)) as avg_slary from company; -- ROUND函数的作用是四舍五入
+--select * from company where salsry > avg_slary; -- error
+
+--create table new_table select * from company where salary > 60000;
+--insert into new_table select * from company where age between 25 and 40;
+
 
 -- DROP
 DROP TABLE DEPARTMENT;
