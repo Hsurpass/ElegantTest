@@ -233,5 +233,15 @@ select * from company left outer join department on company.ID == department.EMP
 select id, name, age, salary, dept from company right outer join department on company.ID == department.EMP_ID;
 select * from company right outer join department on company.ID == department.EMP_ID;
 select * from company,department where company.ID == department.EMP_ID;
+
+--索引
+select * from company;
+create index salary_index on company (salary); --在salary这一列上创建索引
+create unique index unique_name_index on company (name); --在name这一列上创建唯一索引，列中有相同的值不能创建唯一索引
+
+--.indices company; --查看所有索引
+select * from sqlite_master where type='index'; --查看所有索引
+drop index salary_index; --删除索引。
+
 -- DROP
 DROP TABLE DEPARTMENT;
