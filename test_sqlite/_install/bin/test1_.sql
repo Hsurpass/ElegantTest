@@ -173,6 +173,65 @@ select ROUND(AVG(salary)) as avg_slary from company; -- ROUND函数的作用是�
 --create table new_table select * from company where salary > 60000;
 --insert into new_table select * from company where age between 25 and 40;
 
+-- PRAGMA
+PRAGMA test1.auto_vacuum;
+pragma test1.cache_size;
 
+pragma case_sensitive_like;
+pragma count_changes;
+pragma database_list;
+pragma encoding;
+pragma freelist_count;
+pragma index_info;
+pragma index_list;
+pragma index_mode;
+pragma journal_node;
+pragma max_page_count;
+pragma page_count;
+pragma page_size;
+pragma parser_trace;
+pragma recursive_triggers;
+pragma schema_version;
+pragma secure_dalete;
+pragma sql_trace;
+pragma synchronous;
+pragma temp_store;
+pragma temp_store_directory;
+pragma user_version;
+pragma writable_schema;
+
+
+-- join
+select * from company;
+
+INSERT INTO DEPARTMENT (ID, DEPT, EMP_ID)
+VALUES (1, 'IT Billing', 1 );
+
+INSERT INTO DEPARTMENT (ID, DEPT, EMP_ID)
+VALUES (2, 'Engineering', 2 );
+
+INSERT INTO DEPARTMENT (ID, DEPT, EMP_ID)
+VALUES (3, 'Finance', 7 );
+
+select * from department;
+
+-- 交叉连接
+SELECT EMP_ID, NAME, DEPT FROM COMPANY CROSS JOIN DEPARTMENT; --把第一个表的每一行和第二个表的每一行进行匹配。
+
+
+--内连接，默认是内连接，INNER是可选的
+select * from company;
+select * from company inner join department on company.ID == department.EMP_ID;
+select id, name, age, salary, dept from company inner join department on company.ID == department.EMP_ID;
+
+ 
+--左外连接 返回左表中全部的数据和右表中匹配的数据， 右表中没有匹配的数据填NULL
+select id, name, age, salary, dept from company left outer join department on company.ID == department.EMP_ID;
+select * from company left outer join department on company.ID == department.EMP_ID;
+
+--右外连接 返回右表中全部的数据和左表中匹配的数据， 左表中没有匹配的数据填NULL
+select id, name, age, salary, dept from company right outer join department on company.ID == department.EMP_ID;
+select * from company right outer join department on company.ID == department.EMP_ID;
+select * from company,department where company.ID == department.EMP_ID;
 -- DROP
 DROP TABLE DEPARTMENT;
