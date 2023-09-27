@@ -24,6 +24,35 @@ insert into company values(5, 'David', 27, 'Texas', 85000.00 );
 insert into company values(6, 'Kim', 22, 'South-Hall', 45000.00 );
 insert into company values(7, 'James', 24, 'Houston', 10000.00 );
 
+-- autoincrement 自增约束
+drop table company;
+CREATE TABLE COMPANY(
+   ID INTEGER PRIMARY KEY     AUTOINCREMENT NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+select * from sqlite_master where type='table';
+select * from sqlite_sequence;
+
+INSERT INto COMPANY (ID,NAME,AGE,ADDRESS,SALARY) values (1, 'Paul', 32, 'California', 20000.00);
+insert into company values(2, 'Allen', 25, 'Texas', 15000.00 );
+insert into company (NAME,AGE,ADDRESS,SALARY) values('Teddy', 23, 'Norway', 20000.00 );
+insert into company (NAME,AGE,ADDRESS,SALARY) values('Mark', 25, 'Rich-Mond ', 65000.00 );
+insert into company (NAME,AGE,ADDRESS,SALARY) values('David', 27, 'Texas', 85000.00 );
+insert into company (NAME,AGE,ADDRESS,SALARY) values('Kim', 22, 'South-Hall', 45000.00 );
+insert into company (NAME,AGE,ADDRESS,SALARY) values('James', 24, 'Houston', 10000.00 );
+
+select * from sqlite_master where type='table';
+select * from sqlite_sequence;
+delete from company; --删除了company表中的所有数据，但是sqlite_sequence表中的自增序号还没清零。
+-- 可以通过删除sqlite_sequence表中的seq字段将计数清零。
+delete from sqlite_sequence where name='company';    --不管用？？ 内部表不能修改
+-- 或者使用update命令将seq字段置0
+update sqlite_sequence set seq=0 where name='company';    -- 不管用？？ 内部表不能修改 
+DElete from sqlite_sequence;    --删了,让数据库重新创建
+
 -- 查询company表中所有记录中的全部字段
 select * from company;    
 
@@ -239,9 +268,67 @@ select * from company;
 create index salary_index on company (salary); --在salary这一列上创建索引
 create unique index unique_name_index on company (name); --在name这一列上创建唯一索引，列中有相同的值不能创建唯一索引
 
+select * from company INDEXED BY salary_index where salary > 50000; --指定使用salary_index索引来进行查询。
+
 --.indices company; --查看所有索引
 select * from sqlite_master where type='index'; --查看所有索引
 drop index salary_index; --删除索引。
 
+-- TRIGGER
+select * from company;
+create table company_log (
+    EMP_ID INT NOT NULL,
+    OPERATE_TIME TEXT NOT NULL
+);
+drop table company_log;
+
+--创建一个触发器，当company表执行插入操作时，触发表company_log的插入操作
+create trigger company_log after insert on company
+begin
+    insert into company_log VALUES (new.ID, datetime('now'));
+end;
+
+INSERT INTO COMPANY VALUES(8,'JJ',40,'LA',90000.00);
+
+select * from company_log;
+select tbl_name from sqlite_master where type='table';
+
+select * from sqlite_master where type='trigger';    --查看所有触发器
+select * from sqlite_master where type='trigger' and tbl_name='company'; --查看某个表上的触发器
+
+-- 删除触发器
+drop trigger company_log;
+
+
+--alter
+alter table company_log rename to new_company_log; -- 重名名表名
+
+alter table new_company_log add column sex char(1); -- 修改表结构，新增一列
+select sql from sqlite_master where type='table' and tbl_name='new_company_log';
+select * from new_company_log; 
+
+
+select *from sqlite_sequence where name="company";
+
+-- view 视图 
+create view company_view as select id, name, age from company; --创建一个视图。
+select * from company_view; --查看一个视图。
+update company set age=44 where id=7; -- 原表数据变化，视图也会跟着变化，因为视图保存的只是一条sql语句。
+--alter view company_view as select id, name from company;
+drop view company_view; --删除视图
+
+
+-- 事务
+select * from company;
+begin;
+delete from company where id=7;
+rollback;
+
+begin;
+delete from company where id=7;
+commit;
+
+
+
 -- DROP
-DROP TABLE DEPARTMENT;
+--DROP TABLE DEPARTMENT;
