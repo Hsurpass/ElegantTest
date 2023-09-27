@@ -4,14 +4,10 @@
 using namespace std;
 
 void test1()
+{}
+
+int main()
 {
-    
-}
-
-
-
-int main(){
-
 
     return 0;
 }
