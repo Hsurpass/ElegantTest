@@ -136,7 +136,43 @@ db.getCollection('orders').aggregate([
 
 
 
+// mongoimport --db=test --collection=zipcodes --file=zips.json --username="tester"
+// 查找总人口大于1000万的地区
+// 基于state字段进行分组，对每个分组中的pop字段进行求和，基于求和结果找到大于1000的文档
+// select state, SUM(pop) as total_pop from zipcodes group by state having total_pop >= 10000000  
 
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: '$state',
+      total_pop: {
+        $sum: '$pop'
+      }
+    }
+  },
+  {
+    $match: {
+      total_pop:{$gte:10000000}
+    }
+  }
+]);
+
+// 
+
+db.getCollection('zipcodes').find({city:"PAWNEE"});
+db.getCollection('zipcodes').find({state:"MA"});
+
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: {state:'$state', city:'$city'},
+      group_count:{$sum:1},
+      total_city_pop: {
+        $sum: '$pop'
+      }
+    }
+  }
+])
 
 
 // Run a find command to view items sold on April 4th, 2014.
