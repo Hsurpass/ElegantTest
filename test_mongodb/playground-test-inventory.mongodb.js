@@ -52,8 +52,93 @@ db.getCollection("inventory").find({'size.h': {$lt:15},
                                     status:'D'}
                                     );
 
+db.getCollection('inventory').insertMany([
+                                      {
+                                        item: 'journal',
+                                        qty: 25,
+                                        tags: ['blank', 'red'],
+                                        dim_cm: [14, 21]
+                                      },
+                                      {
+                                        item: 'notebook',
+                                        qty: 50,
+                                        tags: ['red', 'blank'],
+                                        dim_cm: [14, 21]
+                                      },
+                                      {
+                                        item: 'paper',
+                                        qty: 100,
+                                        tags: ['red', 'blank', 'plain'],
+                                        dim_cm: [14, 21]
+                                      },
+                                      {
+                                        item: 'planner',
+                                        qty: 75,
+                                        tags: ['blank', 'red'],
+                                        dim_cm: [22.85, 30]
+                                      },
+                                      {
+                                        item: 'postcard',
+                                        qty: 45,
+                                        tags: ['blue'],
+                                        dim_cm: [10, 15.25]
+                                      }
+]);
 
-                                    
+
+db.getCollection('orders').insertMany( [
+  { _id: 0, name: "Pepperoni", size: "small", price: 19, quantity: 10, date: ISODate( "2021-03-13T08:14:30Z" ) },
+  { _id: 1, name: "Pepperoni", size: "medium", price: 20,quantity: 20, date : ISODate( "2021-03-13T09:13:24Z" ) },
+  { _id: 2, name: "Pepperoni", size: "large", price: 21, quantity: 30, date : ISODate( "2021-03-17T09:22:12Z" ) },
+  { _id: 3, name: "Cheese", size: "small", price: 12, quantity: 15, date : ISODate( "2021-03-13T11:21:39.736Z" ) },
+  { _id: 4, name: "Cheese", size: "medium", price: 13,quantity: 50, date : ISODate( "2022-01-12T21:23:13.331Z" ) },
+  { _id: 5, name: "Cheese", size: "large", price: 14, quantity: 10, date : ISODate( "2022-01-12T05:08:13Z" ) },
+  { _id: 6, name: "Vegan", size: "small", price: 17,  quantity: 10, date : ISODate( "2021-01-13T05:08:13Z" ) },
+  { _id: 7, name: "Vegan", size: "medium", price: 18, quantity: 10, date : ISODate( "2021-01-13T05:10:13Z" ) }
+] );
+
+// 计算size 为 ‘medium’全部订单的数量
+// select name as order_name, count(*) as totalQuantity where size == 'medium' group by name;
+db.getCollection('orders').aggregate([
+  {
+    $match: { size: 'medium'}
+  },
+
+  {
+    $group: { _id: "$name", totalQuantity: { $sum:'$quantity'  }}
+  }
+]);
+
+// 计算某个时间段内，每天的订单总价值、订单数目、订单的平均数量，并基于订单总价值按降序排序。
+// select sum(quantity * price) as order_total_value, count(*) as order_total_quantity, avg(order_total_num) as avg_quantity from orders where date > "2020-01-30" and date < "2022-01-30" group by date order by order_total_value;
+db.getCollection('orders').aggregate([
+  {
+    $match: {
+      date:{$gte: new ISODate('2020-01-30'), $lte:new ISODate('2022-01-30')}
+    }
+  },
+  {
+    $group:{
+        _id:{$dateToString:{format:"%Y-%m-%d", date:'$date'}},
+        totalOrderValue:{$sum:{$multiply:['$price', "$quantity"] }},
+        totalOrderQuantity:{$sum:'$quantity'},
+        documentCount: {$sum:1},
+        averageOrderQuantity:{$avg:'$quantity'}
+      }
+  },
+  {
+    $sort: {
+      totalOrderValue: -1
+    }
+  }
+
+]);
+
+
+
+
+
+
 // Run a find command to view items sold on April 4th, 2014.
 const salesOnApril4th = db.getCollection('sales').find({
   date: { $gte: new Date('2014-04-04'), $lt: new Date('2014-04-05') }
