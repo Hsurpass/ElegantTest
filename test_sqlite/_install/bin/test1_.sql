@@ -138,6 +138,8 @@ select * from company;
 select * from company group by name;    --根据名字进行分组
 select NAME, SUM(SALARY) from company group by name; --根据名字进行分组
 select NAME, SUM(SALARY) from company group by address; --根据地址进行分组, 然后对同组的salary进行求和
+select COUNT(*) from group_count(
+    select NAME, SUM(SALARY) from company group by address );
 select NAME, SUM(SALARY) from company group by address order by SUM(salary); --根据地址进行分组, 然后对同组的salary进行求和， 然后按照SUM(salary)排序
 select NAME, SUM(SALARY) AS sum_salary from company group by address order by sum_salary DESC, name; --根据地址进行分组, 然后对同组的salary进行求和， 然后按照SUM(salary)降序,name升序排序。
 
