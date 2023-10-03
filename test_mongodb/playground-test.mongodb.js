@@ -157,23 +157,205 @@ db.getCollection('zipcodes').aggregate([
   }
 ]);
 
-// 
 
 db.getCollection('zipcodes').find({city:"PAWNEE"});
-db.getCollection('zipcodes').find({state:"MA"});
+db.getCollection('zipcodes').find({state:"MN"});
 
-db.getCollection('zipcodes').aggregate([
-  {
+// 基于state和city两个字段组合分组，只有两个字段的值都一样才会被分成一组。
+// select COUNT(*) FROM zipcodes group by state, city;
+db.getCollection('zipcodes').aggregate( [
+  { 
     $group: {
-      _id: {state:'$state', city:'$city'},
+      _id: { state: "$state", city: "$city" }, pop: { $sum: "$pop" } ,
       group_count:{$sum:1},
       total_city_pop: {
         $sum: '$pop'
       }
     }
+  },
+  {
+    $match : {'_id.state':"CO", '_id.city':"EDGEWATER"}
+  }
+] )
+
+// 计算某个州有多少城市
+db.getCollection('zipcodes').aggregate([
+  {
+    $match:{state:'MI'},
+  },
+  {
+    $group:{
+      _id:"$state", // city 有重复的记录，统计有误差
+      city_count:{$sum:1}
+    }
   }
 ])
 
+db.getCollection('zipcodes').find({state:'MI'}).count();
+
+db.getCollection('zipcodes').aggregate([
+  {
+    $match:{state:'MI'},
+  },
+  {
+    $group:{
+      _id:{state: "$state", city:"$city"},
+      doc_count:{$sum:1}
+    }
+  },
+  {
+    $group: {
+      _id: {state:'$_id.state'},
+      city_count:{$sum:1}
+    }
+  }
+])
+
+db.getCollection('zipcodes').aggregate([
+  {
+    $match:{state:'MI'},
+  },
+  {
+    $group:{
+      _id:{state: "$state", city:"$city"},
+      doc_count:{$sum:1}
+    }
+  },
+  {
+    $match: {
+      doc_count:{$gt:2}
+    }
+  }
+])
+
+db.getCollection('zipcodes').find({state:'MI', city:"MUSKEGON"})
+
+// 查看基于state字段可以分成几个组
+// select count(*) as state_count from (select * from zipcodes group by state);
+// select count(distinct state) as state_count from zipcodes;
+// 方法1：
+db.getCollection('zipcodes').aggregate([
+  {
+    $group:{
+      _id:{state:'$state'}
+    }
+  },
+  {
+    $group:{
+      _id:null,
+      state_count:{$sum:1}
+    }
+  }
+]); // 51
+
+//方法2:
+let result = db.getCollection('zipcodes').distinct('state');
+console.log(result.length); // 51
+// 方法3：
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id:null,
+      values: {$addToSet:'$state'},
+    }
+  },
+  {
+    $project: {
+      arr_size : { $size: '$values'} 
+    }
+  }
+]); //51
+
+// 计算州的平均人口
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: {state:'$state'},
+      document_count:{$sum:1},
+      pop:{$sum:'$pop'}  
+    }
+  },
+  {
+    $group:{
+      _id:null,
+      state_count:{$sum:1},
+      state_avg_pop: {
+        $avg: '$pop'
+      }
+    }
+  }
+]);
+
+// 计算每个州中有多少个城市
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: {state:'$state', city:'$city'},
+      document_count: { $sum : 1 }
+    }
+  },
+  {
+    $group: {
+      _id: {state:'$_id.state'},
+      city_count: { $sum : 1  }
+    }
+  }
+])
+
+// 计算每个州中城市的平均人口
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: {state:'$state', city:'$city'},
+      pop:{$sum:'$pop'}
+    }
+  },
+  {
+    $group:{
+      _id:{state:'$_id.state'}, 
+      city_count:{$sum:1},
+      city_avg_pop: {
+        $avg: '$pop'
+      }
+    }
+  }
+]);
+
+// 找到每个州中人口最多的城市和人口最少的城市。
+// select state, MIN(pop) as smallestcity, MAX(POP) AS biggestcity from zipcodes group by state;
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+    _id: '$state',
+    biggestcity:{$max:'$pop'},
+    smallestcity:{$min:'$pop'}
+    }
+  }
+])
+
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: "$state",
+      data: {
+        $push: {
+          pop: "$pop",
+          otherField: "$$ROOT"
+        }
+      }
+    }
+  },
+  {
+    $sort: {
+      pop: 1
+    }
+  },
+  {
+    $match: {
+      state:'FL'
+    }
+  }
+])
 
 // Run a find command to view items sold on April 4th, 2014.
 const salesOnApril4th = db.getCollection('sales').find({
