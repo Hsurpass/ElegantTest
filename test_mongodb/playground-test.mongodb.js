@@ -302,6 +302,7 @@ db.getCollection('zipcodes').aggregate([
   }
 ])
 
+
 // 计算每个州中城市的平均人口
 db.getCollection('zipcodes').aggregate([
   {
@@ -321,14 +322,112 @@ db.getCollection('zipcodes').aggregate([
   }
 ]);
 
-// 找到每个州中人口最多的城市和人口最少的城市。
-// select state, MIN(pop) as smallestcity, MAX(POP) AS biggestcity from zipcodes group by state;
+// 计算人口最多的州和人口最少的州
+// 方法1：使用max min
 db.getCollection('zipcodes').aggregate([
   {
     $group: {
-    _id: '$state',
-    biggestcity:{$max:'$pop'},
-    smallestcity:{$min:'$pop'}
+      _id: {state:'$state'},
+      pop: {
+        $sum: '$pop'
+      }
+    }
+  },
+  // {
+  //   $project: {
+  //     maxPop: { $max: '$pop'},
+  //     smallestPop: {$min: '$pop'},
+  //     biggestState: { $max: { maxpop: '$pop', state: '$_id.state'}},
+  //     smallestState: { $min: { minpop: '$pop', state: '$_id.state'}},
+  //   }
+  // }
+  {
+    $group: {
+      _id:null,
+      maxPop: { $max: '$pop'},
+      smallestPop: {$min: '$pop'},
+      biggestState: { $max: { maxpop: '$pop', state: '$_id.state'}},
+      smallestState: { $min: { minpop: '$pop', state: '$_id.state'}},
+    }
+  }
+]);
+
+// 方法二：使用sort
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: {state:'$state'},
+      pop: {
+        $sum : '$pop'
+      }
+    }
+  },
+  {
+    $sort: { pop: 1 }
+  },
+  // {
+  //   $project: {
+  //     bigpop: {$last:'$pop'}, 
+  //     bigcity:{$last:'$_id.state'} ,
+  //     smallpop: {$first:'$pop'},
+  //     smallcity:{$first:'$_id.state'}
+  //   }
+  // }
+  {
+    $group: {
+      _id:null,
+      bigpop: {$last:'$pop'}, 
+      bigcity:{$last:'$_id.state'} ,
+      smallpop: {$first:'$pop'},
+      smallcity:{$first:'$_id.state'}
+    }
+  }
+])
+
+// 找到每个州中人口最多的城市和人口最少的城市。
+// select state, MIN(pop) as smallestcity, MAX(POP) AS biggestcity from zipcodes group by state;
+// 方法1：使用max/min
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: {state:'$state',city:'$city'},
+      pop:{$sum:'$pop'}
+    }
+  },
+  {
+    $group: {
+      _id:'$_id.state',
+      biggestcity: { $max: { maxpop:'$pop', city:'$_id.city'} },
+      smallestcity:{ $min: { minpop:'$pop', city: '$_id.city'} }
+    }
+  },
+  // {
+  //   $group: {
+  //     _id: null,
+  //     state_count: { $sum : 1},
+  //     _biggestcity: '$biggestcity',
+  //     _smallestcity: '$smallestcity'
+  //   }
+  // }
+])
+
+// 方法二：使用sort,$first,$last
+db.getCollection('zipcodes').aggregate([
+  {
+    $group: {
+      _id: {state:'$state', city:'$city'},
+      pop: { $sum: '$pop' }
+    }
+  },
+  {
+    $sort: { pop: 1 }
+  },
+  {
+    $group: {
+      _id: {state:'$_id.state'},
+      biggestCity: {$last:{pop:'$pop', city:'$_id.city'}},
+      smallestCity_pop: {$first:{pop:'$pop'}},
+      smallestCity_city: {$first: '$_id.city'}
     }
   }
 ])
@@ -354,6 +453,46 @@ db.getCollection('zipcodes').aggregate([
     $match: {
       state:'FL'
     }
+  }
+])
+
+
+//
+db.getCollection('userPreference').insertMany([
+{
+    _id : "jane",
+  joined : ISODate("2011-03-02"),
+  likes : ["golf", "racquetball"]
+},
+{
+  _id : "joe",
+  joined : ISODate("2012-07-02"),
+  likes : ["tennis", "golf", "swimming"]
+}
+]) 
+
+db.getCollection('userPreference').aggregate([
+  {
+    $unwind: "$likes" // 将数组展开
+  }
+])
+// 找到5个最受欢迎的爱好
+db.getCollection('userPreference').aggregate([
+  {
+    $unwind: "$likes" // 将数组展开
+  },
+  {
+    $group: {
+    _id: {likes:'$likes'},
+    sum: {$sum:1}
+  }},
+  {
+    $sort: {
+      sum: -1
+    }
+  },
+  {
+    $limit: 5
   }
 ])
 
