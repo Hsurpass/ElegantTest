@@ -49,40 +49,109 @@ db.getCollection("inventory").find({'size.uom': 'in'});
 db.getCollection("inventory").find({'size.h': {$lt:10}});
 db.getCollection("inventory").find({'size.h': {$lt:15}, 
                                     'size.uom': 'in',
-                                    status:'D'}
-                                    );
+                                    status:'D'});
 
 db.getCollection('inventory').insertMany([
-                                      {
-                                        item: 'journal',
-                                        qty: 25,
-                                        tags: ['blank', 'red'],
-                                        dim_cm: [14, 21]
-                                      },
-                                      {
-                                        item: 'notebook',
-                                        qty: 50,
-                                        tags: ['red', 'blank'],
-                                        dim_cm: [14, 21]
-                                      },
-                                      {
-                                        item: 'paper',
-                                        qty: 100,
-                                        tags: ['red', 'blank', 'plain'],
-                                        dim_cm: [14, 21]
-                                      },
-                                      {
-                                        item: 'planner',
-                                        qty: 75,
-                                        tags: ['blank', 'red'],
-                                        dim_cm: [22.85, 30]
-                                      },
-                                      {
-                                        item: 'postcard',
-                                        qty: 45,
-                                        tags: ['blue'],
-                                        dim_cm: [10, 15.25]
-                                      }
+  { item: "journal", qty: 25, tags: ["blank", "red"], dim_cm: [ 14, 21 ] },
+  { item: "notebook", qty: 50, tags: ["red", "blank"], dim_cm: [ 14, 21 ] },
+  { item: "paper", qty: 100, tags: ["red", "blank", "plain"], dim_cm: [ 14, 21 ] },
+  { item: "planner", qty: 75, tags: ["blank", "red"], dim_cm: [ 22.85, 30 ] },
+  { item: "postcard", qty: 45, tags: ["blue"], dim_cm: [ 10, 15.25 ] }
+]);
+
+db.getCollection('inventory').find();
+
+// 精确匹配一个数组
+db.getCollection('inventory').find({tags:["red", "blank"]}); 
+// 模糊匹配一个数组
+db.getCollection('inventory').find({tags:{$all:["red", "blank"]}}); 
+db.getCollection('inventory').find({tags:"red"});
+db.getCollection('inventory').find({tags:"red"}).count()
+// 根据条件匹配一个数组
+// 只要数组中有一个元素满足这个条件，就会被查询到 or
+db.getCollection('inventory').find({dim_cm:{$gt:15}})
+// 只要有元素满足其中一个条件，才会被查询到
+db.getCollection('inventory').find( { dim_cm: { $gt: 15, $lt: 20 } } )
+// 至少有一个元素满足全部条件，才会被查询到 and
+db.getCollection('inventory').find({dim_cm:{$elemMatch:{$gt:15, $lt:20}}})
+
+// 使用数组下标作为查询条件
+// 查找数组第2个元素大于15的的文档
+db.getCollection('inventory').find({'dim_cm.1':{$gt:15}})
+
+// 使用数组长度作为查询条件
+db.getCollection('inventory').find({ tags: {$size:3} } )
+db.getCollection('inventory').find({ "tags": { $exists: true } }, { _id: 0, arrayLength: { $size: "$tags" } });
+
+db.getCollection('inventory_').insertMany([
+  { item: "journal", qty: 25, tags: ["blank", "red"], dim_cm: [ 14, 21 ] },
+  { item: "notebook", qty: 50, tags: ["red", "blank"], dim_cm: [ 14, 21 ] },
+  { item: "paper", qty: 100, tags: ["red", "blank", "plain"], dim_cm: [ 14, 21 ] },
+  { item: "planner", qty: 75, tags: ["blank", "red"], dim_cm: [ 22.85, 30 ] },
+  { item: "postcard", qty: 45, tags: ["blue"], dim_cm: [ 10, 15.25 ] }
+]);
+
+// 查找数组长度>=3的doc
+// db.getCollection('inventory').find({ "tags": { $size: { $gt: 3 } } });// error
+// db.getCollection('inventory').find({ "tags": { $elemMatch: { $size: { $gt: 3 } } } }) //error
+// db.getCollection('inventory').aggregate([ // 如果文档中没有tags字段$project会报错
+db.getCollection('inventory_').aggregate([
+  { 
+    $project: {
+      arr_length : {$size : "$tags"},
+      field: '$$ROOT'
+    }
+  },
+  {
+    $match: {
+      arr_length:{$gte:3}
+    }
+  }
+])
+
+db.getCollection('inventory').drop();
+db.inventory.insertMany( [
+  { item: "journal", status: "A", size: { h: 14, w: 21, uom: "cm" }, instock: [ { warehouse: "A", qty: 5 } ] },
+  { item: "notebook", status: "A",  size: { h: 8.5, w: 11, uom: "in" }, instock: [ { warehouse: "C", qty: 5 } ] },
+  { item: "paper", status: "D", size: { h: 8.5, w: 11, uom: "in" }, instock: [ { warehouse: "A", qty: 60 } ] },
+  { item: "planner", status: "D", size: { h: 22.85, w: 30, uom: "cm" }, instock: [ { warehouse: "A", qty: 40 } ] },
+  { item: "postcard", status: "A", size: { h: 10, w: 15.25, uom: "cm" }, instock: [ { warehouse: "B", qty: 15 }, { warehouse: "C", qty: 35 } ] }
+]);
+
+db.inventory.find( { status: "A" })
+db.inventory.find( { status: "A" }, { item: 1, status: 1, instock: { $slice: 1 } } )
+db.inventory.find( { status: "A" }, { item: 1, status: 1, instock: { $slice: -1 } } )
+
+db.posts.insertMany([
+  {
+    _id: 1,
+    title: "Bagels are not croissants.",
+    comments: [ { comment: "0. true" }, { comment: "1. croissants aren't bagels."} ]
+  },
+  {
+    _id: 2,
+    title: "Coffee please.",
+    comments: [ { comment: "0. fooey" }, { comment: "1. tea please" }, { comment: "2. iced coffee" }, { comment: "3. cappuccino" }, { comment: "4. whatever" } ]
+  }
+]);
+
+db.inventory.find( { status: "A" }, { item: 1, status: 1, instock: { $slice: -1 } } )
+
+// 从-3这个位置开始，返回3个元素
+//  0  0  0  0  0
+//  0  1  2  3  4 
+// -5 -4 -3 -2 -1
+db.posts.find( {}, { comments: { $slice: [ -3, 3 ] } } )
+db.posts.find( {}, { comments: { $slice: [ -1, 3 ] } } )
+
+
+db.getCollection('inventory').drop();
+db.inventory.insertMany( [
+  { item: "journal", instock: [ { warehouse: "A", qty: 5 }, { warehouse: "C", qty: 15 } ] },
+  { item: "notebook", instock: [ { warehouse: "C", qty: 5 } ] },
+  { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 15 } ] },
+  { item: "planner", instock: [ { warehouse: "A", qty: 40 }, { warehouse: "B", qty: 5 } ] },
+  { item: "postcard", instock: [ { warehouse: "B", qty: 15 }, { warehouse: "C", qty: 35 } ] }
 ]);
 
 
