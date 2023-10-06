@@ -154,6 +154,50 @@ db.inventory.insertMany( [
   { item: "postcard", instock: [ { warehouse: "B", qty: 15 }, { warehouse: "C", qty: 35 } ] }
 ]);
 
+// 查询嵌入在数组中的文档
+  // 精确匹配
+db.getCollection("inventory").find( { "instock": { warehouse: "A", qty: 5 } } )
+  // 元素顺序不能颠倒
+db.inventory.find( { "instock": { qty: 5, warehouse: "A" } } )
+  // 为嵌入式文档中的字段指定一个查询条件
+db.inventory.find( { "instock.qty":{$gt:20}})
+  // 使用数组索引指定访问哪个文档
+db.inventory.find({"instock.0.qty":{$gte:20}})
+  // 为嵌入式文档中的字段指定多个查询条件：
+    // 使用$eleMatch只有多个条件都满足才会返回查询的文档，相当于AND
+db.inventory.find({"instock":{$elemMatch:{qty:5, warehouse:'A'} }})
+db.inventory.find({"instock":{$elemMatch:{qty:{$gt:10, $lte:20} } }})
+    // 只要有一个条件满足就返回， 相当于or
+db.inventory.find( { "instock.qty": { $gt: 10,  $lte: 20 } } )
+
+
+// cursor
+// console.log(myCursor)
+var myCursor = db.getCollection('inventory').find( {item:'journal'} );
+
+// while(myCursor.hasNext()){
+//   print(tojson(myCursor.next()))
+// }
+
+myCursor.forEach(printjson);
+
+var documentArray = myCursor.toArray();
+var myDocument = documentArray[0];
+console.log(myDocument)
+
+// 替换一个文档
+db.inventory.replaceOne(
+  { item: "paper" },
+  { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 40 } ] }
+)
+db.inventory.find({item:"paper"})
+
+db.inventory.replaceOne(
+  { item: "paper" },
+  { item: "paper", instock: [ { warehouse: "A", qty: 50 } ] }
+)
+db.inventory.find({item:"paper"})
+// ---------------------------------------------------
 
 db.getCollection('orders').insertMany( [
   { _id: 0, name: "Pepperoni", size: "small", price: 19, quantity: 10, date: ISODate( "2021-03-13T08:14:30Z" ) },
