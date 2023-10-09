@@ -13,6 +13,7 @@ set(SRC sync_timer.cpp)
 add_executable(boost_sync_timer ${SRC})
 add_executable(boost_async_timer async_timer.cpp)
 add_executable(boost_repeat_async_timer repeat_async_timer.cpp)
+add_executable(boost_repeat_async_timer_memfunc repeat_async_timer_memfunc.cpp)
 
 
 set(LIBRARIES ${Boost_LIBRARIES})
@@ -24,3 +25,5 @@ endif()
 target_link_libraries(boost_sync_timer ${LIBRARIES})
 target_link_libraries(boost_async_timer ${LIBRARIES})
 target_link_libraries(boost_repeat_async_timer ${LIBRARIES})
+target_link_libraries(boost_repeat_async_timer_memfunc ${LIBRARIES})
+
