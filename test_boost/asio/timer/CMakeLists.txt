@@ -14,7 +14,8 @@ add_executable(boost_sync_timer ${SRC})
 add_executable(boost_async_timer async_timer.cpp)
 add_executable(boost_repeat_async_timer repeat_async_timer.cpp)
 add_executable(boost_repeat_async_timer_memfunc repeat_async_timer_memfunc.cpp)
-
+add_executable(same_time_in_singleIO same_time_in_singleIO.cpp)
+add_executable(async_timer_one_ioContext_in_multithread async_timer_one_ioContext_in_multithread.cpp)
 
 set(LIBRARIES ${Boost_LIBRARIES})
 if(UNIX)
@@ -26,4 +27,6 @@ target_link_libraries(boost_sync_timer ${LIBRARIES})
 target_link_libraries(boost_async_timer ${LIBRARIES})
 target_link_libraries(boost_repeat_async_timer ${LIBRARIES})
 target_link_libraries(boost_repeat_async_timer_memfunc ${LIBRARIES})
+target_link_libraries(same_time_in_singleIO ${LIBRARIES})
+target_link_libraries(async_timer_one_ioContext_in_multithread ${LIBRARIES})
 
