@@ -9,7 +9,7 @@
 using namespace std;
 volatile int counter(0);
 
-template <typename T>
+template<typename T>
 class container
 {
 public:
@@ -25,8 +25,7 @@ public:
     {
         va_list arguments;
         va_start(arguments, num);
-        for (int i = 0; i < num; i++)
-        {
+        for (int i = 0; i < num; i++) {
             // lock_guard<recursive_mutex> reclock(recmtx);
             recmtx.lock();
             add(va_arg(arguments, T));
@@ -39,8 +38,7 @@ public:
     {
         // lock_guard<recursive_mutex> reclock(recmtx);
         recmtx.lock();
-        for (auto e : _elements)
-        {
+        for (auto e : _elements) {
             cout << e << endl;
         }
         recmtx.unlock();
@@ -50,9 +48,10 @@ private:
     recursive_mutex recmtx;
     vector<T> _elements;
 };
-void func(container<int> &cont)
+void func(container<int>& cont)
 {
-    cont.addrange(3, rand(), rand(), rand());
+    // cont.addrange(3, rand(), rand(), rand());
+    cont.addrange(3, 1, 1, 1);
 }
 
 void test_recursive_mutex_reEnter()
@@ -72,31 +71,44 @@ void test_recursive_mutex_reEnter()
 }
 
 std::recursive_mutex recurMutex;
-void threadAddUseRecursiveMutexLock()
+// 递归锁只针对单线程是可重入的。
+void test_singalthread_RecursiveMutex_reEnter()
 {
-    cout << this_thread::get_id() << "xxxxxxxxxx" << endl;
-
-    for (int i = 0; i < 100000; ++i)
-    {
+    for (int i = 0; i < 5; ++i) {
         recurMutex.lock();     // 如果把unlock()放在循环外面 死锁
+        cout << "thread id:" << this_thread::get_id() << "count:" << counter << endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         counter++;
         recurMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    // throw 10;
-    // recurMutex.unlock();
 }
 
-void test_recursive_mutex_add()
+// 如果一个线程没完全释放锁，另一个线程是不能获得锁的，造成了死锁。
+void test_recursiveMutex_not_full_release()
 {
-    std::thread t[10];
+    for (int i = 0; i < 5; ++i) {
+        recurMutex.lock();     // 如果把unlock()放在循环外面 死锁
+        cout << "thread id:" << this_thread::get_id() << "count:" << counter << endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        counter++;
+    }
+    // 如果加锁了5次，释放了4次，那么另一个线程就会获取不到互斥锁，一直阻塞等待。
+    // for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 4; ++i) {
+        recurMutex.unlock();
+    }
+}
+void test_recursive_mutex()
+{
+    std::thread t[2];
 
-    for (int i = 0; i < 10; i++)
-    {
-        t[i] = thread(threadAddUseRecursiveMutexLock);
+    for (int i = 0; i < 2; i++) {
+        // t[i] = thread(test_singalthread_RecursiveMutex_reEnter);
+        t[i] = thread(test_recursiveMutex_not_full_release);
     }
 
-    for (auto &k : t)
-    {
+    for (auto& k : t) {
         k.join();
     }
     cout << "counter: " << counter << endl;
@@ -104,8 +116,8 @@ void test_recursive_mutex_add()
 
 int main()
 {
-    // test_recursive_mutex_add();
-    test_recursive_mutex_reEnter();
+    test_recursive_mutex();
+    // test_recursive_mutex_reEnter();
 
     return 0;
 }
