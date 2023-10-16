@@ -94,8 +94,8 @@ void test_recursiveMutex_not_full_release()
         counter++;
     }
     // 如果加锁了5次，释放了4次，那么另一个线程就会获取不到互斥锁，一直阻塞等待。
-    // for (int i = 0; i < 5; ++i) {
-    for (int i = 0; i < 4; ++i) {
+    // for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {
         recurMutex.unlock();
     }
 }
