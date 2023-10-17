@@ -4,6 +4,7 @@ project(boost_timer)
 
 FIND_PACKAGE(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
+message("boost found: " ${BOOST_FOUND})
 message("CMAKE_INSTALL_PREFIX: " ${CMAKE_PREFIX_INSTALL})
 message("CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 
@@ -19,8 +20,10 @@ add_executable(async_timer_one_ioContext_in_multithread async_timer_one_ioContex
 
 set(LIBRARIES ${Boost_LIBRARIES})
 if(UNIX)
-    list(APPEND LIBRARIES pthread)
-    MESSAGE("LIBRARIES: " ${LIBRARIES})
+    # list(APPEND LIBRARIES pthread)
+    list(APPEND LIBRARIES pthread boost_system boost_thread)
+
+    MESSAGE("LIBRARIES: " ${LIBRARIES} )
 endif()
 
 target_link_libraries(boost_sync_timer ${LIBRARIES})
