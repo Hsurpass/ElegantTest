@@ -1,9 +1,9 @@
 sudo apt update
 
 sudo apt install build-essential gcc g++ autoconf libtool pkg-config
-sudo apt gdb vim git cmake
+sudo apt install gdb vim git cmake
 
-# sudo spt install cgdb
+# sudo apt install cgdb
 
 # clang and LLVM C++ lib is only required for sanitizer builds
 # sudo apt-get install clang libc++-dev
@@ -24,7 +24,7 @@ sudo apt install libsystemd libsystemd-dev
 
 # terminator
 # https://zhuanlan.zhihu.com/p/346665734
-sudo apt-get install terminator
+# sudo apt-get install terminator
 # 选中即复制
 # 粘贴：Ctrl+V
 # 新建窗口：Ctrl+Shift+T
