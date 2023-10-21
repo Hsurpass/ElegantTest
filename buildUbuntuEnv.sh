@@ -1,8 +1,9 @@
 sudo apt update
 
 sudo apt install build-essential gcc g++ autoconf libtool pkg-config
-sudo apt install gdb vim git cmake
-
+sudo apt install gdb git cmake
+sudo apt install linux-tools-common
+# sudo apt install vim
 # sudo apt install cgdb
 
 # clang and LLVM C++ lib is only required for sanitizer builds
