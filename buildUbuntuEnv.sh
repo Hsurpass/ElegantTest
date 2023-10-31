@@ -1,18 +1,19 @@
 sudo apt update
 
-sudo apt install build-essential gcc g++ autoconf libtool pkg-config
-sudo apt install gdb git cmake
-sudo apt install linux-tools-common
+sudo apt install -y build-essential gcc g++ autoconf libtool pkg-config
+sudo apt install -y gdb git cmake
+# sudo apt install -y linux-tools-common
 # sudo apt install vim
-# sudo apt install cgdb
+sudo apt install -y cgdb
 
 # clang and LLVM C++ lib is only required for sanitizer builds
 # sudo apt-get install clang libc++-dev
 
-sudo apt install man-db manpages-posix
-sudo apt install manpages-dev manpages-posix-dev
+sudo apt install -y man-db manpages-posix
+sudo apt install -y manpages-dev manpages-posix-dev
 
-sudo apt install libsystemd libsystemd-dev
+# sudo apt install libsystemd
+sudo apt install -y libsystemd-dev
 
 # 搜狗输入法
 # https://shurufa.sogou.com/linux/guide
