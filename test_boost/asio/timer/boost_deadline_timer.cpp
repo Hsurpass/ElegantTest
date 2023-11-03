@@ -1,4 +1,4 @@
-// g++ main.cpp -lboost_system -std=c++11 -lpthread
+// g++ boost_deadline_timer.cpp -lboost_system -std=c++11 -lpthread
 
 #include <iostream>
 #include <boost/asio.hpp>
@@ -46,7 +46,6 @@ void test_deadline_timer_async()
     size_t n = io.run();
     cout << "runing n:" << n << endl;
     cout << "run end" << endl;
-    
 }
 
 void test_deadline_timer_sync()
@@ -59,8 +58,6 @@ void test_deadline_timer_sync()
     std::cout << "hello" << std::endl;
     // BLOG << BF("hello");
 
-
-
     /*char a = 64;
     char b = a << 1;
     char c = b >> 1;
@@ -68,7 +65,6 @@ void test_deadline_timer_sync()
     printf("%X\n", a);
     printf("%X\n", b);
     printf("%X\n", c);*/
-    
 }
 
 int main()
