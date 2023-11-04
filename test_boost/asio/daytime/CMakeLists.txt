@@ -15,6 +15,10 @@ message("CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 set(SRC sync_tcp_daytime_client.cpp)
 add_executable(sync_tcp_daytime_client ${SRC})
 add_executable(sync_tcp_daytime_server sync_tcp_daytime_server.cpp)
+add_executable(async_tcp_daytime_server async_tcp_daytime_server.cpp)
+add_executable(sync_udp_daytime_client sync_udp_daytime_client.cpp)
+add_executable(sync_udp_daytime_server sync_udp_daytime_server.cpp)
+# add_executable(async_udp_daytime_server async_udp_daytime_server.cpp)
 
 
 set(LIBRARIES ${Boost_LIBRARIES})
@@ -27,8 +31,8 @@ endif()
 
 target_link_libraries(sync_tcp_daytime_client ${LIBRARIES})
 target_link_libraries(sync_tcp_daytime_server ${LIBRARIES})
-# target_link_libraries(boost_repeat_async_timer ${LIBRARIES})
-# target_link_libraries(boost_repeat_async_timer_memfunc ${LIBRARIES})
-# target_link_libraries(same_time_in_singleIO ${LIBRARIES})
-# target_link_libraries(async_timer_one_ioContext_in_multithread ${LIBRARIES})
+target_link_libraries(async_tcp_daytime_server ${LIBRARIES})
+target_link_libraries(sync_udp_daytime_client ${LIBRARIES})
+target_link_libraries(sync_udp_daytime_server ${LIBRARIES})
+# target_link_libraries(async_udp_daytime_server ${LIBRARIES})
 

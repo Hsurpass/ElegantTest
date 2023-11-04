@@ -77,8 +77,8 @@ int main(int argc, char* argv[])
         for (;;) {
             // char[] buf = {0};
             // boost::array<char, 128> buf;
-            std::array<char, 128> buf;
-            // std::vector<char> buf;
+            // std::array<char, 128> buf;
+            std::vector<char> buf(128);
             boost::system::error_code error;
 
             size_t len = socket.read_some(boost::asio::buffer(buf), error);
