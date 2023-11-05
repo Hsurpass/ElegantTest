@@ -94,7 +94,7 @@ public:
 private:
     void handle_accept(tcp_connection::TcpConnectionPointer new_connection, const boost::system::error_code& error)
     {
-        // std::cout << "tcp_server::handle_accept, connection:" << new_connection.get() << std::endl;
+        std::cout << "tcp_server::handle_accept, connection:" << new_connection.get() << std::endl;
         if (!error) {
             new_connection->start();
         }

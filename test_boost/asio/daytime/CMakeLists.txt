@@ -18,7 +18,7 @@ add_executable(sync_tcp_daytime_server sync_tcp_daytime_server.cpp)
 add_executable(async_tcp_daytime_server async_tcp_daytime_server.cpp)
 add_executable(sync_udp_daytime_client sync_udp_daytime_client.cpp)
 add_executable(sync_udp_daytime_server sync_udp_daytime_server.cpp)
-# add_executable(async_udp_daytime_server async_udp_daytime_server.cpp)
+add_executable(async_udp_daytime_server async_udp_daytime_server.cpp)
 
 
 set(LIBRARIES ${Boost_LIBRARIES})
@@ -34,5 +34,5 @@ target_link_libraries(sync_tcp_daytime_server ${LIBRARIES})
 target_link_libraries(async_tcp_daytime_server ${LIBRARIES})
 target_link_libraries(sync_udp_daytime_client ${LIBRARIES})
 target_link_libraries(sync_udp_daytime_server ${LIBRARIES})
-# target_link_libraries(async_udp_daytime_server ${LIBRARIES})
+target_link_libraries(async_udp_daytime_server ${LIBRARIES})
 
