@@ -1,6 +1,8 @@
 #include <boost/asio.hpp>
+#include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/placeholders.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <boost/asio/write.hpp>
 #include <boost/exception/exception.hpp>
 #include <boost/system/detail/error_code.hpp>
@@ -99,12 +101,23 @@ private:
             new_connection->start();
         }
 
-        start_accept();
+        // start_accept();
     }
 
     boost::asio::io_context& io_context_;
     tcp::acceptor acceptor_;
 };
+
+// void stopIO(boost::asio::io_context& io_context, std::shared_ptr<boost::asio::io_context::work> work)
+void stopIO(boost::asio::io_context& io_context,
+            std::shared_ptr<boost::asio::io_context::work>& work) // work要传引用，然后reset才能停止run
+{
+    std::cout << "no event, work usecount: " << work.use_count() << std::endl;
+    // io_context.stop();
+    work.reset();
+
+    std::cout << "no event, work usecount: " << work.use_count() << std::endl;
+}
 
 int main()
 {
@@ -112,7 +125,21 @@ int main()
         boost::asio::io_context io_context;
         tcp_server server(io_context);
 
+        // io_context.run();
+
+        std::shared_ptr<boost::asio::io_context::work> work(
+            new boost::asio::io_context::work(io_context)); // work对象要在执行run()函数值之前执行。
+        std::cout << "work usecount: " << work.use_count() << std::endl;
+
+        boost::asio::steady_timer stoptimer(io_context, std::chrono::seconds(5));
+        // stoptimer.async_wait(std::bind(&stopIO, std::ref(io_context), work));
+        stoptimer.async_wait(
+            std::bind(&stopIO, std::ref(io_context), std::ref(work)));// work要传引用，然后reset才能停止run
+
         io_context.run();
+
+        // work.reset();
+        // io_context.stop();
     }
     catch (std::exception& e) {
         std::cerr << "exception:" << e.what() << std::endl;
@@ -120,4 +147,3 @@ int main()
 
     return 0;
 }
-
