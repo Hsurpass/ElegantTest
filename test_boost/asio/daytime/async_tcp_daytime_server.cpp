@@ -97,6 +97,40 @@ private:
     void handle_accept(tcp_connection::TcpConnectionPointer new_connection, const boost::system::error_code& error)
     {
         std::cout << "tcp_server::handle_accept, connection:" << new_connection.get() << std::endl;
+
+        tcp::socket::receive_buffer_size rbs;
+        new_connection->socket().get_option(rbs);
+        std::cout << "receive buffer size: " << rbs.value() << ", " << rbs.size(tcp::v4()) << ", "
+                  << rbs.data(tcp::v4()) << std::endl;
+
+        tcp::socket::receive_low_watermark rlw;
+        new_connection->socket().get_option(rlw);
+        std::cout << "receive_low_watermark: " << rlw.value() << std::endl;
+
+        tcp::socket::send_buffer_size sbs;
+        new_connection->socket().get_option(sbs);
+        std::cout << "send buffer size: " << sbs.value() << ", " << sbs.size(tcp::v4()) << std::endl;
+
+        tcp::socket::send_low_watermark slw;
+        new_connection->socket().get_option(slw);
+        std::cout << "send_low_watermark: " << slw.value() << ", " << sbs.data(tcp::v4()) << std::endl;
+
+        tcp::socket::reuse_address reuseA;
+        new_connection->socket().get_option(reuseA);
+        std::cout << "is reuse address: " << reuseA.value() << std::endl;
+
+        tcp::socket::keep_alive keepalive;
+        new_connection->socket().get_option(keepalive);
+        std::cout << "keepalive: " << keepalive << std::endl;
+
+        tcp::socket::linger linger;
+        new_connection->socket().get_option(linger);
+        std::cout << "close linger enable: " << linger.enabled() << ", timeout: " << linger.timeout() << std::endl;
+
+        tcp::socket::debug debug;
+        new_connection->socket().get_option(debug);
+        std::cout << "socket debug: " << debug << std::endl;
+
         if (!error) {
             new_connection->start();
         }
@@ -137,6 +171,14 @@ int main()
             std::bind(&stopIO, std::ref(io_context), std::ref(work)));// work要传引用，然后reset才能停止run
 
         io_context.run();
+        // io_context.run_one();   // 只执行一次异步操作，就自动退出
+        // while (!io_context.stopped()) { // == io_context.run()
+        //     io_context.run_one();
+        // }
+
+        // while (1) {  // not recommend
+        //     io_context.poll();
+        // }
 
         // work.reset();
         // io_context.stop();
