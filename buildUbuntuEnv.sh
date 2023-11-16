@@ -15,6 +15,8 @@ sudo apt install -y manpages-dev manpages-posix-dev
 # sudo apt install libsystemd
 sudo apt install -y libsystemd-dev
 
+sudo apt install openssl libssl-dev
+
 # 搜狗输入法
 # https://shurufa.sogou.com/linux/guide
 # flameshot
