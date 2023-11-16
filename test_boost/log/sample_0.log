@@ -1,0 +1,8 @@
+[] [info] [] []An informational severity message
+[] [warning] [] []A warning severity message
+[] [error] [] []An error severity message
+[] [fatal] [] []A fatal severity message
+[2023-11-14, 13:06:29.830928] [info] [0x00007fbcc325a000] [1]An informational severity message
+[2023-11-14, 13:06:29.830941] [warning] [0x00007fbcc325a000] [2]A warning severity message
+[2023-11-14, 13:06:29.830947] [error] [0x00007fbcc325a000] [3]An error severity message
+[2023-11-14, 13:06:29.830952] [fatal] [0x00007fbcc325a000] [4]A fatal severity message
