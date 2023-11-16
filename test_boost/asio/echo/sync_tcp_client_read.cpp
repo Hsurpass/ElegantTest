@@ -91,6 +91,6 @@ int main()
                                   boost::asio::placeholders::error,
                                   boost::asio::placeholders::bytes_transferred),
                       rerror);
-    boost::asio::read_until(connsock, boost::asio::buffer(buf), "\n");
+    // boost::asio::read_until(connsock, boost::asio::buffer(buf), "\n");   //compile error
     std::cout << "rerror: " << rerror.message() << ", buf: " << buf << std::endl;
 }

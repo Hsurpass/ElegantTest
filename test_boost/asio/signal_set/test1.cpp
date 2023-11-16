@@ -1,4 +1,4 @@
-// #pragma once
+// g++ test1.cpp -lboost_system -lboost_thread
 #include <boost/asio.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/placeholders.hpp>
@@ -9,49 +9,33 @@
 
 // using namespace boost::asio;
 
-// void handle_signal(const boost::system::error_code& error, int signal)
-// {
-//     std::cout << "error: " << error.message() << ", signal: " << signal << std::endl;
-// }
-
-// void test_signal()
-// {
-//     boost::asio::io_context io_context;
-
-//     boost::asio::signal_set sig(io_context, SIGINT);
-//     // sig.add(SIGTERM);
-//     sig.async_wait(handle_signal);
-
-//     io_context.run();
-// }
-
-// int main()
-// {
-//     test_signal();
-
-//     return 0;
-// }
-
-// void signal_handler(const boost::system::error_code& /*e*/, int signal)
-// {
-//     std::cout << "Received signal.\n";
-// }
-
 void signal_handler()
 {
-    std::cout << "Received signal.\n";
+    std::cout << "receive signal" << std::endl;
+}
+
+void handle_signal(const boost::system::error_code& error, int signal)
+{
+    std::cout << "error: " << error.message() << ", signal: " << signal << std::endl;
+}
+
+void test_signal()
+{
+    boost::asio::io_context io_context;
+
+    boost::asio::signal_set sig(io_context, SIGINT);
+    // sig.add(SIGTERM);
+    sig.async_wait(std::bind(signal_handler));
+    sig.async_wait(boost::bind(&handle_signal,
+                               boost::asio::placeholders::error,
+                               boost::asio::placeholders::signal_number)); // 注册回调函数
+
+    io_context.run();
 }
 
 int main()
 {
-    boost::asio::io_context io;
-    boost::asio::signal_set signals(io, SIGINT); // 监听SIGINT信号（通常是Ctrl+C）
-    // signals.async_wait(boost::bind(&signal_handler,
-    //                                boost::asio::placeholders::error,
-    //                                boost::asio::placeholders::signal_number)); // 注册回调函数
-    // signals.async_wait(&signal_handler);
-    signals.async_wait(boost::bind(&signal_handler));
-    io.run(); // 运行io_context，开始监听信号
+    test_signal();
 
     return 0;
 }

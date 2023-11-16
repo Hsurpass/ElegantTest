@@ -150,4 +150,8 @@ int main()
 
     threads.join_all();
     // std::this_thread::sleep_for(std::chrono::seconds(2));
+    // if (io_context.stopped()) {
+    //     io_context.reset();
+    //     io_context.restart();
+    // }
 }

@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
 
         boost::asio::io_context io_context;
         tcp::resolver resolver(io_context);
+        // tcp::resolver::results_type endpoints = resolver.resolve(argv[1], "daytime");// 在/etc/hosts文件中添加daytime服务， 在/etc/services这个文件下添加端口号
         // tcp::resolver::query q("www.baidu.com", "http");
         // tcp::resolver::results_type endpoints = resolver.resolve(q);
         // tcp::resolver::results_type endpoints = resolver.resolve("www.baidu.com", "http");
