@@ -242,3 +242,21 @@ message("Protobuf_LIBRARY_DEBUG: " ${Protobuf_LIBRARY_DEBUG})
 message("Protobuf_PROTOC_LIBRARY_DEBUG: " ${Protobuf_PROTOC_LIBRARY_DEBUG})
 message("Protobuf_LITE_LIBRARY: " ${Protobuf_LITE_LIBRARY})
 message("Protobuf_LITE_LIBRARY_DEBUG: " ${Protobuf_LITE_LIBRARY_DEBUG})
+
+# EXEC_PROGRAM cmake3.0之后被废弃了 使用execute_process
+EXEC_PROGRAM(
+    "/bin/bash" 
+    ARGS "-c" "echo Hello" 
+    OUTPUT_VARIABLE OUT
+    RETURN_VALUE RET
+)
+message("EXEC_PROGRAM Output val is: ${OUT}, return val: ${RET} ")
+
+# EXECUTE_PROCESS
+EXECUTE_PROCESS(
+    # COMMAND "/bin/bash" "-c" "echo Hello" 
+    COMMAND /bin/bash -c "echo Hello"
+    OUTPUT_VARIABLE OUT
+    RESULT_VARIABLE RET
+)
+message("EXECUTE_PROCESS Output val is: ${OUT}, return val: ${RET} ")
