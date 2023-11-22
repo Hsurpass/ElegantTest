@@ -30,7 +30,11 @@ message("Protobuf_LIBRARIES: " ${Protobuf_LIBRARIES})
 message("Protobuf_PROTOC_LIBRARIES: " ${Protobuf_PROTOC_LIBRARIES})
 message("Protobuf_LITE_LIBRARIES: " ${Protobuf_LITE_LIBRARIES})
 
-EXEC_PROGRAM(${exec} ${CMAKE_SOURCE_DIR}/proto OUTPUT_VARIABLE output RETURN_VALUE rvalue)
+EXEC_PROGRAM(
+    ${exec} ${CMAKE_SOURCE_DIR}/proto 
+    OUTPUT_VARIABLE output 
+    RETURN_VALUE rvalue
+)
 message("OUTPUT_VARIABLE: " ${output})
 message("RETURN_VALUE: " ${rvalue})
 
