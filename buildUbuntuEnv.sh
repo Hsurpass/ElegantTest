@@ -15,7 +15,9 @@ sudo apt install -y manpages-dev manpages-posix-dev
 # sudo apt install libsystemd
 sudo apt install -y libsystemd-dev
 
-sudo apt install openssl libssl-dev
+# sudo apt install openssl 
+# sudo apt install libssl-dev libmbedtls-dev
+sudo apt-get install -y zlib1g-dev
 
 # 搜狗输入法
 # https://shurufa.sogou.com/linux/guide
