@@ -18,7 +18,8 @@ message("CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
 # message("THRIFT_CPP_LIBRARY: " ${Thrift_CPP_LIBRARY})
 
 
-# set(thrift_gencpp_dir "${PROJECT_SOURCE_DIR}/gen-cpp")
+################使用add_custom_command 生成 文件#########################
+set(thrift_gencpp_dir "${PROJECT_SOURCE_DIR}/gen-cpp")
 # set(thrift_gencpp_srcs 
 #     ${thrift_gencpp_dir}/Calculator.cpp
 #     ${thrift_gencpp_dir}/SharedService.cpp 
@@ -34,7 +35,9 @@ message("CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
     #     DEPENDS tutorial.thrift 
     #     WORKING_DIRECTORY  "."
 # )
-    
+#^^^^^^^^^^^^^^^^^^^使用add_custom_command 生成 文件^^^^^^^^^^^^^^^^^^^^^
+
+
 ################使用EXECUTE_PROCESS 生成 文件#########################
 EXECUTE_PROCESS(
     COMMAND bash compile.sh
@@ -77,25 +80,27 @@ foreach(FILE ${thrift_gencpp_srcs})
     message(STATUS "${FILE}")  
 endforeach()
 
+#^^^^^^^^^^^^^^^^^^^^使用EXECUTE_PROCESS 生成 文件^^^^^^^^^^^^^^^^^^^^^^
 
-
+# include_directories(${thrift_gencpp_dir})
     
 add_library(tutorialgencpp STATIC ${thrift_gencpp_srcs})
 target_link_libraries(tutorialgencpp thrift)
 
-include_directories(${thrift_gencpp_dir})
 add_executable(tutorialServer server.cpp ${thrift_gencpp_srcs})
+add_executable(tutorialClient client.cpp ${thrift_gencpp_srcs})
 
 # target_link_libraries(TutorialServer tutorialgencpp)
 
-
 if (CMAKE_BUILD_TYPE STREQUAL "Debug") 
     message("debug")
-    target_link_libraries(tutorialServer thriftd)
+    target_link_libraries(tutorialServer thriftd thriftnbd thriftzd event)
+    target_link_libraries(tutorialClient thriftd)
 
 else(CMAKE_BUILD_TYPE STREQUAL "Release")
     message("release")
-    target_link_libraries(tutorialServer thriftd)
+    target_link_libraries(tutorialServer thriftd thriftnbd thriftzd event)
+    target_link_libraries(tutorialClient thriftd)
 endif()
 
 
