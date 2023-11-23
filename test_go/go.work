@@ -1,0 +1,7 @@
+go 1.21.0
+
+use (
+	.
+	./gomod
+	./web/web-service-gin
+)
