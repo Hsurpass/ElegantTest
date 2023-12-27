@@ -1,3 +1,5 @@
+//  g++ client.cpp -lboost_system  -lssl -lcrypto -o client
+
 #include <boost/asio/connect.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -128,11 +130,10 @@ int main(int argc, char* argv[])
         auto endpoints = resolver.resolve(argv[1], argv[2]);
 
         boost::asio::ssl::context ctx(boost::asio::ssl::context::sslv23);
-        // ctx.load_verify_file("./mypem/self_ca_sign/ca.crt");
-        // ctx.use_certificate_file("./mypem/self_ca_sign/ca.crt", boost::asio::ssl::context_base::pem);
-        // ctx.use_private_key_file("./mypem/self_ca_sign/ca.key", boost::asio::ssl::context_base::pem);
-        ctx.load_verify_file("/home/hchy/ca.pem");
-        // ctx.load_verify_file("./boostpem/ca.pem");
+        ctx.load_verify_file("./boostpem/ca.pem");
+        // ctx.load_verify_file("./mypem/self_ca_sign/ca.pem");
+        // ctx.use_certificate_chain_file("./mypem/self_ca_sign/client.pem");
+        // ctx.use_private_key_file("./mypem/self_ca_sign/client.pem", boost::asio::ssl::context_base::pem);
 
         client c(io_context, ctx, endpoints);
         io_context.run();

@@ -1,4 +1,4 @@
-// g++ server.cpp -lboost_system -L/lib/x86_64-linux-gnu  -lssl -lcrypto -o server
+// g++ server.cpp -lboost_system -L/lib/x86_64-linux-gnu -lssl -lcrypto -o server
 
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ip/udp.hpp>
@@ -80,19 +80,16 @@ public:
         // 这是为SSL证书文件设置密码回调函数。当需要访问加密的私钥时，这个回调函数会被调用来获取密码。
         context_.set_password_callback(std::bind(&server::get_password, this));
         // 这是加载服务器的公钥证书链。这个文件通常包含了服务器的公共证书和所有中间证书。
-        // context_.use_certificate_chain_file("./mypem/self_sign/server.pem");
-        // context_.use_certificate_chain_file("./mypem/self_ca_sign/server.crt");  //*
+        // context_.use_certificate_chain_file("./mypem/self_ca_sign/server.pem"); 
         // context_.use_certificate_chain_file("/home/hchy/server.crt");
 
         context_.use_certificate_chain_file("./boostpem/server.pem");
 
         // 这是加载服务器的私钥。在这个例子中，私钥也被包含在同一个"sself_sign/erver.pem"文件中，并且使用PEM格式编码。
-        // context_.use_private_key_file("./mypem/self_sign/server.pem", boost::asio::ssl::context::pem);
-        // context_.use_private_key_file("./mypem/self_ca_sign/server.key", boost::asio::ssl::context::pem);
+        // context_.use_private_key_file("./mypem/self_ca_sign/server.pem", boost::asio::ssl::context::pem);
         context_.use_private_key_file("./boostpem/server.pem", boost::asio::ssl::context::pem);
 
         // 这是加载Diffie-Hellman参数文件。这些参数用于支持 ephemeral Diffie-Hellman key exchange，这是一种常见的安全协议，可以提供前向安全性。
-        // context_.use_tmp_dh_file("./mypem/self_sign/dh4096.pem");
         // context_.use_tmp_dh_file("./mypem/self_ca_sign/dh4096.pem");
         context_.use_tmp_dh_file("./boostpem/dh4096.pem");
 

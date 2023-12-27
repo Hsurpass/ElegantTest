@@ -82,13 +82,16 @@ void do_read(boost::asio::ip::tcp::socket& socket, int seq)
     // std::vector<char> buf(32);
     char* const buf = new char[32];
     memset(buf, 0, 32);
-    socket.async_read_some(boost::asio::buffer(buf, 32),
-                           boost::bind(on_read,
-                                       seq,
-                                       boost::ref(socket),
-                                       buf,
-                                       boost::asio::placeholders::error,
-                                       boost::asio::placeholders::bytes_transferred));
+    socket.async_read_some(
+        boost::asio::buffer(buf, 32),
+        // buf,
+        // 32,
+        boost::bind(on_read,
+                    seq,
+                    boost::ref(socket),
+                    buf,
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred));
 }
 
 void on_accept(boost::asio::ip::tcp::socket& socket, const boost::system::error_code& error)

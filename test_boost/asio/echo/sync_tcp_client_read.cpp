@@ -85,6 +85,7 @@ int main()
     // boost::asio::read(connsock, boost::asio::buffer(buf), "\n", rerror); // compile error
     boost::asio::read(connsock,
                       boost::asio::buffer(buf),
+                    //   buf,
                       boost::bind(read_complete,
                                   buf,
                                   '\n',
