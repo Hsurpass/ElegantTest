@@ -5,3 +5,16 @@ build*
 install*
 *pb.h
 *pb.cc
+test_python/python3/bin
+test_python/python3/include
+test_python/python3/lib
+test_python/python3/lib64
+test_python/python3/share
+test_python/python3/pyvenv.cfg
+test_python/python3/codegen
+
+
+dist
+*.spec
+CMakeLists.txt.user
+CMakeFiles

@@ -15,9 +15,18 @@ sudo apt install -y manpages-dev manpages-posix-dev
 # sudo apt install libsystemd
 sudo apt install -y libsystemd-dev
 
+# openssl
 # sudo apt install openssl 
 # sudo apt install libssl-dev libmbedtls-dev
+# zlib
 sudo apt-get install -y zlib1g-dev
+
+# boost
+# sudo apt search libboost
+# sudo apt-get install libboost-dev
+# sudo apt-get install libboost-all-dev
+# sudo apt-get install libboost-test-dev
+# sudo apt-get install libboost-system-dev
 
 # 搜狗输入法
 # https://shurufa.sogou.com/linux/guide

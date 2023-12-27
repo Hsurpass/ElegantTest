@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+import "demo/proto/person.proto";
+
+message Test{
+    string name = 1;
+    Person p = 2;
+}

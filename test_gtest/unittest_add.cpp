@@ -3,7 +3,7 @@
 
 class Add_Test : public testing::Test
 {
-public:
+public: 
     virtual void SetUp() override
     {}
     virtual void TearDown() override
