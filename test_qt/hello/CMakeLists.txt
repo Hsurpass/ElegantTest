@@ -73,9 +73,13 @@ elseif(${QTVERSION} STREQUAL "QT6")
         message("--------msvc msvc msvc msvc------")
         set (CMAKE_PREFIX_PATH "D:\\Qt\\Qt6.2.4\\6.2.4\\msvc2019_64")
     else()
-        set (CMAKE_PREFIX_PATH "D:\\Qt\\Qt6.2.4\\6.2.4\\mingw_64")
+        set (CMAKE_PREFIX_PATH "D:\\Qt6\\6.5.3\\mingw_64")
     endif()
     message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+
+    # find_package(Vulkan REQUIRED)
+    # include_directories(${Vulkan_INCLUDE_DIR})
+    # message("Vulkan_INCLUDE_DIR: " ${Vulkan_INCLUDE_DIR})
 
     # find_package(Qt6 REQUIRED COMPONENTS 
     #     Core
@@ -91,6 +95,9 @@ elseif(${QTVERSION} STREQUAL "QT6")
     find_package(Qt6LinguistTools)
 
     message("Qt6_FOUND: " ${Qt6_FOUND})
+    # message("Qt6_ROOT: " ${Qt6_ROOT})
+
+    message("Qt6_INCLUDE_DIRS: " ${Qt6_INCLUDE_DIRS})
     message("Qt6Core_INCLUDE_DIRS: " ${Qt6Core_INCLUDE_DIRS})
     message("Qt6Xml_INCLUDE_DIRS: " ${Qt6Xml_INCLUDE_DIRS})
     message("Qt6Gui_INCLUDE_DIRS: " ${Qt6Gui_INCLUDE_DIRS})

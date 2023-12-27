@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QString>
 
 class Widget : public QWidget
 {
@@ -12,9 +13,9 @@ public:
     ~Widget();
 
 signals:
-    void widgetClick(); // 信号只声明不实现
+    void widgetClick(QString str); // 信号只声明不实现
 public slots:
-    void widgetClose();
+    void widgetClose(QString str);
     void emitClick();
 };
 #endif // WIDGET_H
