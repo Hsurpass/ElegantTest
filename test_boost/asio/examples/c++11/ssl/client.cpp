@@ -130,10 +130,8 @@ int main(int argc, char* argv[])
         auto endpoints = resolver.resolve(argv[1], argv[2]);
 
         boost::asio::ssl::context ctx(boost::asio::ssl::context::sslv23);
-        ctx.load_verify_file("./boostpem/ca.pem");
-        // ctx.load_verify_file("./mypem/self_ca_sign/ca.pem");
-        // ctx.use_certificate_chain_file("./mypem/self_ca_sign/client.pem");
-        // ctx.use_private_key_file("./mypem/self_ca_sign/client.pem", boost::asio::ssl::context_base::pem);
+        // ctx.load_verify_file("server_cert_chain.pem");
+        ctx.load_verify_file("./boostssl/ca.pem");
 
         client c(io_context, ctx, endpoints);
         io_context.run();
