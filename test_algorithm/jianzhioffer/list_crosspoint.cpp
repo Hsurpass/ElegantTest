@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 
 using namespace std;
 
@@ -10,6 +11,12 @@ public:
     int data;
     Node* next;
 };
+
+/*
+->->->->-\
+          ->->->->
+->->->->-/
+*/
 
 bool is_cross(Node* l1, Node* l2)
 {
@@ -27,6 +34,8 @@ bool is_cross(Node* l1, Node* l2)
     return l1 == l2;
 }
 
+// 不使用栈
+// 先计算两个链表的长度，再减去多余的长度，开始遍历。
 Node* find_list_cross_point(Node* l1, Node* l2)
 {
     if (!l1 || !l2) {
@@ -73,6 +82,36 @@ Node* find_list_cross_point(Node* l1, Node* l2)
     return p1;
 }
 
+// 使用栈
+Node* find_list_cross_point_by_stack(Node* l1, Node* l2)
+{
+    std::stack<Node*> sn1, sn2;
+
+    while (l1) {
+        sn1.push(l1);
+        l1 = l1->next;
+    }
+
+    while (l2) {
+        sn2.push(l2);
+        l2 = l2->next;
+    }
+
+    Node* prev = nullptr;
+    while (!sn1.empty() && !sn2.empty()) {
+
+        if (sn1.top() == sn2.top()) {
+            prev = sn1.top();
+            sn1.pop();
+            sn2.pop();
+        }
+        else {
+            return prev;
+        }
+    }
+    return prev;
+}
+
 void test_list_cross()
 {
     Node node1(1), node2(2), node3(3), node4(4), node5(5);
@@ -89,7 +128,8 @@ void test_list_cross()
     bool isCross = is_cross(&node1, &node6);
     cout << isCross << endl;
 
-    Node* node = find_list_cross_point(&node1, &node6);
+    // Node* node = find_list_cross_point(&node1, &node6);
+    Node* node = find_list_cross_point_by_stack(&node1, &node6);
     cout << node->data << endl;
 }
 

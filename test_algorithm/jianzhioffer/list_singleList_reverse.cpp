@@ -3,10 +3,12 @@
 
 using namespace std;
 
-struct ListNode {
+struct ListNode
+{
     int val;
     ListNode* next;
-    ListNode(int x) : val(x), next(NULL) {}
+    ListNode(int x) : val(x), next(NULL)
+    {}
 };
 
 // 使用双指针来反转链表
@@ -15,14 +17,13 @@ ListNode* reverseList01(ListNode* head)
     ListNode* prev = NULL;
     ListNode* cur = head;
 
-    while (cur)
-    {
+    while (cur) {
         ListNode* next = cur->next;
         cur->next = prev;
         prev = cur;
         cur = next;
     }
-    
+
     return prev;
 }
 
@@ -32,8 +33,7 @@ ListNode* reverseList02(ListNode* head)
     ListNode node(-1);
     ListNode* headNode = &node;
 
-    while (head)
-    {
+    while (head) {
         ListNode* next = head->next;
 
         head->next = headNode->next;
@@ -49,8 +49,7 @@ ListNode* reverseList02(ListNode* head)
 ListNode* reverseList03(ListNode* head)
 {
     stack<ListNode*> s;
-    while (head)
-    {
+    while (head) {
         ListNode* next = head->next;
         s.push(head);
         head = next;
@@ -59,8 +58,7 @@ ListNode* reverseList03(ListNode* head)
     ListNode* h = s.top();
     s.pop();
     ListNode* tail = h;
-    while (!s.empty())
-    {
+    while (!s.empty()) {
         ListNode* currNode = s.top();
         s.pop();
 
@@ -68,8 +66,26 @@ ListNode* reverseList03(ListNode* head)
         tail = currNode;
     }
     tail->next = NULL;
-    
+
     return h;
+}
+
+// 使用递归来翻转链表
+/*
+    head head->next
+ 1 -> 2 -> 3 -> NULL
+head head->next 
+*/
+ListNode* reverseList_by_recursive(ListNode* head)
+{
+    if (head == nullptr || head->next == nullptr) {
+        return head;
+    }
+
+    ListNode* new_head = reverseList_by_recursive(head->next);
+    head->next->next = head;
+    head->next = nullptr;
+    return new_head;
 }
 
 int main()
@@ -82,7 +98,8 @@ int main()
 
     // ListNode* reversedHead = reverseList01(head);
     // ListNode* reversedHead = reverseList02(head);
-    ListNode* reversedHead = reverseList03(head);
+    // ListNode* reversedHead = reverseList03(head);
+    ListNode* reversedHead = reverseList_by_recursive(head);
 
     ListNode* t = reversedHead;
 
@@ -92,13 +109,11 @@ int main()
     }
     cout << endl;
 
-    while (t)
-    {
+    while (t) {
         ListNode* tmp = t->next;
         delete t;
         t = tmp;
     }
-    
 
     return 0;
 }
