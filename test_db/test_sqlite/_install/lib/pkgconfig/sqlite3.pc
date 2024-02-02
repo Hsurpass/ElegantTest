@@ -1,0 +1,13 @@
+# Package Information for pkg-config
+
+prefix=/mnt/d/WorkSpace/4openSourceCode/sqlite_/sqlite/_build/../_install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: SQLite
+Description: SQL database engine
+Version: 3.43.0
+Libs: -L${libdir} -lsqlite3
+Libs.private: -lm -ldl -lz -lpthread 
+Cflags: -I${includedir}
