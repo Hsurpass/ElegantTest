@@ -2,6 +2,7 @@ sudo apt update
 
 sudo apt install -y build-essential gcc g++ autoconf libtool pkg-config
 sudo apt install -y gdb git cmake
+# sudo apt install cmake-qt-gui
 # sudo apt install -y linux-tools-common
 # sudo apt install vim
 sudo apt install -y cgdb
