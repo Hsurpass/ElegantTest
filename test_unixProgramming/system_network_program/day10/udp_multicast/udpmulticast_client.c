@@ -9,7 +9,8 @@
 #include <signal.h>
 
 #define MULTICAST_PORT 8888
-#define MULTICAST_GROUP "224.0.0.10"
+//#define MULTICAST_GROUP "224.0.0.10"
+#define MULTICAST_GROUP "224.224.224.245"
 
 void udp_client_multicast()
 {
