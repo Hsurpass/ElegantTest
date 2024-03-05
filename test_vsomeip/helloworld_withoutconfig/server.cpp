@@ -1,15 +1,17 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <iostream>
+#include <memory>
+#include <set>
+
 #include <vsomeip/application.hpp>
 #include <vsomeip/message.hpp>
 #include <vsomeip/payload.hpp>
 #include <vsomeip/primitive_types.hpp>
 #include <vsomeip/runtime.hpp>
 #include <vsomeip/vsomeip.hpp>
-#include <iostream>
-#include <memory>
-#include <set>
+#include <vsomeip/internal/logger.hpp>
 
 using namespace std;
 
@@ -24,12 +26,12 @@ std::shared_ptr<vsomeip::application> app;
 
 void on_message(const std::shared_ptr<vsomeip::message>& request)
 {
-    cout << "server on_message" << endl;
+    cout << "-----server on_message" << endl;
     std::shared_ptr<vsomeip::payload> request_payload = request->get_payload();
     vsomeip::length_t data_len = request_payload->get_length();
     vsomeip::byte_t* data = request_payload->get_data();
-    cout << "payload data length: " << data_len << endl;
-    cout << "payload data: " << (char*)data << endl;
+    cout << "-----payload data length: " << data_len << endl;
+    cout << "-----payload data: " << (char*)data << endl;
 
     // get data
     std::stringstream ss;
@@ -37,7 +39,7 @@ void on_message(const std::shared_ptr<vsomeip::message>& request)
         ss << std::setw(2) << std::setfill('0') << std::hex << (int)*(data + i) << " ";
     }
 
-    std::cout << "SERVICE: Received message with Client/Session [" << std::setw(4) << std::setfill('0') << std::hex
+    std::cout << "-----SERVICE: Received message with Client/Session [" << std::setw(4) << std::setfill('0') << std::hex
               << request->get_client() << "/" << std::setw(4) << std::setfill('0') << std::hex << request->get_session()
               << "] " << ss.str() << std::endl;
 
@@ -59,20 +61,29 @@ void offer_service()
     app->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, on_message);
     app->offer_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
 
-    // offer event
+    // offer event pub/sub
     // 每个事件都属于一个事件组！但它也可以属于多个事件组。
     // 事件不独立于服务而存在;如果尚未提供服务，则该服务对客户端不可用，并且客户端无法订阅。
-    const vsomeip::byte_t event_data[] = {0x10};
+    const vsomeip::byte_t event_data[] = {0x11};
     std::shared_ptr<vsomeip::payload> event_payload = vsomeip::runtime::get()->create_payload();
     event_payload->set_data(event_data, sizeof(event_data));
     std::set<vsomeip::eventgroup_t> event_groups;
     event_groups.insert(SAMPLE_EVENTGROUP_ID);
     app->offer_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_groups);
     app->notify(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_payload);
+    cout << "-----notify" << endl;
 }
 
 int main()
 {
+    // vsomeip::logging::
+    // vsomeip::logging::logger::set_level(vsomeip::logging::level_e::LL_DEBUG); // 设置日志等级为DEBUG
+    // vsomeip::logging::logger::set_pattern("%TimeStamp% [%ThreadID%] [%LogLevel%]: %Message%"); // 设置日志格式
+
+    VSOMEIP_DEBUG << "someip server start...\n"; // 默认是info级别？
+    VSOMEIP_INFO << "someip server start...\n"; // 不显示？
+    std::cout << "-----someip server start...\n";
+
     app = vsomeip::runtime::get()->create_application("world");
     app->init();
 
