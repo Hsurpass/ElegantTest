@@ -1,3 +1,5 @@
+// env VSOMEIP_CONFIGURATION=./vsomeip_local_multiserver_multiclient.json ./build/helloclient
+
 #include <memory>
 #include <vector>
 #include <iostream>
@@ -17,13 +19,9 @@
 #include <vsomeip/vsomeip.hpp>
 #include <vsomeip/internal/logger.hpp>
 
-using namespace std;
+#include "service_ids.hpp"
 
-#define SAMPLE_SERVICE_ID 0x1234
-#define SAMPLE_INSTANCE_ID 0x5678
-#define SAMPLE_METHOD_ID 0x6666
-#define SAMPLE_EVENTGROUP_ID 0x4465
-#define SAMPLE_EVENT_ID 0x8778
+using namespace std;
 
 std::shared_ptr<vsomeip::application> app;
 std::mutex mtx;
@@ -51,10 +49,10 @@ void run()
     app->send(request);
     cout << "client send data..." << endl;
 
-    // std::set<vsomeip::eventgroup_t> event_groups;
-    // event_groups.insert(SAMPLE_EVENTGROUP_ID);
-    // app->request_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_groups);
-    // app->subscribe(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENTGROUP_ID);
+    std::set<vsomeip::eventgroup_t> event_groups;
+    event_groups.insert(SAMPLE_EVENTGROUP_ID);
+    app->request_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_groups);
+    app->subscribe(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENTGROUP_ID);
 }
 
 void on_message(const std::shared_ptr<vsomeip::message>& response)
@@ -95,7 +93,7 @@ int main()
     VSOMEIP_DEBUG << "someip client start...";
     std::cout << "someip client start..." << std::endl;
 
-    app = vsomeip::runtime::get()->create_application("Hello");
+    app = vsomeip::runtime::get()->create_application("client");
     app->init();
 
     app->register_availability_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, on_availability);

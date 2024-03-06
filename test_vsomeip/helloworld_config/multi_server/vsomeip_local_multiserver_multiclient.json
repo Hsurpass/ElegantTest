@@ -1,0 +1,73 @@
+{
+    "unicast": "172.25.75.118",
+    "logging": {
+        "level": "debug",
+        "console": "true",
+        "file": {
+            "enable": "false",
+            "path": "/tmp/vsomeip.log"
+        },
+        "dlt": "false"
+    },
+    "applications": [
+        {
+            "name": "server",
+            "id": "0x1212"
+        },
+        {
+            "name": "client",
+            "id": "0x1313"
+        },
+        {
+            "name": "server1",
+            "id": "0x1414"
+        },
+        {
+            "name": "client1",
+            "id": "0x1515"
+        }
+    ],
+    "services": [
+        {
+            "service": "0x1234",
+            "instance": "0x5678",
+            "unreliable": "30509",
+            "events": [
+                {
+                    "event": "0x8778",
+                    "is_field": "false",
+                    "update-cycle": 2000,
+                    "is_reliable": "false"
+                }
+            ],
+            "eventgroups": [
+                {
+                    "eventgroup": "0x4465",
+                    "events": [
+                        "0x8778"
+                    ],
+                    "is_multicast": "true"
+                }
+            ]
+        },
+        {
+            "service": "0x5555",
+            "instance": "0x6666",
+            "unreliable": "30609"
+        }
+    ],
+    "routing": "server1",
+    "service-discovery": {
+        "enable": "true",
+        "multicast": "224.224.224.245",
+        "port": "30490",
+        "protocol": "udp",
+        "initial_delay_min": "10",
+        "initial_delay_max": "100",
+        "repetitions_base_delay": "200",
+        "repetitions_max": "3",
+        "ttl": "3",
+        "cyclic_offer_delay": "2000",
+        "request_response_delay": "1500"
+    }
+}

@@ -1,3 +1,5 @@
+// env VSOMEIP_CONFIGURATION=./vsomeip_local_multiclient.json ./build/helloclient1
+
 #include <memory>
 #include <vector>
 #include <iostream>
@@ -51,10 +53,10 @@ void run()
     app->send(request);
     cout << "client send data..." << endl;
 
-    // std::set<vsomeip::eventgroup_t> event_groups;
-    // event_groups.insert(SAMPLE_EVENTGROUP_ID);
-    // app->request_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_groups);
-    // app->subscribe(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENTGROUP_ID);
+    std::set<vsomeip::eventgroup_t> event_groups;
+    event_groups.insert(SAMPLE_EVENTGROUP_ID);
+    app->request_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_groups);
+    app->subscribe(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENTGROUP_ID);
 }
 
 void on_message(const std::shared_ptr<vsomeip::message>& response)
@@ -95,7 +97,7 @@ int main()
     VSOMEIP_DEBUG << "someip client start...";
     std::cout << "someip client start..." << std::endl;
 
-    app = vsomeip::runtime::get()->create_application("Hello");
+    app = vsomeip::runtime::get()->create_application("OtherHello");
     app->init();
 
     app->register_availability_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, on_availability);

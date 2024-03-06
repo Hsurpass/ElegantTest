@@ -15,21 +15,24 @@ message("VSOMEIP3_FOUND: " ${VSOMEIP_FOUND})
 message("VSOMEIP3_INCLUDE_DIR: " ${VSOMEIP_INCLUDE_DIR})
 message("VSOMEIP3_LIBRARIES: " ${VSOMEIP3_LIBRARIES})
 
-
-add_executable(helloserver server.cpp)
-target_link_libraries(helloserver 
+set(DEPENDLIB 
     vsomeip3
     pthread
     boost_thread
     boost_system
     boost_log
 )
+add_executable(helloserver server.cpp)
+target_link_libraries(helloserver 
+    ${DEPENDLIB}
+)
 
 add_executable(helloclient client.cpp)
 target_link_libraries(helloclient
-    vsomeip3
-    pthread
-    boost_thread
-    boost_system
-    boost_log
+    ${DEPENDLIB}
+)
+
+add_executable(helloclient1 client1.cpp)
+target_link_libraries(helloclient1
+    ${DEPENDLIB}
 )

@@ -1,3 +1,5 @@
+// env VSOMEIP_CONFIGURATION=./vsomeip_local_multiserver_multiclient.json ./build/helloserver
+
 #include <iomanip>
 #include <ostream>
 #include <sstream>
@@ -14,14 +16,9 @@
 #include <vsomeip/vsomeip.hpp>
 #include <vsomeip/internal/logger.hpp>
 
+#include "service_ids.hpp"
+
 using namespace std;
-
-#define SAMPLE_SERVICE_ID 0x1234
-#define SAMPLE_INSTANCE_ID 0x5678
-#define SAMPLE_METHOD_ID 0x6666
-
-#define SAMPLE_EVENTGROUP_ID 0x4465
-#define SAMPLE_EVENT_ID 0x8778
 
 std::shared_ptr<vsomeip::application> app;
 
@@ -65,13 +62,13 @@ void offer_service()
     // offer event pub/sub
     // 每个事件都属于一个事件组！但它也可以属于多个事件组。
     // 事件不独立于服务而存在;如果尚未提供服务，则该服务对客户端不可用，并且客户端无法订阅。
-    // const vsomeip::byte_t event_data[] = {0x10};
-    // std::shared_ptr<vsomeip::payload> event_payload = vsomeip::runtime::get()->create_payload();
-    // event_payload->set_data(event_data, sizeof(event_data));
-    // std::set<vsomeip::eventgroup_t> event_groups;
-    // event_groups.insert(SAMPLE_EVENTGROUP_ID);
-    // app->offer_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_groups);
-    // app->notify(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_payload);
+    const vsomeip::byte_t event_data[] = {0x10};
+    std::shared_ptr<vsomeip::payload> event_payload = vsomeip::runtime::get()->create_payload();
+    event_payload->set_data(event_data, sizeof(event_data));
+    std::set<vsomeip::eventgroup_t> event_groups;
+    event_groups.insert(SAMPLE_EVENTGROUP_ID);
+    app->offer_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_groups);
+    app->notify(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_payload);
 }
 
 int main()
@@ -83,7 +80,7 @@ int main()
     VSOMEIP_DEBUG << "someip server start...";
     std::cout << "---------------someip server start..." << std::endl;
 
-    app = vsomeip::runtime::get()->create_application("world");
+    app = vsomeip::runtime::get()->create_application("server");
     app->init();
 
     offer_service();
