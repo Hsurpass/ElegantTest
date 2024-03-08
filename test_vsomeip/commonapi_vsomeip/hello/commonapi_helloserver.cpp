@@ -18,7 +18,7 @@ int main()
     string instance = "helloexample.HelloWorld";
 
     std::shared_ptr<HelloWorldStubImpl> helloservice = std::make_shared<HelloWorldStubImpl>();
-    while (!runtime->registerService(domain, instance, helloservice)) {
+    while (!runtime->registerService(domain, instance, helloservice,"helloserver")) {
         cout << "service is registering..." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

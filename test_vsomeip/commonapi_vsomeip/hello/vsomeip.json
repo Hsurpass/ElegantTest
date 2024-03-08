@@ -1,5 +1,5 @@
 {
-    "unicast": "172.25.75.118",
+    "unicast": "127.0.0.1",
     "logging": {
         "level": "debug",
         "console": "true",
@@ -11,15 +11,26 @@
     },
     "applications": [
         {
-            "name": "local",
-            "id": "0x1277"
-        },
-        {
             "name": "helloclient",
             "id": "0x1343"
+        },
+        {
+            "name": "helloserver",
+            "id": "0x1277"
         }
     ],
-    "routing": "local",
+    "services": [
+        {
+            "service": "0x1234",
+            "instance": "0x5678",
+            "reliable": {
+                "port": "30509",
+                "enable-magic-cookies": "false"
+            },
+            "unreliable": "31000"
+        }
+    ],
+    "routing": "helloserver",
     "service-discovery": {
         "enable": "true",
         "multicast": "224.244.224.245",
