@@ -1,0 +1,203 @@
+// platform:/plugin/org.genivi.commonapi.someip指定了一个插件位置，这通常是指Eclipse等集成开发环境中的插件位置。
+// /deployment/CommonAPI-SOMEIP_deployment_spec.fdepl指定了要导入的部署规范文件的路径。
+// 从指定的插件位置导入CommonAPI-SOMEIP的部署规范文件CommonAPI-SOMEIP_deployment_spec.fdepl，以便在当前的FDEPL文件中使用该规范文件定义的部署信息。
+//import "platform:/plugin/org.genivi.commonapi.someip/deployment/CommonAPI-SOMEIP_deployment_spec.fdepl"
+
+import "platform:/plugin/org.genivi.commonapi.someip/deployment/CommonAPI-4-SOMEIP_deployment_spec.fdepl"
+import "helloworld.fidl"
+
+define org.genivi.commonapi.someip.deployment for interface helloexample.HelloWorld {
+    SomeIpServiceID = 4660
+
+    // 加不加都right
+    //enumeration stdErrorTypeEnum {
+    //    NO_FAULT {
+    //    }
+    //    MY_FAULT {
+    //    }
+    //}
+
+    method sayHello {
+        SomeIpMethodID = 123
+        SomeIpReliable = false
+    }
+    method foo {
+        SomeIpMethodID = 124
+        SomeIpReliable = false
+    }
+    broadcast myStatus {
+        // Warning: SomeIP validation: Event ID for broadcast "myStatus" is not within range 32769 - 65534.
+        // SomeIpEventID = 125
+        SomeIpEventID = 32800
+        SomeIpEventGroups = {
+            32800
+        }
+    }
+    broadcast statusSpecial {
+        SomeIpEventID = 32801
+        SomeIpEventGroups = {
+            32801
+        }
+    }
+
+    attribute x {
+        SomeIpGetterID = 1000
+        SomeIpSetterID = 1001
+        // Warning: SomeIP validation: Attribute "x" declares a 'SomeIpNotifierID' not within range 32769 - 65534.
+        // SomeIpNotifierID = 10010
+        SomeIpNotifierID = 33001 
+        // Warning: SomeIP validation: Deprecated: Attribute "x" is using 'SomeIpEventGroups', use 'SomeIpNotifierEventGroups'. 
+        // SomeIpEventGroups = { 42800 }
+        // Warning: SomeIP validation: Attribute "x" has no valid 'SomeIpNotifierEventGroups' specified.
+        SomeIpNotifierEventGroups = {33001}
+
+        SomeIpAttributeReliable = true
+    }
+    attribute y {
+        SomeIpGetterID = 2000
+        // SomeIpSetterID = 2001 // 只读属性没有setter方法
+        SomeIpNotifierID = 42801
+        SomeIpNotifierEventGroups = { 42801 }
+
+        SomeIpAttributeReliable = true
+    }
+    attribute z {
+        SomeIpGetterID = 3000
+        SomeIpSetterID = 3001
+
+        SomeIpAttributeReliable = true
+    }
+    attribute w {
+        SomeIpGetterID = 4000
+
+        SomeIpAttributeReliable = true
+    }
+    //attribute a {
+    //    SomeIpGetterID = 5000
+    //    SomeIpSetterID = 5001
+    //    SomeIpNotifierID = 42802
+    //    SomeIpEventGroups = { 42801 }
+    //}
+    //attribute b {
+    //    SomeIpGetterID = 6000
+    //    SomeIpSetterID = 6001
+    //    SomeIpNotifierID = 42802
+    //    SomeIpEventGroups = { 42802 }
+    //}
+    //attribute c {
+    //    SomeIpGetterID = 7000
+    //    SomeIpSetterID = 7001
+    //    SomeIpNotifierID = 42803
+    //    SomeIpEventGroups = { 42803 }
+    //}
+    //attribute d {
+    //    SomeIpGetterID = 8000
+    //    SomeIpSetterID = 8001
+    //    SomeIpNotifierID = 42804
+    //    SomeIpEventGroups = { 42804 }
+    //}
+    //attribute e {
+    //    SomeIpGetterID = 9000
+    //    SomeIpSetterID = 9001
+    //    SomeIpNotifierID = 42805
+    //    SomeIpEventGroups = { 42805 }
+    //}
+    //attribute f {
+    //    SomeIpGetterID = 10000
+    //    SomeIpSetterID = 10001
+    //    SomeIpNotifierID = 42806
+    //    SomeIpEventGroups = { 42806 }
+    //}
+    //attribute g {
+    //    SomeIpGetterID = 11000
+    //    SomeIpSetterID = 11001
+    //    SomeIpNotifierID = 42807
+    //    SomeIpEventGroups = { 42807 }
+    //}
+    //attribute h {
+    //    SomeIpGetterID = 12000
+    //    SomeIpSetterID = 12001
+    //    SomeIpNotifierID = 42808
+    //    SomeIpEventGroups = { 42808 }
+    //}
+    //attribute i {
+    //    SomeIpGetterID = 13000
+    //    SomeIpSetterID = 13001
+    //    SomeIpNotifierID = 42809
+    //    SomeIpEventGroups = { 42809 }
+    //} 
+    //attribute j {
+    //    SomeIpGetterID = 14000
+    //    SomeIpSetterID = 14001
+    //    SomeIpNotifierID = 42810
+    //    SomeIpEventGroups = { 42810 }
+    //} 
+    //attribute k {
+    //    SomeIpGetterID = 15000
+    //    SomeIpSetterID = 15001
+    //    SomeIpNotifierID = 42811
+    //    SomeIpEventGroups = { 42811 }
+    //} 
+    //attribute l {
+    //    SomeIpGetterID = 16000
+    //    SomeIpSetterID = 16001
+    //    SomeIpNotifierID = 42812
+    //    SomeIpEventGroups = { 42812 }
+    //} 
+    //attribute m {
+    //    SomeIpGetterID = 17000
+    //    SomeIpSetterID = 17001
+    //    SomeIpNotifierID = 42813
+    //    SomeIpEventGroups = { 42813 }
+    //}
+
+    attribute myuint8vector{
+        SomeIpGetterID = 17900
+        SomeIpSetterID = 17901
+        SomeIpNotifierID = 49000
+        SomeIpNotifierEventGroups = { 49000 }
+    }
+
+    attribute myhashmap {
+        SomeIpGetterID = 18000
+        SomeIpSetterID = 18001
+        SomeIpNotifierID = 42814
+        SomeIpNotifierEventGroups = { 42814 }
+    }
+    attribute mystruct{
+        SomeIpGetterID = 19000
+        SomeIpSetterID = 19001
+        SomeIpNotifierID = 42815
+        SomeIpNotifierEventGroups = { 42815 }
+    }
+    attribute myunion {
+        SomeIpGetterID = 20000
+        SomeIpSetterID = 20001
+        SomeIpNotifierID = 42816
+        SomeIpNotifierEventGroups = { 42816 }
+    }
+    attribute mytype {
+        SomeIpGetterID = 21000
+        SomeIpSetterID = 21001
+        SomeIpNotifierID = 42817
+        SomeIpNotifierEventGroups = { 42817 }
+    }
+
+
+}
+
+define org.genivi.commonapi.someip.deployment for provider as MyService {
+	instance helloexample.HelloWorld {
+		InstanceId = "helloexample.HelloWorld"
+		SomeIpInstanceID = 22136
+        
+        SomeIpUnicastAddress = "172.25.75.118"
+        // SomeIpReliableUnicastPort = 30500
+        // SomeIpUnreliableUnicastPort = 30501
+	}
+}
+
+
+
+
+

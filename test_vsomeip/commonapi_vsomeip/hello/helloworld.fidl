@@ -1,0 +1,99 @@
+package helloexample
+
+// error
+//struct MyStruct_a { 
+//    Int32 a 
+//    Boolean b 
+//    Double c
+//}
+
+interface HelloWorld {
+    //version {major 1 minor 1}
+    version {major 1 minor 0} //namespace v1 { }
+    //version {major 0 minor 1} //namespace v0 { }
+    //version {major 0 minor 0} //无与版本相关的namespace
+
+    enumeration stdErrorTypeEnum {
+        NO_FAULT
+        MY_FAULT
+    }
+    method sayHello {
+        in {
+            Int32 id
+            String in_msg
+        }
+        out {
+            String out_msg
+        }
+        error {
+            stdErrorTypeEnum
+        }
+    }
+
+    // fireAndForget标志表示只能使用in,不能使用out,指示既不返回也不表示调用状态 
+    // 含有fireAndForget标志的method，只有同步调用，没有异步调用。
+    method foo fireAndForget {
+        in {
+            Int32 id
+            String in_msg
+        }
+    }
+
+    // 广播只能有out参数
+    // None: 表示发送给所有注册的参与者
+    broadcast myStatus {
+        out {
+            String message
+        }
+    }
+    // Selective: 该标志表示只有服务选定的客户端才能在广播中注册
+    broadcast statusSpecial selective {
+        out {
+            String message
+        }
+    }
+
+    attribute Int32 x           // 没有附加任何标志的标准属性，默认允许所有内容
+    attribute Int32 y readonly  // 只读属性
+    attribute Int32 z noSubscriptions   // 不可观察的属性
+    attribute Int32 w readonly noSubscriptions  // 不可观察和不可写的属性
+    //attribute Boolean a
+    //attribute UInt8 b
+    //attribute Int8 c
+    //attribute UInt16 d
+    //attribute Int16 e
+    //attribute UInt32 f
+    //attribute Int32 g
+    //attribute UInt64 h
+    //attribute Int64 i
+    //attribute Float j
+    //attribute Double k
+    //attribute String l      // ==std::string
+    //attribute ByteBuffer m  // ==std::vector<uint8_t>
+    array MyUint8Vector of UInt8    // typedef std::vector<uint8_t> MyUint8Vector
+    attribute MyUint8Vector myuint8vector
+
+    // == typedef std::unordered_map<uint32_t, std::string> MyHashmap
+    map MyHashmap {
+        UInt32 to String
+    }
+    attribute MyHashmap myhashmap 
+
+    struct MyStruct { 
+        Int32 a 
+        Boolean b 
+        Double c
+    }
+    attribute MyStruct mystruct
+
+    // == typedef CommonAPI::Variant<uint32_t, std::string> MyUnion
+    union MyUnion {
+        UInt32 a
+        String b
+    }
+    attribute MyUnion myunion
+
+    // == typedef int32_t MyType
+    typedef MyType is Int32
+    attribute MyType mytype
+}
