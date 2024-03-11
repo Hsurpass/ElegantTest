@@ -81,7 +81,6 @@ public:
     {
         hello_.index(0);
         hello_.message("helloworld");
-
         DomainParticipantQos participantQos;
         participantQos.name("Participant_publisher");
         participant_ = DomainParticipantFactory::get_instance()->create_participant(0, participantQos);
@@ -136,7 +135,7 @@ public:
                 std::cout << "Message: " << hello_.message() << " with index: " << hello_.index() << " SENT"
                           << std::endl;
             }
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::microseconds(1000));
         }
     }
 };

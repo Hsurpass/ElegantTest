@@ -44,14 +44,14 @@ private:
         {
             cout << __func__ << endl;
             if (info.current_count_change == 1) {
-                cout << "-----subscriber matched." << endl;
+                cout << "subscriber matched." << endl;
             }
             else if (info.current_count_change == -1) {
-                cout << "-----subscriber unmatched." << endl;
+                cout << "subscriber unmatched." << endl;
             }
             else {
                 cout << info.current_count_change
-                     << "----- is not a valid value for SubscriptionMatchedStatus current count change" << std::endl;
+                     << " is not a valid value for SubscriptionMatchedStatus current count change" << std::endl;
             }
         }
 
@@ -62,7 +62,7 @@ private:
             if (reader->take_next_sample(&hello_, &info) == ReturnCode_t::RETCODE_OK) {
                 if (info.valid_data) {
                     samples_++;
-                    std::cout << "-----Message: " << hello_.message() << " with index: " << hello_.index() << " RECEIVED."
+                    std::cout << "Message: " << hello_.message() << " with index: " << hello_.index() << " RECEIVED."
                               << std::endl;
                 }
             }

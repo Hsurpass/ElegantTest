@@ -1,0 +1,94 @@
+struct dds{
+    char a; // char 
+    octet b;// uint8_t
+    short c;        //int16_t
+    @optional unsigned short d; //uint16_t
+    int32 e;
+    // unsigned int32 f; //error
+    octet arr1[5];        //std::array<uint8_t, 5> arr1;
+    sequence<octet> arr2; //std::vector arr2;
+    // map<char,unsigned long long> map; // std::map<char, uint64_t>
+};
+
+@extensibility(FINAL)
+struct FinalStruct
+{
+    octet octet_opt;
+};
+
+@extensibility(APPENDABLE)
+struct AppendableStruct
+{
+    octet octet_opt;
+};
+
+@extensibility(MUTABLE)
+struct MutableStruct
+{
+    octet octet_opt;
+};
+
+union _Union switch(long)
+{
+   case 1:
+    octet octet_value;
+  case 2:
+    long long_value;
+  case 3:
+    string string_value;
+};
+
+bitset MyBitset
+{
+    bitfield<3> a;
+    bitfield<10> b;
+    bitfield<12, long> c;
+};
+
+enum Enumeration
+{
+    RED,
+    GREEN,
+    BLUE
+};
+
+@bit_bound(8)
+bitmask MyBitMask
+{
+    @position(0) flag0,
+    @position(1) flag1,
+    @position(4) flag4,
+    @position(6) flag6,
+    flag7
+};
+
+struct MyType
+{
+    @key long id;
+    @key string type;
+    long positionX;
+    long positionY;
+};
+
+@annotation MyAnnotation
+{
+    long value;
+    string name;
+};
+
+struct ForwardStruct;
+
+union ForwardUnion;
+
+struct ForwardStruct
+{
+    ForwardUnion fw_union;
+};
+
+union ForwardUnion switch (long)
+{
+    case 0:
+        ForwardStruct fw_struct;
+    default:
+        string empty;
+};
