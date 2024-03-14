@@ -72,6 +72,23 @@ sudo apt-get install -y zlib1g-dev
 
 # typora 0.11.18
 
+# ubuntu qt
+# sudo apt-get install libxcb-glx0
+# sudo apt-get install libx11-xcb1
+# sudo apt-get install libxcb-icccm4
+# sudo apt-get install libxcb-image0
+# sudo apt-get install libxcb-keysyms1
+# sudo apt-get install libxcb-randr0
+# sudo apt-get install libxkbcommon-x11-0
+# sudo apt-get install libgl1
+# sudo apt-get install libegl1
+# qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
+# This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+# Available platform plugins are: xcb, eglfs, wayland-egl, minimalegl, vnc, wayland, minimal, linuxfb, offscreen, vkkhrdisplay.
+# sudo apt-get install libx11-xcb*
+# sudo ldconfig
+
+
 # 代码比对工具
 # meld beyondcompare https://blog.csdn.net/mao_hui_fei/article/details/127529618
 

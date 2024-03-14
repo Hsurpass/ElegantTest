@@ -1,7 +1,7 @@
 *.out
 .vscode
 __pycache__
-build*
+build
 install*
 *pb.h
 *pb.cc
@@ -18,3 +18,15 @@ dist
 *.spec
 CMakeLists.txt.user
 CMakeFiles
+build*
+src-gen
+.cache
+
+# *CdrAux*
+# *PubSub*
+
+bin
+.cache
+*.bin
+
+gen-cpp
