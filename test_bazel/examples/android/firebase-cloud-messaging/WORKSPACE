@@ -1,0 +1,70 @@
+# FIXME(alexeagle): move to bzlmod
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Requires ANDROID_HOME set to the path of your Android SDK.
+android_sdk_repository(name = "androidsdk")
+
+android_ndk_repository(name = "androidndk")
+
+RULES_JVM_EXTERNAL_TAG = "5.3"
+
+RULES_JVM_EXTERNAL_SHA = "d31e369b854322ca5098ea12c69d7175ded971435e55c18dd9dd5f29cc5249ac"
+
+http_archive(
+    name = "rules_jvm_external",
+    sha256 = RULES_JVM_EXTERNAL_SHA,
+    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
+    url =
+    "https://github.com/bazelbuild/rules_jvm_external/releases/download/%s/rules_jvm_external-%s.tar.gz" % (RULES_JVM_EXTERNAL_TAG, RULES_JVM_EXTERNAL_TAG)
+)
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+maven_install(
+    artifacts = [
+        "com.google.firebase:firebase-messaging:17.0.0",
+        "com.android.support:appcompat-v7:26.1.0",
+        "com.android.support.constraint:constraint-layout:1.0.2",
+        "com.google.code.gson:gson:2.8.2",
+    ],
+    fetch_sources = True,
+    # See https://github.com/bazelbuild/rules_jvm_external/#repository-aliases
+    # This can be removed if none of your external dependencies uses `maven_jar`.
+    generate_compat_repositories = True,
+    repositories = [
+        "https://jcenter.bintray.com",
+        "https://maven.google.com",
+        "https://repo1.maven.org/maven2",
+    ],
+    version_conflict_policy = "pinned",
+)
+
+load("@maven//:compat.bzl", "compat_repositories")
+
+compat_repositories()
+
+TOOLS_ANDROID_COMMIT = "0e864ba5a86958513658250de587416d8e17c481"
+
+http_archive(
+    name = "tools_android",
+    repo_mapping = {
+        "@com_google_code_gson_2_8_2": "@com_google_code_gson_gson",
+    },
+    sha256 = "57c50d6331ba578fc8adfcede20ef12b437cb4cc2edf60c852e4b834eefee5fc",
+    strip_prefix = "tools_android-" + TOOLS_ANDROID_COMMIT,
+    url = "https://github.com/bazelbuild/tools_android/archive/%s.tar.gz" % TOOLS_ANDROID_COMMIT,
+)
+
+http_archive(
+    name = "rules_android",
+    sha256 = "cd06d15dd8bb59926e4d65f9003bfc20f9da4b2519985c27e190cddc8b7a7806",
+    strip_prefix = "rules_android-0.1.1",
+    urls = ["https://github.com/bazelbuild/rules_android/archive/v0.1.1.zip"],
+)
+
+http_archive(
+    name = "rules_cc",
+    sha256 = "5f862a44bbd032e1b48ed53c9c211ba2a1da60e10c5baa01c97369c249299ecb",
+    strip_prefix = "rules_cc-c8c38f8c710cbbf834283e4777916b68261b359c",
+    url = "https://github.com/bazelbuild/rules_cc/archive/c8c38f8c710cbbf834283e4777916b68261b359c.zip",
+)
