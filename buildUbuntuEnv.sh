@@ -1,26 +1,26 @@
-sudo apt update
-
-sudo apt install -y build-essential gcc g++ autoconf libtool pkg-config
-sudo apt install -y gdb git cmake
+apt update
+apt install -y build-essential gcc g++ autoconf libtool pkg-config
+apt install -y gdb git 
+# sudo apt install -y cmake
 # sudo apt install cmake-qt-gui
 # sudo apt install -y linux-tools-common
 # sudo apt install vim
-sudo apt install -y cgdb
+# sudo apt install -y cgdb
 
 # clang and LLVM C++ lib is only required for sanitizer builds
 # sudo apt-get install clang libc++-dev
 
-sudo apt install -y man-db manpages-posix
-sudo apt install -y manpages-dev manpages-posix-dev
+# sudo apt install -y man-db manpages-posix
+# sudo apt install -y manpages-dev manpages-posix-dev
 
 # sudo apt install libsystemd
-sudo apt install -y libsystemd-dev
+apt install -y libsystemd-dev
 
 # openssl
 # sudo apt install openssl 
 # sudo apt install libssl-dev libmbedtls-dev
 # zlib
-sudo apt-get install -y zlib1g-dev
+apt-get install -y zlib1g-dev
 
 # boost
 # sudo apt search libboost
@@ -82,9 +82,11 @@ sudo apt-get install -y zlib1g-dev
 # sudo apt-get install libxkbcommon-x11-0
 # sudo apt-get install libgl1
 # sudo apt-get install libegl1
+
 # qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
 # This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
 # Available platform plugins are: xcb, eglfs, wayland-egl, minimalegl, vnc, wayland, minimal, linuxfb, offscreen, vkkhrdisplay.
+
 # sudo apt-get install libx11-xcb*
 # sudo ldconfig
 
@@ -95,6 +97,8 @@ sudo apt-get install -y zlib1g-dev
 # 时间同步
 # https://blog.csdn.net/weixin_35804181/article/details/125778648
 # https://blog.csdn.net/vor234/article/details/127100891
+
+# sudo apt install cockpit
 
 # 清理日志以及无用包
 # 在/var/log/journal/垃圾日志文件占用比较大，可以通过如下命令来清除:
