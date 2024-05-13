@@ -1,17 +1,17 @@
 apt update
 apt install -y build-essential gcc g++ autoconf libtool pkg-config
 apt install -y gdb git 
-# sudo apt install -y cmake
-# sudo apt install cmake-qt-gui
+sudo apt install -y cmake
+sudo apt install cmake-qt-gui
 # sudo apt install -y linux-tools-common
-# sudo apt install vim
-# sudo apt install -y cgdb
+sudo apt install vim
+sudo apt install -y cgdb
 
 # clang and LLVM C++ lib is only required for sanitizer builds
 # sudo apt-get install clang libc++-dev
 
-# sudo apt install -y man-db manpages-posix
-# sudo apt install -y manpages-dev manpages-posix-dev
+sudo apt install -y man-db manpages-posix
+sudo apt install -y manpages-dev manpages-posix-dev
 
 # sudo apt install libsystemd
 apt install -y libsystemd-dev
@@ -31,8 +31,10 @@ apt-get install -y zlib1g-dev
 
 # 搜狗输入法
 # https://shurufa.sogou.com/linux/guide
+# sudo apt-get install ibus-pinyin # ubuntu22.04 https://blog.csdn.net/Reading8/article/details/134118665
+
 # flameshot
-# https://flameshot.org/docs/guide/key-bindings/
+# https://flameshot.org/docs/guide/key-bindings/    
 # https://www.bilibili.com/read/cv16612038  # Alt+A F1
 # https://github.com/flameshot-org/flameshot
 # https://gitcode.net/mirrors/flameshot-org/flameshot?utm_source=csdn_github_accelerator
@@ -40,7 +42,7 @@ apt-get install -y zlib1g-dev
 
 # terminator
 # https://zhuanlan.zhihu.com/p/346665734
-# sudo apt-get install terminator
+sudo apt-get install terminator
 # 选中即复制
 # 粘贴：Ctrl+V
 # 新建窗口：Ctrl+Shift+T
