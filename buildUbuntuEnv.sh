@@ -102,6 +102,12 @@ sudo apt-get install terminator
 
 # sudo apt install cockpit
 
+
+# protobuf
+# sudo apt install autoconf automake libtool curl make g++ unzip
+# sudo apt install protobuf-compiler libprotobuf-dev
+# protoc --version
+
 # 清理日志以及无用包
 # 在/var/log/journal/垃圾日志文件占用比较大，可以通过如下命令来清除:
 # journalctl --disk-usage        # 检查日志大小

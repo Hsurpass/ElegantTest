@@ -1,7 +1,7 @@
 # cd build 
 # ctest or make test or ./a,out
 
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.5)
 
 project(test_gtest_add)
 
@@ -31,7 +31,11 @@ set(SRC add.h unittest_add.cpp)
 message("SRC: " ${SRC})
 add_executable(test_gtest_add ${SRC})
 # target_link_libraries(test_gtest_add GTest::gtest GTest::gtest_main)
-target_link_libraries(test_gtest_add ${GTEST_LIBRARIES} pthread)
+target_link_libraries(test_gtest_add 
+    ${GTEST_LIBRARIES} 
+    ${GTEST_MAIN_LIBRARIES}
+    pthread
+)
 # target_link_libraries(test_gtest_add gtest pthread)
 
 enable_testing()
