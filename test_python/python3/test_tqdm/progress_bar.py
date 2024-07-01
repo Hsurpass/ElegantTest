@@ -4,5 +4,10 @@
 
 import tqdm
 import time
-for i in tqdm.tqdm(range(100)):
-    time.sleep(0.1)
+
+iter = range(100)
+
+for i in tqdm.tqdm(iter):
+# for i in list(tqdm.tqdm(iter)):
+# for i in tqdm(list(tqdm.tqdm(iter))): # TypeError: 'module' object is not callable
+    time.sleep(0.01)

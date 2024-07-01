@@ -42,7 +42,7 @@ def log(func):
 #   装饰的顺序：由下到上
 #   执行的顺序：由上往下
 
-@log                    # loginner = log(log2inner)   再用log装饰
+# @log                    # loginner = log(log2inner)   再用log装饰
 @log1('log1', 'log1xx') # log2inner = log2(f1) 先用log2装饰
 def f1(x):              # log2 = log1('log1', 'log1xx') 返回log2
     print("f1(x)")      # 装饰顺序：从下到上
