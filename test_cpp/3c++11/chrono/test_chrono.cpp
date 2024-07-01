@@ -38,7 +38,10 @@ void getLocalTime()
 
 int main()
 {
-    getLocalTime();
+    // getLocalTime();
+
+    auto dur = std::chrono::seconds::max();
+    // dur.
 
     return 0;
 }
