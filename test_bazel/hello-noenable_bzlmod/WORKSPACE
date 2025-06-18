@@ -1,0 +1,10 @@
+# bazel run @hedron_compile_commands//:refresh_all
+
+git_repository(
+    name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+    commit = "4f28899228fb3ad0126897876f147ca15026151e",  # 可根据最新版本更新
+)
+
+# load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+

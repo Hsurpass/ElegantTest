@@ -4,3 +4,21 @@
 #
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
+
+module(name = "hello_bazel_project", version = "0.1.0")
+
+# Bazel 的 git_override() 只是替换模块来源，不是自动声明模块存在。
+# 必须先通过 bazel_dep() 声明模块存在，再通过 git_override() 告诉 Bazel从哪下代码。
+
+# 声明模块名（必须），即使没有注册仓库
+bazel_dep(name = "hedron_compile_commands", version = "1.0.1")  # 假设版本
+
+# 使用 git_override 指向仓库
+git_override(
+    module_name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+    commit = "4f28899228fb3ad0126897876f147ca15026151e",  # 可用 HEAD 最新提交
+)
+
+# bazel run @hedron_compile_commands//:refresh_all 生成 compile_commands.json
+
