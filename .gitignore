@@ -30,3 +30,6 @@ bin
 *.bin
 
 gen-cpp
+
+
+bazel*
