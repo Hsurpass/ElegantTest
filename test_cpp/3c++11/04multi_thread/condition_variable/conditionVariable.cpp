@@ -2,6 +2,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <chrono>
+#include <stdio.h>
 #include <thread>
 #include <vector>
 
@@ -36,17 +37,19 @@ void printThreadId()
 void test_condition_variable01()
 {
     std::vector<std::thread> tg;
-    int N = 1;
+    int N = 2;
     tg.reserve(N);
     for (size_t i = 0; i < N; i++)
     {
         tg.emplace_back(printThreadId);
     }
 
+#if 0
     for(auto &i:tg)
     {
         i.detach(); // cv是全局变量，即使detach后还是能接收到信号的。
     }
+#endif
 
     this_thread::sleep_for(chrono::seconds(3));
     {
@@ -55,17 +58,18 @@ void test_condition_variable01()
     }
     cv.notify_all();
 
-    cout << "----------join----------" << endl;
+    printf("----------join----------\n");
     for (auto &p : tg)
     {
         if (p.joinable())
         {
-            cout << "joinable" << endl;
+            printf("%ld joinable start\n", p.get_id());
             p.join();
+            printf("%ld, joinable end\n", p.get_id());
         }
         else
         {
-            cout << "not joinable" << endl;
+            printf("not joinable\n");
         }
     }
     this_thread::sleep_for(chrono::seconds(2));
@@ -73,17 +77,17 @@ void test_condition_variable01()
 
 void printId()
 {
-    while (1)
+    // while (1)
     {
         {
             std::unique_lock<mutex> lock(mutex1);
-#if 0
+#if 1
     while (condition <= 0)
     {
         cv.wait(lock);
     }
 #endif
-#if 1
+#if 0
             cv.wait(lock, []()
                     { return condition > 0; });
 #endif
@@ -104,6 +108,7 @@ void test_condition_variable_spuriousWakeUp()
     }
 
     this_thread::sleep_for(chrono::seconds(3));
+    int count = 0;
     while (1)
     {
         cout << "main thread ++" << endl;
@@ -111,9 +116,12 @@ void test_condition_variable_spuriousWakeUp()
             unique_lock<mutex> lock(mutex1);
             condition++;
         }
-        // cv.notify_all();
-        cv.notify_one();
+        cv.notify_all();
+        // cv.notify_one();
         this_thread::sleep_for(chrono::seconds(2));
+        if (++count > 5) {
+            break;
+        }
     }
 
     cout << "----------join----------" << endl;
@@ -121,15 +129,20 @@ void test_condition_variable_spuriousWakeUp()
     {
         if (p.joinable())
         {
+            printf("%ld joinable start\n", p.get_id());
             p.join();
+            printf("%ld joinable end\n", p.get_id());
+        }
+        else {
+            printf("not joinable\n");
         }
     }
 }
 
 int main()
 {
-    test_condition_variable01();
-    // test_condition_variable_spuriousWakeUp();
+    // test_condition_variable01();
+    test_condition_variable_spuriousWakeUp();
 
     return 0;
 }
