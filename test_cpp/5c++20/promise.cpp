@@ -83,6 +83,8 @@ void test_promise_struct()
     t.join();
 }
 
+// std::promise 存储一个值
+// std::packaged_task 封装一个函数
 int main()
 {
     // test_promise1();
