@@ -15,6 +15,16 @@
 #include <vector>
 
 using TASK = std::function<void()>;
+struct Task
+{
+    int priority;
+    TASK task;
+
+    bool operator<(const Task& other) const
+    {
+        return priority < other.priority; // Higher priority tasks should be executed first
+    }
+};
 
 class ThreadPool
 {
@@ -25,7 +35,7 @@ public:
         for (int i = 0; i < numThreads; ++i) {
             m_workers.emplace_back([this]() {
                 while (true) {
-                    TASK task;
+                    Task task;
                     {
                         std::unique_lock<std::mutex> lock(m_mutex);
                         m_condition.wait(lock, [this] {
@@ -34,10 +44,10 @@ public:
                         if (m_stop && m_tasks.empty()) {
                             return;
                         }
-                        task = std::move(m_tasks.front());
+                        task = std::move(m_tasks.top());
                         m_tasks.pop();
                     }
-                    task();
+                    task.task();
                 }
             });
         }
@@ -65,18 +75,18 @@ public:
     }
 
     template<typename F, typename... ARGS>
-    auto addTask(F&& f, ARGS&&... args) -> std::future<std::result_of_t<F(ARGS...)>>;
+    auto addTask(int priority, F&& f, ARGS&&... args) -> std::future<std::result_of_t<F(ARGS...)>>;
 
 private:
     std::vector<std::thread> m_workers;
     std::mutex m_mutex;
-    std::queue<TASK> m_tasks;
+    std::priority_queue<Task> m_tasks;
     std::condition_variable m_condition;
     std::atomic<bool> m_stop;
 };
 
 template<typename F, typename... ARGS>
-auto ThreadPool::addTask(F&& f, ARGS&&... args) -> std::future<std::result_of_t<F(ARGS...)>>
+auto ThreadPool::addTask(int priority, F&& f, ARGS&&... args) -> std::future<std::result_of_t<F(ARGS...)>>
 {
     using return_type = std::result_of_t<F(ARGS...)>;
     // packaged_task is non-copyable
@@ -93,10 +103,13 @@ auto ThreadPool::addTask(F&& f, ARGS&&... args) -> std::future<std::result_of_t<
             printf("ThreadPool is stopped, cannot add new task.\n");
             // throw std::runtime_error("ThreadPool is stopped, cannot add new task.");
         }
-        m_tasks.emplace([task] {
+        Task newTask;
+        newTask.priority = priority;
+        newTask.task = [task] {
             printf("thread id: %ld\n", std::this_thread::get_id());
             (*task)();
-        });
+        };
+        m_tasks.emplace(std::move(newTask));
     }
     m_condition.notify_one();
     return fut_res;
