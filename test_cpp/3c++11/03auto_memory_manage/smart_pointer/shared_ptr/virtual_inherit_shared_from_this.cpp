@@ -17,7 +17,7 @@ class A : public virtual std::enable_shared_from_this<A> {
 };
 
 class B : public virtual std::enable_shared_from_this<B> {
-    // ...
+    // ...  
 };
 
 class C : public A, public B {
