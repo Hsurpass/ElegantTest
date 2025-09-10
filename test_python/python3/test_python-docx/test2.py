@@ -38,18 +38,18 @@ table = doc.add_table(rows=1, cols=4)
 headers = ['序列号', '省份', '城市', '图层']
 
 # 设置表头加粗居中
-# hdr_cells = table.rows[0].cells
-# for i, cell in enumerate(hdr_cells):
-#     paragraph = cell.paragraphs[0]
-#     paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-#     run = paragraph.add_run(headers[i])
-#     run.bold = True
-#     run.font.size = Pt(11)
+hdr_cells = table.rows[0].cells
+for i, cell in enumerate(hdr_cells):
+    paragraph = cell.paragraphs[0]
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = paragraph.add_run(headers[i])
+    run.bold = True
+    run.font.size = Pt(11)
 
 # 示例数据，每行字典，城市可能多于1个
 data = [
-    {'序列号': '1', '省份': '广东省', '城市': ['广州', '深圳'], '图层': 'Layer1'},
-    {'序列号': '2', '省份': '浙江省', '城市': ['杭州', '宁波', '温州'], '图层': 'Layer2'},
+    {'序列号': '1', '省份': '广东省', '城市': {'广州': ['白云区', 'xx'], '深圳': ['昄填区']}, '图层': 'Layer1'},
+    {'序列号': '2', '省份': '浙江省', '城市': {'杭州': ['x1区', 'x2区'], '宁波': ['x3区', 'x4区'], '温州': ['x5区', 'x6区']}, '图层': 'Layer2'},
 ]
 
 for row in data:
@@ -57,20 +57,20 @@ for row in data:
     n = len(cities)
 
     # 先插入所有城市行
-    new_rows = [table.add_row() for _ in range(n)]
-    for i, r in enumerate(new_rows):
-        r.cells[0].text = str(row['序列号'])
-        r.cells[1].text = row['省份']
-        r.cells[2].text = cities[i]
-        r.cells[3].text = row['图层']
+    # new_rows = [table.add_row() for _ in range(n)]
+    # for i, r in enumerate(new_rows):
+        # r.cells[0].text = str(row['序列号'])
+        # r.cells[1].text = row['省份']
+        # r.cells[2].text = cities[i]
+    #     r.cells[3].text = row['图层']
 
-    # 设置内容居中
-    for r in new_rows:
-        for cell in r.cells:
-            paragraph = cell.paragraphs[0]
-            paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            for run in paragraph.runs:
-                run.font.size = Pt(11)
+    # # 设置内容居中
+    # for r in new_rows:
+    #     for cell in r.cells:
+    #         paragraph = cell.paragraphs[0]
+    #         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    #         for run in paragraph.runs:
+    #             run.font.size = Pt(11)
 
     # 合并第一列、第二列、第四列
     # first_col_cells = [r.cells[0] for r in new_rows]
@@ -81,7 +81,24 @@ for row in data:
     # second_col_cells[0].merge(second_col_cells[-1])
     # fourth_col_cells[0].merge(fourth_col_cells[-1])
 
-      # 合并第1、2、4列，并保留内容在第一行
+    new_rows = []
+    for city, districts in cities.items():
+        r = table.add_row()
+        new_rows.append(r)
+        r.cells[0].text = str(row['序列号'])
+        r.cells[1].text = row['省份']
+        districts_str = ', '.join(districts)
+        r.cells[2].text = f"{city}:{districts_str}"
+        r.cells[3].text = row['图层']
+
+        for cell in r.cells:
+            paragraph = cell.paragraphs[0]
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            for run in paragraph.runs:
+                run.font.size = Pt(11)
+
+
+    # 合并第1、2、4列，并保留内容在第一行
     for col_idx in [0, 1, 3]:
         cells_to_merge = [r.cells[col_idx] for r in new_rows]
         first_cell = cells_to_merge[0]
