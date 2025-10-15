@@ -16,7 +16,9 @@ package main
 import (
 	"fmt"
 	"init_main_import/packageC"
+	// _ "init_main_import/packageE" // or
 )
+import _ "init_main_import/packageE" // blank identifier (only init function is needed
 
 func init() {
 	fmt.Println("a.go init")
