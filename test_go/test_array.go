@@ -1,0 +1,29 @@
+package main
+
+import "fmt"
+
+var arr0 [5]int = [5]int{1, 2, 3, 4, 5}
+var arr1 = [3]string{"a", "b", "c"}
+var arr2 = [...]float64{1.1, 2.2, 3.3, 4.4}
+var arr3 = [...]byte{0x1, 0x2, 0x3, 0x4, 0x5}
+var arr4 = [...]rune{'x', 'y', 'z'}
+var arr5 = [...]bool{true, false, true, false}
+var arr6 = [...]complex128{1 + 2i, 3 + 4i, 5 + 6i}
+var arr7 = [...]uint{10, 20, 30, 40, 50}
+var arr8 = [...]int8{ -128, 0, 127 }
+var arr9 = []string{"hello", "world"}
+var arr10 = [5]string{3: "hello", 4: "world"}
+
+func main() {
+	fmt.Println("Array 0:", arr0)
+	fmt.Println("Array 1:", arr1)
+	fmt.Println("Array 2:", arr2)
+	fmt.Println("Array 3:", arr3)
+	fmt.Println("Array 4:", arr4)
+	fmt.Println("Array 5:", arr5)
+	fmt.Println("Array 6:", arr6)
+	fmt.Println("Array 7:", arr7)
+	fmt.Println("Array 8:", arr8)
+	fmt.Println("Array 9 (slice):", arr9)
+	fmt.Println("Array 10:", arr10)
+}
