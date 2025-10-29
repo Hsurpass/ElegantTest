@@ -13,6 +13,18 @@ var arr7 = [...]uint{10, 20, 30, 40, 50}
 var arr8 = [...]int8{ -128, 0, 127 }
 var arr9 = []string{"hello", "world"}
 var arr10 = [5]string{3: "hello", 4: "world"}
+var arr11 = [...]struct {
+	id uint64
+	name string
+}{
+	{id: 1, name: "Alice"},
+	{id: 2, name: "Bob"},
+	{id: 3, name: "Charlie"},
+}
+
+var arr12 [2][3]int = [2][3]int{{1,2,3}, {4,5,6}}
+var arr13 [2][3]int = [...][3]int{{1,2,3}, {4,5,6}}
+
 
 func main() {
 	fmt.Println("Array 0:", arr0)
@@ -26,4 +38,12 @@ func main() {
 	fmt.Println("Array 8:", arr8)
 	fmt.Println("Array 9 (slice):", arr9)
 	fmt.Println("Array 10:", arr10)
+	fmt.Println("Array 11:", arr11)
+	fmt.Println("Array 12:", arr12)
+	fmt.Println("Array 13:", arr13)
+
+	b := [...][2]int{{1, 1}, {2, 2}, {3, 3}} // 第 2 纬度不能用 "..."。
+	fmt.Println("b:", b)
+
+
 }
